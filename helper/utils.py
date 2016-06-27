@@ -148,7 +148,7 @@ def prep_pred_file(params):
     map( os.unlink, (os.path.join( f_dir,f) for f in os.listdir(f_dir)) )
 
 def write_auto_pred(est,F_list,params):
-    f_dir="/mnt/Data1/hc/auto/"
+    f_dir="/mnt/hc/auto/"
     ist=0
     for b in range(len(est)):
         action=F_list[b].split('/')[-2]
