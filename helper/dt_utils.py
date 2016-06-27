@@ -201,6 +201,7 @@ def multi_thr_read_full_joints(base_file,max_count,p_count,sindex,istest,get_fli
         lst_act=['S1','S5','S6','S7','S8']        
     else:
         lst_act=['S9','S11']
+        lst_act=['S1','S5','S6','S7','S8','S9','S11']
     X_D=[]
     Y_D=[]
     F_L=[]
