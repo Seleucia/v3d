@@ -142,7 +142,7 @@ def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,ist
             pool.close()
 
             pool2 = ThreadPool(1000)
-            results2 = pool2.map(load_file_nodiv, my_list)
+            results2 = pool2.map(load_file_nodiv, my_list2)
             Y_D.extend(results2)
             # F_L.extend(my_list)
             pool2.close()
