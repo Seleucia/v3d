@@ -9,6 +9,7 @@ params= config.get_params()
 params["model"]="autoencoder"
 params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
 params["data_dir"]="/home/huseyin/data/joints16/"
+params['shufle_data']=1
 # params["data_dir"]="/home/coskun/PycharmProjects/data/rnn/180k/"
 #0, error 0.087360, 0.177598, 20.323595
 #error 0.078438, 0.161955, 16.453038
