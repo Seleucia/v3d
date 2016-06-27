@@ -17,7 +17,7 @@ rng = RandomStreams(seed=1234)
 only_test=1
 is_train=0
 # params['seq_length']= 20
-params['batch_size']=100
+params['batch_size']=1000
 batch_size=params['batch_size']
 
 sindex=0
