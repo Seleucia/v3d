@@ -12,7 +12,7 @@ def get_params():
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['seq_length']= 50
    params['validate']= 1
-   params['mfile']= "autoencoder_autoencoder_144_0.0179401_best.p"
+   params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
 
    params['batch_size']=1000
    params['shufle_data']=1
@@ -62,7 +62,7 @@ def get_params():
        params["data_dir"]="/home/huseyin/data/joints16/"
        params["WITH_GPU"]=True
        params['n_hidden']= 10000
-       params['max_count']=100000000000
+       params['max_count']=10000
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
