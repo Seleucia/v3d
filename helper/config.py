@@ -6,9 +6,9 @@ def get_params():
    global params
    params={}
    params['run_mode']=1 #0,full,1:resume, 2,X
-   params["rn_id"]="auto_lr_low" #running id, model
+   params["rn_id"]="lstm" #running id, model
    params["notes"]="auto with 16 joints, root differences" #running id
-   params["model"]="autoencoder"#kccnr,dccnr
+   params["model"]="lstm_auto"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['seq_length']= 50
    params['validate']= 1
