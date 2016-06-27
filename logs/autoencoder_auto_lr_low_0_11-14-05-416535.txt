@@ -1,0 +1,12 @@
+11-35-16-526750 | Run Id: auto_lr_low
+11-35-16-526863 | Deployment notes: auto with 16 joints, root differences
+11-35-16-526935 | Running mode: 0
+11-35-16-526999 | Running model: autoencoder
+11-35-16-527063 | Batch size: 1000
+11-35-16-527124 | Sequence size: 50
+11-35-16-527187 | Starting Time:11-35-16-526676
+11-35-16-527259 | size of training data:0.000000
+11-35-16-527329 | size of test data:0.000000
+11-35-16-527418 | Model build started
+11-35-22-505729 | Number of parameters: 2150448
+11-35-22-505890 | Training started
