@@ -12,7 +12,8 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    seq_length=params["seq_length"]
    # dataset_reader=read_full_midlayer #read_full_joints,read_full_midlayer
    # dataset_reader=read_full_joints #read_full_joints,read_full_midlayer
-   dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
+   # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_midlayer_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=read_full_midlayer_sequence #read_full_joints,read_full_midlayer
    # min_tr=0.000000
    # max_tr=8.190918
