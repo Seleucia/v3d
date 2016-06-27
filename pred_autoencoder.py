@@ -7,7 +7,7 @@ import plot.plot_utils as pu
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 params= config.get_params()
 params["model"]="autoencoder"
-params['mfile']= "autoencoder_autoencoder_3_0.017986_best.p"
+params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
 params["data_dir"]="/mnt/Data1/hc/img/"
 # params["data_dir"]="/home/coskun/PycharmProjects/data/rnn/180k/"
 #0, error 0.087360, 0.177598, 20.323595
