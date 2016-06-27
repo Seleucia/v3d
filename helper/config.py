@@ -62,7 +62,7 @@ def get_params():
        params["data_dir"]="/home/huseyin/data/joints16/"
        params["WITH_GPU"]=True
        params['n_hidden']= 10000
-       params['max_count']=10000000000
+       params['max_count']=10000
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
