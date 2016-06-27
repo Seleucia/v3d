@@ -219,6 +219,7 @@ def multi_thr_read_full_joints(base_file,max_count,p_count,sindex,istest,get_fli
             pool = ThreadPool(1000)
             results = pool.map(load_file, my_list)
             Y_D.extend(results)
+            F_L.extend(file_list)
             pool.close()
             print len(Y_D)
             # print file_list
