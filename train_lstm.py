@@ -22,9 +22,6 @@ def train_rnn(params):
    index_train_list,S_Train_list=du.get_batch_indexes(params,S_Train_list)
    index_test_list,S_Test_list=du.get_batch_indexes(params,S_Test_list)
    batch_size=params['batch_size']
-
-
-
    n_train_batches = len(index_train_list)
    n_train_batches /= batch_size
 
@@ -56,21 +53,25 @@ def train_rnn(params):
           if(minibatch_index==0):
               (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train)
           print "Training"
-          t1=time.time()
-          pool_t = ThreadPool(processes=1)
-          async_t = pool_t.apply_async(model.train, (x, y,is_train,H,C))
-          (loss,H,C) = async_t.get()  # get the return value from your function.
+          # t1=time.time()
+          pool = ThreadPool(processes=2)
+          async_t = pool.apply_async(model.train, (x, y,is_train,H,C))
+          async_b = pool.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train))
+          pool.close()
+          pool.join()
           x=[]
           y=[]
-          t2=time.time()
-          print (t2-t1)
-          print "loading"
-          t1=time.time()
-          pool_b = ThreadPool(processes=1)
-          async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train))
+          (loss,H,C) = async_t.get()  # get the return value from your function.
           (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
-          t2=time.time()
-          print (t2-t1)
+          # t2=time.time()
+          # print (t2-t1)
+          # print "loading"
+          # t1=time.time()
+          # pool_b = ThreadPool(processes=1)
+          # async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train))
+          # (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
+          # t2=time.time()
+          # print (t2-t1)
 
           if(minibatch_index==n_train_batches-1):
               loss,H,C= model.train(x, y,is_train,H,C)
