@@ -137,17 +137,13 @@ def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,ist
             my_list2=[actor+'/'+sq+'/'+p1 for p1 in file_list]
             pool = ThreadPool(1000)
             results = pool.map(load_file, my_list)
-            # F_L.extend(my_list)
             pool.close()
-
-            # pool2 = ThreadPool(1000)
-            # results2 = pool2.map(load_file_nodiv, my_list2)
-            F_L.extend(my_list2)
-            # pool2.close()
 
             for r in range(len(results)):
                 rs=results[r]
+                f=my_list2[r]
                 Y_d.append(rs)
+                F_l.append(f)
                 if len(Y_d)==p_count and p_count>0:
                         Y_D.append(Y_d)
                         F_L.append(F_l)
@@ -410,11 +406,13 @@ def load_batch(params,x_lst,y_lst):
     return numpy.asarray(X_d),numpy.asarray(Y_d)
 
 def multi_thr_load_batch(my_list):
-    pool2 = ThreadPool(len(my_list))
+    lst=my_list[0]
+    pool2 = ThreadPool(len(lst))
     results = pool2.map(load_file_nodiv, my_list)
-    # F_L.extend(my_list)
     pool2.close()
-    return numpy.asarray(results)
+    x=[]
+    x.append(results)
+    return numpy.asarray(x)
 
 def get_batch_indexes(params,S_list):
    batch_size=params['batch_size']
