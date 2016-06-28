@@ -50,6 +50,8 @@ def train_rnn(params):
       H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # initial hidden state
       sid=0
       is_train=1
+      x=[]
+      y=[]
       for minibatch_index in range(n_train_batches):
           if(minibatch_index==0):
               (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
@@ -59,6 +61,8 @@ def train_rnn(params):
           pool_b = ThreadPool(processes=1)
           async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
           (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
+          x=[]
+          y=[]
           print "Loading."
           t2=time()
           print t2
