@@ -14,8 +14,8 @@ def get_params():
    params['validate']= 1
    params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
 
-   params['batch_size']=1000
-   params['shufle_data']=1
+   params['batch_size']=1
+   params['shufle_data']=0
    params["corruption_level"]=0.5
 
    #system settings
@@ -62,7 +62,7 @@ def get_params():
        params["data_dir"]="/home/huseyin/data/joints16/"
        params["WITH_GPU"]=True
        params['n_hidden']= 10000
-       params['max_count']=10000
+       params['max_count']=100
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
