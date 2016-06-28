@@ -1,3 +1,6 @@
+import Queue
+import threading
+from multiprocessing.pool import ThreadPool
 import numpy as np
 import theano.tensor as T
 dtype = T.config.floatX
@@ -48,8 +51,30 @@ def train_rnn(params):
       sid=0
       is_train=1
       for minibatch_index in range(n_train_batches):
-          (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
-          loss,H,C= model.train(x, y,is_train,H,C)
+          if(minibatch_index==0):
+              (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
+          print "Training"
+          t1=time()
+          print t1
+          pool_b = ThreadPool(processes=1)
+          async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
+          (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
+          print "Loading."
+          t2=time()
+          print t2
+          pool_t = ThreadPool(processes=1)
+          async_t = pool_t.apply_async(model.train, (x, y,is_train,H,C))
+          (loss,H,C) = async_t.get()  # get the return value from your function.
+
+          # q = Queue.Queue()
+          # t_b = threading.Thread(target=du.prepare_training_set, args = (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
+          # t_b.daemon = True
+          # t_b.start()
+          # t_t = threading.Thread(target=model.train, args = (x, y,is_train,H,C))
+          # t_t.daemon = True
+          # t_t.start()
+          # (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
+          # loss,H,C= model.train(x, y,is_train,H,C)
           batch_loss += loss
       if params['shufle_data']==1:
          X_train,Y_train=du.shuffle_in_unison_inplace(X_train,Y_train)
