@@ -56,7 +56,7 @@ def train_rnn(params):
           if(minibatch_index==0):
               (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
           print "Training"
-          t1=time()
+          t1=time.time()
           print t1
           pool_b = ThreadPool(processes=1)
           async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
@@ -64,7 +64,7 @@ def train_rnn(params):
           x=[]
           y=[]
           print "Loading."
-          t2=time()
+          t2=time.time()
           print t2
           pool_t = ThreadPool(processes=1)
           async_t = pool_t.apply_async(model.train, (x, y,is_train,H,C))

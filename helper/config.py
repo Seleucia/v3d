@@ -61,7 +61,7 @@ def get_params():
        params["caffe"]="/usr/local/caffe/python"
        params["data_dir"]="/home/huseyin/data/joints16/"
        params["WITH_GPU"]=True
-       params['n_hidden']= 512
+       params['n_hidden']= 5
        params['max_count']=100
 
    if(platform.node()=="cmp-comp"):
