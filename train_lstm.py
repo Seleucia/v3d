@@ -57,18 +57,20 @@ def train_rnn(params):
               (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
           print "Training"
           t1=time.time()
-          print t1
           pool_t = ThreadPool(processes=1)
           async_t = pool_t.apply_async(model.train, (x, y,is_train,H,C))
           (loss,H,C) = async_t.get()  # get the return value from your function.
           x=[]
           y=[]
-          print "Loading."
           t2=time.time()
-          print t2
+          print (t1-t2)
+          print "loading"
+          t1=time.time()
           pool_b = ThreadPool(processes=1)
           async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
           (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
+          t2=time.time()
+          print (t1-t2)
 
           # q = Queue.Queue()
           # t_b = threading.Thread(target=du.prepare_training_set, args = (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
