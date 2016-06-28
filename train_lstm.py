@@ -46,18 +46,10 @@ def train_rnn(params):
       batch_loss = 0.
       H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # initial hidden state
       sid=0
+      is_train=1
       for minibatch_index in range(n_train_batches):
           (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
-          is_train=1
-          if(params["model"]=="blstmnp"):
-             x_b=np.asarray(map(np.flipud,x))
-             loss = model.train(x,x_b,y)
-          else:
-             start = time.time()
-             loss,H,C= model.train(x, y,is_train,H,C)
-             end = time.time()
-             print "Batch training time:"
-             print(end - start)
+          loss,H,C= model.train(x, y,is_train,H,C)
           batch_loss += loss
       if params['shufle_data']==1:
          X_train,Y_train=du.shuffle_in_unison_inplace(X_train,Y_train)
