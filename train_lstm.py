@@ -7,6 +7,8 @@ import model.model_provider as model_provider
 import helper.dt_utils as du
 import helper.utils as u
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+import time
+
 
 def train_rnn(params):
    rng = RandomStreams(seed=1234)
@@ -53,14 +55,22 @@ def train_rnn(params):
               sid=tmp_sid
               H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
           x_fl=[F_list_test[f] for f in id_lst] #60*20*1024
+          start = time.time()
           x=du.multi_thr_load_batch(my_list=x_fl)
+          end = time.time()
+          print "Batch loading time:"
+          print(end - start)
           y=Y_train[id_lst]#60*20*54
           is_train=1
           if(params["model"]=="blstmnp"):
              x_b=np.asarray(map(np.flipud,x))
              loss = model.train(x,x_b,y)
           else:
+             start = time.time()
              loss,H,C= model.train(x, y,is_train,H,C)
+             end = time.time()
+             print "Batch training time:"
+             print(end - start)
           batch_loss += loss
       if params['shufle_data']==1:
          X_train,Y_train=du.shuffle_in_unison_inplace(X_train,Y_train)

@@ -408,7 +408,7 @@ def load_batch(params,x_lst,y_lst):
 def multi_thr_load_batch(my_list):
     lst=my_list[0]
     pool2 = ThreadPool(len(lst))
-    results = pool2.map(load_file_nodiv, my_list)
+    results = pool2.map(load_file_nodiv, lst)
     pool2.close()
     x=[]
     x.append(results)
