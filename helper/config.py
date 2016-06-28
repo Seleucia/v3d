@@ -5,7 +5,7 @@ import platform
 def get_params():
    global params
    params={}
-   params['run_mode']=1 #0,full,1:resume, 2,X
+   params['run_mode']=0 #0,full,1:resume, 2,X
    params["rn_id"]="lstm" #running id, model
    params["notes"]="auto with 16 joints, root differences" #running id
    params["model"]="lstm_auto"#kccnr,dccnr
