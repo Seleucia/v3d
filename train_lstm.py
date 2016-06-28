@@ -63,14 +63,14 @@ def train_rnn(params):
           x=[]
           y=[]
           t2=time.time()
-          print (t1-t2)
+          print (t2-t1)
           print "loading"
           t1=time.time()
           pool_b = ThreadPool(processes=1)
           async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train))
           (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
           t2=time.time()
-          print (t1-t2)
+          print (t2-t1)
 
           if(minibatch_index==n_train_batches-1):
               loss,H,C= model.train(x, y,is_train,H,C)
@@ -100,14 +100,14 @@ def train_rnn(params):
              x=[]
              y=[]
              t2=time.time()
-             print (t1-t2)
+             print (t2-t1)
              print "loading"
              t1=time.time()
              pool_b = ThreadPool(processes=1)
              async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
              (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
              t2=time.time()
-             print (t1-t2)
+             print (t2-t1)
              if(minibatch_index==n_train_batches-1):
                  pred,H,C= model.predictions(x,is_train,H,C)
                  loss3d =u.get_loss(params,y,pred)
