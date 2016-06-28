@@ -50,7 +50,8 @@ def train_rnn(params):
           if(tmp_sid!=sid):
               sid=tmp_sid
               H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-          x=X_train[id_lst] #60*20*1024
+          x_fl=F_list_test[id_lst] #60*20*1024
+          x=du.multi_thr_load_batch(my_list=x_fl)
           y=Y_train[id_lst]#60*20*54
           is_train=1
           if(params["model"]=="blstmnp"):
@@ -78,7 +79,8 @@ def train_rnn(params):
              if(tmp_sid!=sid):
                   sid=tmp_sid
                   H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-             x=X_test[id_lst] #60*20*1024
+             x_fl=F_list_test[id_lst] #60*20*1024
+             x=du.multi_thr_load_batch(my_list=x_fl)
              y=Y_test[id_lst]#60*20*54
              is_train=0
              if(params["model"]=="blstmnp"):
