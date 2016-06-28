@@ -59,9 +59,9 @@ def train_rnn(params):
           async_b = pool.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train))
           pool.close()
           pool.join()
+          (loss,H,C) = async_t.get()  # get the return value from your function.
           x=[]
           y=[]
-          (loss,H,C) = async_t.get()  # get the return value from your function.
           (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
           # t2=time.time()
           # print (t2-t1)
