@@ -47,20 +47,7 @@ def train_rnn(params):
       H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # initial hidden state
       sid=0
       for minibatch_index in range(n_train_batches):
-          id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-          tmp_sid=S_Train_list[(minibatch_index + 1) * batch_size-1]
-          if(sid==0):
-              sid=tmp_sid
-          if(tmp_sid!=sid):
-              sid=tmp_sid
-              H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-          x_fl=[F_list_test[f] for f in id_lst] #60*20*1024
-          start = time.time()
-          x=du.multi_thr_load_batch(my_list=x_fl)
-          end = time.time()
-          print "Batch loading time:"
-          print(end - start)
-          y=Y_train[id_lst]#60*20*54
+          (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
           is_train=1
           if(params["model"]=="blstmnp"):
              x_b=np.asarray(map(np.flipud,x))

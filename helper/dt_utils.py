@@ -5,6 +5,9 @@ import numpy
 import h5py
 import collections
 from multiprocessing.dummy import Pool as ThreadPool
+import theano
+import theano.tensor as T
+dtype = T.config.floatX
 
 def load_pose(params,only_test=0,only_pose=1,sindex=0):
    data_dir=params["data_dir"]
@@ -414,6 +417,18 @@ def multi_thr_load_batch(my_list):
     x.append(results)
     return numpy.asarray(x)
 
+def prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train):
+    id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
+    tmp_sid=S_Train_list[(minibatch_index + 1) * batch_size-1]
+    if(sid==0):
+      sid=tmp_sid
+    if(tmp_sid!=sid):
+      sid=tmp_sid
+      H=C=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
+    x_fl=[F_list_test[f] for f in id_lst] #60*20*1024
+    x=multi_thr_load_batch(my_list=x_fl)
+    y=Y_train[id_lst]#60*20*54
+    return (sid,H,C,x,y)
 def get_batch_indexes(params,S_list):
    batch_size=params['batch_size']
    SID_List=[]
