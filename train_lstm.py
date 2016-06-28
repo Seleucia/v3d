@@ -54,7 +54,7 @@ def train_rnn(params):
       y=[]
       for minibatch_index in range(n_train_batches):
           if(minibatch_index==0):
-              (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
+              (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train)
           print "Training"
           t1=time.time()
           pool_t = ThreadPool(processes=1)
@@ -67,20 +67,14 @@ def train_rnn(params):
           print "loading"
           t1=time.time()
           pool_b = ThreadPool(processes=1)
-          async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
+          async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train))
           (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
           t2=time.time()
           print (t1-t2)
 
-          # q = Queue.Queue()
-          # t_b = threading.Thread(target=du.prepare_training_set, args = (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
-          # t_b.daemon = True
-          # t_b.start()
-          # t_t = threading.Thread(target=model.train, args = (x, y,is_train,H,C))
-          # t_t.daemon = True
-          # t_t.start()
-          # (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train)
-          # loss,H,C= model.train(x, y,is_train,H,C)
+          if(minibatch_index==n_train_batches-1):
+              loss,H,C= model.train(x, y,is_train,H,C)
+
           batch_loss += loss
       if params['shufle_data']==1:
          X_train,Y_train=du.shuffle_in_unison_inplace(X_train,Y_train)
@@ -94,24 +88,31 @@ def train_rnn(params):
           H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
           sid=0
           for minibatch_index in range(n_test_batches):
-             id_lst=index_test_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-             tmp_sid=S_Test_list[(minibatch_index + 1) * batch_size-1]
-             if(sid==0):
-                  sid=tmp_sid
-             if(tmp_sid!=sid):
-                  sid=tmp_sid
-                  H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-             x_fl=[F_list_test[f] for f in id_lst] #60*20*1024
-             x=du.multi_thr_load_batch(my_list=x_fl)
-             y=Y_test[id_lst]#60*20*54
-             is_train=0
-             if(params["model"]=="blstmnp"):
-                x_b=np.asarray(map(np.flipud,x))
-                pred = model.predictions(x,x_b)
-             else:
-                pred,H,C = model.predictions(x,is_train,H,C)
+             if(minibatch_index==0):
+               (sid,H,C,x,y)=du.prepare_training_set(index_test_list,minibatch_index,batch_size,S_Test_list,sid,H,C,F_list_test,params,Y_test)
+             print "Testing"
+             t1=time.time()
+             pool_t = ThreadPool(processes=1)
+             async_t = pool_t.apply_async(model.predictions, (x,is_train,H,C))
+             (pred,H,C) = async_t.get()  # get the return value from your function.
              loss3d =u.get_loss(params,y,pred)
              batch_loss3d.append(loss3d)
+             x=[]
+             y=[]
+             t2=time.time()
+             print (t1-t2)
+             print "loading"
+             t1=time.time()
+             pool_b = ThreadPool(processes=1)
+             async_b = pool_b.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train))
+             (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
+             t2=time.time()
+             print (t1-t2)
+             if(minibatch_index==n_train_batches-1):
+                 pred,H,C= model.predictions(x,is_train,H,C)
+                 loss3d =u.get_loss(params,y,pred)
+                 batch_loss3d.append(loss3d)
+
           batch_loss3d=np.nanmean(batch_loss3d)
           if(batch_loss3d<best_loss):
              best_loss=batch_loss3d
