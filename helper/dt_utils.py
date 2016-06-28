@@ -425,10 +425,11 @@ def prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_lis
     if(tmp_sid!=sid):
       sid=tmp_sid
       H=C=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-    x_fl=[F_list_test[f] for f in id_lst] #60*20*1024
+    x_fl=[F_list_test[f] for f in id_lst]
     x=multi_thr_load_batch(my_list=x_fl)
-    y=Y_train[id_lst]#60*20*54
+    y=Y_train[id_lst]
     return (sid,H,C,x,y)
+
 def get_batch_indexes(params,S_list):
    batch_size=params['batch_size']
    SID_List=[]
