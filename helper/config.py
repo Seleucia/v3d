@@ -51,11 +51,11 @@ def get_params():
        params['max_count']= 10000
 
    if(platform.node()=="milletari-workstation"):
-       params["data_dir"]="/mnt/Data1/hc/img/"
+       params["data_dir"]="/mnt/Data1/hc/joints16/"
        params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 10000
-       params['max_count']=1000
+       params['max_count']=100
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
