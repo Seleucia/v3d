@@ -81,7 +81,7 @@ def train_rnn(params):
               x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_test, Y_test)
           pool = ThreadPool(processes=2)
           async_t = pool.apply_async(model.predictions, (x,is_train))
-          async_b = pool.apply_async(du.prepare_cnn_batch, (minibatch_index, batch_size, F_list_train, Y_train))
+          async_b = pool.apply_async(du.prepare_cnn_batch, (minibatch_index, batch_size, F_list_test, Y_test))
           pool.close()
           pool.join()
           pred = async_t.get()  # get the return value from your function.
