@@ -38,8 +38,20 @@ class lstm_skelton:
        H = T.matrix(name="H",dtype=dtype) # initial hidden state
        C = T.matrix(name="C",dtype=dtype) # initial hidden state
 
-       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.0002, avg=0.0,dtype=theano.config.floatX)
-       X_train=noise+X
+       corruption_level=0.5
+
+       bin_noise=rng.binomial(size=(batch_size,sequence_length,self.n_in/3,1), n=1,p=1 - corruption_level,dtype=theano.config.floatX)
+       #bin_noise_3d= T.reshape(T.concatenate((bin_noise, bin_noise,bin_noise),axis=1),(batch_size,n_output/3,3))
+       bin_noise_3d= T.concatenate((bin_noise, bin_noise,bin_noise),axis=2)
+
+       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.003, avg=0.0,dtype=theano.config.floatX)
+       noise_bin=T.reshape(noise,(batch_size,sequence_length,self.n_in/3,3))*bin_noise_3d
+       X_train=T.reshape(noise_bin,(batch_size,sequence_length,self.n_in))+X
+
+       # X_tilde= T.switch(T.neq(is_train, 0), X_train, X)
+
+       # noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.0002, avg=0.0,dtype=theano.config.floatX)
+       # X_train=noise+X
 
        X_tilde= T.switch(T.neq(is_train, 0), X_train, X)
 
