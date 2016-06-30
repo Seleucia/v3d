@@ -526,9 +526,7 @@ def multi_thr_load_cnn_batch(my_list):
     pool = ThreadPool(len(lst))
     results = pool.map(load_file_patch, lst)
     pool.close()
-    x=[]
-    x.append(results)
-    return numpy.asarray(x)
+    return numpy.asarray(results)
 
 def load_file(fl):
     with open(fl, "rb") as f:
@@ -564,6 +562,7 @@ def load_file_patch(fl):
     arr=numpy.asarray(img)
     arr.flags.writeable = True
     arr/=normalizer
+    arr=numpy.squeeze(arr)
     return arr
 
 def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, H, C, F_list_test, params, Y_train, X_train):
