@@ -115,7 +115,7 @@ def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_fl
 def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
     #LSTM training with only joints
     joints_file=base_file
-    img_folder=base_file.replace('joints16','rgb_img_s')
+    img_folder=base_file.replace('auto','rgb_img_s')
     if istest==0:
         lst_act=['S1','S5','S6','S7','S8']
     else:
