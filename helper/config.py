@@ -13,7 +13,7 @@ def get_params():
    params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
 
    params['shufle_data']=1
-   params['batch_size']=10
+   params['batch_size']=250
    params['seq_length']= 1
    params["corruption_level"]=0.5
 
@@ -54,7 +54,7 @@ def get_params():
        params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=100000000000
+       params['max_count']=1000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
