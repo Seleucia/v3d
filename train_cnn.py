@@ -40,7 +40,7 @@ def train_rnn(params):
    best_loss=1000
    for epoch_counter in range(nb_epochs):
       batch_loss = 0.
-       is_train=1
+      is_train=1
       for minibatch_index in range(n_train_batches):
           # x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_train, Y_train)
           # loss= model.train(x, y,is_train)
