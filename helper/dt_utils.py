@@ -550,7 +550,7 @@ def load_file_nodiv(fl):
 
 def load_file_patch(fl):
     f_dir="/mnt/Data1/hc/rgb_img_m/"
-    patch_margin=()
+    patch_margin=(0,0)
     orijinal_size=(128,128)
     size=(112,112)
     x1=randint(patch_margin[0],orijinal_size[0]-(patch_margin[0]+size[0]))
