@@ -133,7 +133,6 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get
             # X_d=[]
             # Y_d=[]
             # F_l=[]
-            seq_id+=1
             tmp_folder=joints_file+actor+"/"+sq+"/"
             tmp_folder_img=img_folder+actor+"/"+sq.replace('.cdf','')+"/"
             id_list=os.listdir(tmp_folder)
@@ -143,6 +142,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get
                 min_count=len(id_list)
             if min_count==0:
                 continue
+            seq_id+=1
             id_list=id_list[0:min_count]
             joint_list=[tmp_folder + p1 for p1 in id_list]
             midlayer_list=[actor+'/'+sq.replace('.cdf','')+'/frame_'+(p1.replace('.txt','')).zfill(5)+'.png' for p1 in id_list]
