@@ -13,7 +13,7 @@ def get_params():
    params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
 
    params['shufle_data']=1
-   params['batch_size']=250
+   params['batch_size']=500
    params['seq_length']= 1
    params["corruption_level"]=0.5
 
