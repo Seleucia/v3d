@@ -49,7 +49,7 @@ class cnn(object):
 
 
         #Layer4: conv2+pool
-        filter_shape=(64,p3.output_shape[1],3,3)
+        filter_shape=(128,p3.output_shape[1],3,3)
         c4=ConvLayer(rng, p3.output,filter_shape,p3.output_shape,border_mode,subsample, activation=nn.relu)
         p4=PoolLayer(c4.output,pool_size=pool_size,input_shape=c4.output_shape)
 
