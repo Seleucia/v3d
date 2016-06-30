@@ -561,8 +561,9 @@ def load_file_patch(fl):
     patch_loc= (x1,y1,x2,y2)
     img = Image.open(f_dir+fl)
     img = img.crop(patch_loc)
-    img/=normalizer
-    return img
+    arr=numpy.asarray(img)
+    arr/=normalizer
+    return arr
 
 def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, H, C, F_list_test, params, Y_train, X_train):
     id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
