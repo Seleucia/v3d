@@ -587,7 +587,6 @@ def prepare_cnn_batch(minibatch_index, batch_size, F_list, Y):
     y=Y[id_lst]
     return (x,y)
 
-
 def get_batch_indexes(params,S_list):
    batch_size=params['batch_size']
    SID_List=[]
@@ -621,13 +620,6 @@ def get_batch_indexes(params,S_list):
 
 
    return (index_list,SID_List)
-
-def get_folder_name_list(params):
-   data_dir=params["data_dir"]
-   max_count=params["max_count"]
-   base_file=data_dir+"test/"
-
-   return glob.glob("/home/adam/*.txt")
 
 def write_predictions(params,pred,N_list):
    wd=params["wd"]
