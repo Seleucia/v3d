@@ -29,7 +29,7 @@ class cnn(object):
         pool_size=(2,2)
 
         #Layer1: conv2+pool+drop
-        filter_shape=(128,3,10,10)
+        filter_shape=(64,3,10,10)
         input_shape=(cnn_batch_size,3,112,112) #input_shape= (samples, channels, rows, cols)
         input= X.reshape(input_shape)
         c1=ConvLayer(rng, input,filter_shape, input_shape,border_mode,subsample, activation=nn.relu)
@@ -38,18 +38,18 @@ class cnn(object):
 
         #Layer2: conv2+pool
         subsample=(1,1)
-        filter_shape=(256,p1.output_shape[1],3,3)
+        filter_shape=(128,p1.output_shape[1],3,3)
         c2=ConvLayer(rng, dl1.output, filter_shape,p1.output_shape,border_mode,subsample, activation=nn.relu)
         p2=PoolLayer(c2.output,pool_size=pool_size,input_shape=c2.output_shape)
 
         #Layer3: conv2+pool
-        filter_shape=(256,p2.output_shape[1],3,3)
+        filter_shape=(128,p2.output_shape[1],3,3)
         c3=ConvLayer(rng, p2.output,filter_shape,p2.output_shape,border_mode,subsample, activation=nn.relu)
         p3=PoolLayer(c3.output,pool_size=pool_size,input_shape=c3.output_shape)
 
 
         #Layer4: conv2+pool
-        filter_shape=(128,p3.output_shape[1],3,3)
+        filter_shape=(64,p3.output_shape[1],3,3)
         c4=ConvLayer(rng, p3.output,filter_shape,p3.output_shape,border_mode,subsample, activation=nn.relu)
         p4=PoolLayer(c4.output,pool_size=pool_size,input_shape=c4.output_shape)
 

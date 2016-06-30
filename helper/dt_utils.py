@@ -150,9 +150,11 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get
             F_L.extend(midlayer_list)
             if len(Y_D)>=max_count:
                 Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                F_L=numpy.asarray(F_L)
                 return (X_D,Y_D,F_L,G_L,S_L)
 
     Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+    F_L=numpy.asarray(F_L)
     return (X_D,Y_D,F_L,G_L,S_L)
 
 def multi_thr_read_full_joints_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
@@ -578,11 +580,11 @@ def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_li
     y=Y_train[id_lst]
     return (sid,H,C,x,y)
 
-def prepare_cnn_batch(index_train_list, minibatch_index, batch_size, F_list, Y_train):
-    id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-    x_fl=[F_list[f] for f in id_lst]
+def prepare_cnn_batch(minibatch_index, batch_size, F_list, Y):
+    id_lst=range(minibatch_index * batch_size, (minibatch_index + 1) * batch_size,1)
+    x_fl=F_list[id_lst].tolist()
     x=multi_thr_load_cnn_batch(my_list=x_fl)
-    y=Y_train[id_lst]
+    y=Y[id_lst]
     return (x,y)
 
 
@@ -640,4 +642,4 @@ def write_predictions(params,pred,N_list):
 def shuffle_in_unison_inplace(a, b):
    assert len(a) == len(b)
    p = numpy.random.permutation(len(a))
-   return numpy.asarray(a)[p].tolist(),numpy.asarray(b)[p]
+   return a[p],b[p]
