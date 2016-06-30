@@ -135,7 +135,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get
             # F_l=[]
             seq_id+=1
             tmp_folder=joints_file+actor+"/"+sq+"/"
-            tmp_folder_img=img_folder+actor+"/"+sq+"/"
+            tmp_folder_img=img_folder+actor+"/"+sq.replace('cdf','mp4')+"/"
             id_list=os.listdir(tmp_folder)
             img_count=len(os.listdir(tmp_folder_img))
             min_count=img_count
