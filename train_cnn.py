@@ -85,7 +85,7 @@ def train_rnn(params):
 
               if(minibatch_index==n_train_batches-1):
                   pred= model.predictions(x,is_train)
-                  loss3d =np.mean(np.square(np.asarray(pred) - y))
+                  loss3d =np.mean(np.linalg.norm((np.asarray(pred) - y)))
                   batch_loss3d.append(loss3d)
 
           batch_loss3d=np.nanmean(batch_loss3d)

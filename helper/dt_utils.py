@@ -115,7 +115,7 @@ def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_fl
 def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
     #LSTM training with only joints
     joints_file=base_file
-    img_folder=base_file.replace('auto','rgb_img_s')
+    img_folder=base_file.replace('auto','h36m_rgb_img_crop')
     if istest==0:
         lst_act=['S1','S5','S6','S7','S8']
     else:
@@ -546,7 +546,7 @@ def load_file_nodiv(fl):
         return x_d
 
 def load_file_patch(fl):
-    f_dir="/mnt/Data1/hc/rgb_img_s/"
+    f_dir="/mnt/Data1/hc/h36m_rgb_img_crop/"
     patch_margin=(0,0)
     orijinal_size=(128,128)
     size=(112,112)
