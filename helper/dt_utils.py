@@ -549,6 +549,7 @@ def load_file_nodiv(fl):
         return x_d
 
 def load_file_patch(fl):
+    f_dir="/mnt/Data1/hc/rgb_img_m/"
     patch_margin=()
     orijinal_size=(128,128)
     size=(112,112)
@@ -558,9 +559,7 @@ def load_file_patch(fl):
     y2=y1+size[1]
     normalizer=255
     patch_loc= (x1,y1,x2,y2)
-
-    f_dir="/mnt/hc/img/"
-    img = Image.open(fl)
+    img = Image.open(f_dir+fl)
     img = img.crop(patch_loc)
     img/=normalizer
     return img
