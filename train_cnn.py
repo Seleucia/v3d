@@ -39,23 +39,13 @@ def train_rnn(params):
    best_loss=1000
    for epoch_counter in range(nb_epochs):
       batch_loss = 0.
-      # H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # initial hidden state
-      sid=0
       for minibatch_index in range(n_train_batches):
-          x_lst=F_list_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-          y_lst=G_list_train[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-          x,y=du.load_batch(params,x_lst,y_lst)
-          # x=X_train[id_lst] #60*20*1024
-          # y=Y_train[id_lst]#60*20*54
+          x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_train, Y_train)
           is_train=1
-          if(params["model"]=="blstmnp"):
-             x_b=np.asarray(map(np.flipud,x))
-             loss = model.train(x,x_b,y)
-          else:
-             loss= model.train(x, y,is_train)
+          loss= model.train(x, y,is_train)
           batch_loss += loss
       if params['shufle_data']==1:
-         F_list_train,G_list_train=du.shuffle_in_unison_inplace(F_list_train,G_list_train)
+         F_list_train,Y_train=du.shuffle_in_unison_inplace(F_list_train,Y_train)
       train_errors[epoch_counter] = batch_loss
       batch_loss/=n_train_batches
       s='TRAIN--> epoch %i | error %f'%(epoch_counter, batch_loss)
@@ -63,26 +53,10 @@ def train_rnn(params):
       if(epoch_counter%1==0):
           print("Model testing")
           batch_loss3d = []
-          H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-          sid=0
           for minibatch_index in range(n_test_batches):
-             x_lst=F_list_test[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-             y_lst=G_list_test[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-             x,y=du.load_batch(params,x_lst,y_lst)
-             # tmp_sid=S_Test_list[(minibatch_index + 1) * batch_size-1]
-             # if(sid==0):
-             #      sid=tmp_sid
-             # if(tmp_sid!=sid):
-             #      sid=tmp_sid
-             #      H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-             # x=X_test[id_lst] #60*20*1024
-             # y=Y_test[id_lst]#60*20*54
+             x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_test, Y_test)
              is_train=0
-             if(params["model"]=="blstmnp"):
-                x_b=np.asarray(map(np.flipud,x))
-                pred = model.predictions(x,x_b)
-             else:
-                pred= model.predictions(x,is_train)
+             pred= model.predictions(x,is_train)
              loss3d =u.get_loss(params,y,pred)
              batch_loss3d.append(loss3d)
           batch_loss3d=np.nanmean(batch_loss3d)

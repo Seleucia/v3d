@@ -15,7 +15,6 @@ class cnn(object):
 
         lr=params["lr"]
         batch_size=params["batch_size"]
-        sequence_length=params["seq_length"]
 
         # minibatch)
         X = T.matrix(name="input",dtype=dtype) # batch of sequence of vector
@@ -30,8 +29,8 @@ class cnn(object):
         pool_size=(2,2)
 
         #Layer1: conv2+pool+drop
-        filter_shape=(128,1,10,10)
-        input_shape=(cnn_batch_size,1,144,176) #input_shape= (samples, channels, rows, cols)
+        filter_shape=(128,3,10,10)
+        input_shape=(cnn_batch_size,3,112,112) #input_shape= (samples, channels, rows, cols)
         input= X.reshape(input_shape)
         c1=ConvLayer(rng, input,filter_shape, input_shape,border_mode,subsample, activation=nn.relu)
         p1=PoolLayer(c1.output,pool_size=pool_size,input_shape=c1.output_shape)
@@ -58,11 +57,11 @@ class cnn(object):
         n_in= reduce(lambda x, y: x*y, p4.output_shape[1:])
         x_flat = p4.output.flatten(2)
 
-        h1=HiddenLayer(rng,x_flat,n_in,1024,activation=nn.relu)
+        h1=HiddenLayer(rng,x_flat,n_in,2048,activation=nn.relu)
 
 
         #Layer6: hidden
-        lreg=LogisticRegression(rng,h1.output,1024,params['n_output'])
+        lreg=LogisticRegression(rng,h1.output,2048,params['n_output'])
         self.output = lreg.y_pred
 
         self.params =c1.params+c2.params+c3.params+c4.params+h1.params+lreg.params
