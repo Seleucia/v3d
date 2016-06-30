@@ -44,12 +44,9 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    istest=False
    get_flist=False
    X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,istest,get_flist)
-   print "Training set loaded and shuffle started"
-   if params['shufle_data']==1:
-      X_train,Y_train=shuffle_in_unison_inplace(X_train,Y_train)
+   print "Training set loaded"
 
    #print("min: %f, max: %f "%(numpy.min(X_train),numpy.max(X_train)))
-
    # Y_train=Y_train/norm
    # X_train=(X_train -min_tr) / (max_tr -min_tr)
    print "Dataset Loading completed..."

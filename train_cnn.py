@@ -11,7 +11,7 @@ from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 def train_rnn(params):
    rng = RandomStreams(seed=1234)
    (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)=du.load_pose(params)
-   F_list_train,G_list_train=du.shuffle_in_unison_inplace(F_list_train,G_list_train)
+   F_list_train,Y_train=du.shuffle_in_unison_inplace(F_list_train,Y_train)
    params["len_train"]=len(F_list_train)
    params["len_test"]=len(F_list_test)
    u.start_log(params)
