@@ -497,7 +497,7 @@ def load_file_nodiv(fl):
         f.close()
         return x_d
 
-def prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train):
+def prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train,X_train):
     id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
     tmp_sid=S_Train_list[(minibatch_index + 1) * batch_size-1]
     if(sid==0):
@@ -505,8 +505,11 @@ def prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_lis
     if(tmp_sid!=sid):
       sid=tmp_sid
       H=C=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-    x_fl=[F_list_test[f] for f in id_lst]
-    x=multi_thr_load_batch(my_list=x_fl)
+    if params['n_hidden']=='lstm_skelton':
+        x=X_train[id_lst]
+    else:
+        x_fl=[F_list_test[f] for f in id_lst]
+        x=multi_thr_load_batch(my_list=x_fl)
     y=Y_train[id_lst]
     return (sid,H,C,x,y)
 

@@ -51,10 +51,10 @@ def train_rnn(params):
       y=[]
       for minibatch_index in range(n_train_batches):
           if(minibatch_index==0):
-              (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train)
+              (sid,H,C,x,y)=du.prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train,X_train)
           pool = ThreadPool(processes=2)
           async_t = pool.apply_async(model.train, (x, y,is_train,H,C))
-          async_b = pool.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train))
+          async_b = pool.apply_async(du.prepare_training_set, (index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_train,params,Y_train,X_train))
           pool.close()
           pool.join()
           (loss,H,C) = async_t.get()  # get the return value from your function.
@@ -79,10 +79,10 @@ def train_rnn(params):
           sid=0
           for minibatch_index in range(n_test_batches):
              if(minibatch_index==0):
-               (sid,H,C,x,y)=du.prepare_training_set(index_test_list,minibatch_index,batch_size,S_Test_list,sid,H,C,F_list_test,params,Y_test)
+               (sid,H,C,x,y)=du.prepare_training_set(index_test_list,minibatch_index,batch_size,S_Test_list,sid,H,C,F_list_test,params,Y_test,X_test)
              pool = ThreadPool(processes=2)
              async_t = pool.apply_async(model.predictions, (x,is_train,H,C))
-             async_b = pool.apply_async(du.prepare_training_set, (index_test_list,minibatch_index,batch_size,S_Test_list,sid,H,C,F_list_test,params,Y_test))
+             async_b = pool.apply_async(du.prepare_training_set, (index_test_list,minibatch_index,batch_size,S_Test_list,sid,H,C,F_list_test,params,Y_test,X_test))
              pool.close()
              pool.join()
              (pred,H,C) = async_t.get()  # get the return value from your function.
