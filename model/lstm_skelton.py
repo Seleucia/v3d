@@ -42,7 +42,7 @@ class lstm_skelton:
 
        bin_noise=rng.binomial(size=(batch_size,sequence_length,self.n_in/3,1), n=1,p=1 - corruption_level,dtype=theano.config.floatX)
        #bin_noise_3d= T.reshape(T.concatenate((bin_noise, bin_noise,bin_noise),axis=1),(batch_size,n_output/3,3))
-       bin_noise_3d= T.concatenate((bin_noise, bin_noise,bin_noise),axis=2)
+       bin_noise_3d= T.concatenate((bin_noise, bin_noise,bin_noise),axis=3)
 
        noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.003, avg=0.0,dtype=theano.config.floatX)
        noise_bin=T.reshape(noise,(batch_size,sequence_length,self.n_in/3,3))*bin_noise_3d
