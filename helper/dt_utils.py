@@ -155,16 +155,16 @@ def multi_thr_read_full_joints_sequence(base_file,max_count,p_count,sindex,istes
             residual=len(Y_d)%p_count
             residual=p_count-residual
             y=residual*[Y_d[-1]]
-            f=residual*[F_l[-1]]
+            # f=residual*[F_l[-1]]
             Y_d.extend(y)
-            F_l.extend(f)
+            # F_l.extend(f)
             if len(Y_d)==p_count and p_count>0:
                 S_L.append(seq_id)
                 Y_D.append(Y_d)
-                F_L.append(F_l)
+                # F_L.append(F_l)
                 S_L.append(seq_id)
                 Y_d=[]
-                F_l=[]
+                # F_l=[]
                 if len(Y_D)>=max_count:
                     X_D=Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
                     return (X_D,Y_D,F_L,G_L,S_L)
