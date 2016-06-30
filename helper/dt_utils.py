@@ -145,7 +145,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get
             joint_list=[tmp_folder + p1 for p1 in id_list]
             midlayer_list=[actor+'/'+sq.replace('cdf','mp4')+'/'+p1.replace('.txt','.png') for p1 in id_list]
             pool = ThreadPool(1000)
-            results = pool.map(load_file, joint_list)
+            results = pool.map(load_file_nodiv, joint_list)
             pool.close()
             Y_D.extend(results)
             F_L.extend(midlayer_list)
