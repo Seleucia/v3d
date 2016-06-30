@@ -126,7 +126,7 @@ def get_err_fn(self,cost_function,Y):
        cxe = T.mean(T.nnet.binary_crossentropy(self.output, Y))
        nll = -T.mean(Y * T.log(self.output)+ (1.- Y) * T.log(1. - self.output))
 
-       tmp = (self.output - Y)*2
+       tmp = (self.output - Y)
        tmp = theano.tensor.switch(theano.tensor.isnan(tmp),0,tmp)
        mse = T.sum((tmp) ** 2)
 
@@ -211,7 +211,7 @@ def get_loss(params,gt,est):
     loss=[]
     if(len(gt.shape)==2):
         for b in range(batch_size):
-            diff_vec=np.abs(gt[b].reshape(params['n_output']/3,3) - est[b].reshape(params['n_output']/3,3)) #13*3
+            diff_vec=np.abs(gt[b].reshape(9['n_output']/3,3) - est[b].reshape(params['n_output']/3,3)) #13*3
             diff_vec=diff_vec[~np.any(np.isnan(diff_vec), axis=1)]
             sq_m=np.sqrt(np.sum(diff_vec**2,axis=1))
             loss.append(np.mean(sq_m))

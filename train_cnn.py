@@ -56,8 +56,8 @@ def train_rnn(params):
           for minibatch_index in range(n_test_batches):
              x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_test, Y_test)
              is_train=0
-             pred= model.predictions(x,is_train)
-             loss3d =u.get_loss(params,y,pred)
+             pred= np.asarray(model.predictions(x,is_train))
+             loss3d =np.mean(np.square(pred - y))
              batch_loss3d.append(loss3d)
           batch_loss3d=np.nanmean(batch_loss3d)
           if(batch_loss3d<best_loss):

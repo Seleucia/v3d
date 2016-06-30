@@ -8,7 +8,7 @@ def get_params():
    params['run_mode']=0 #0,full,1:resume, 2,X
    params["rn_id"]="del" #running id, model
    params["notes"]="cnn trainign with autoencoder values" #running id
-   params["model"]="lstm_skelton"#kccnr,dccnr
+   params["model"]="cnn"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
 
@@ -32,12 +32,12 @@ def get_params():
 
    # learning parameters
    params['momentum']=0.9    # the params for momentum
-   params['lr']=0.000001
+   params['lr']=0.0001
    params['learning_rate_decay']= 0.998
    params['squared_filter_length_limit']=15.0
    params['n_epochs']=25600
    params['n_hidden']= 1000
-   params['n_output']= 48
+   params['n_output']= 2048
 
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
