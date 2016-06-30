@@ -137,18 +137,14 @@ def multi_thr_read_full_joints_sequence(base_file,max_count,p_count,sindex,istes
             tmp_folder=base_file+actor+"/"+sq+"/"
             id_list=os.listdir(tmp_folder)
             joint_list=[tmp_folder + p1 for p1 in id_list]
-            midlayer_list=[actor+'/'+sq+'/'+p1 for p1 in id_list]
             pool = ThreadPool(1000)
             results = pool.map(load_file, joint_list)
             pool.close()
             for r in range(len(results)):
                 rs=results[r]
-                f=midlayer_list[r]
                 Y_d.append(rs)
-                F_l.append(f)
                 if len(Y_d)==p_count and p_count>0:
                         Y_D.append(Y_d)
-                        F_L.append(F_l)
                         S_L.append(seq_id)
                         Y_d=[]
                         F_l=[]
