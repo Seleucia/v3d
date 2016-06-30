@@ -501,7 +501,7 @@ def prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_lis
     if(tmp_sid!=sid):
       sid=tmp_sid
       H=C=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-    if params['n_hidden']=='lstm_skelton':
+    if params['model']=='lstm_skelton':
         x=X_train[id_lst]
     else:
         x_fl=[F_list_test[f] for f in id_lst]

@@ -7,8 +7,8 @@ def get_params():
    params={}
    params['run_mode']=0 #0,full,1:resume, 2,X
    params["rn_id"]="lstm" #running id, model
-   params["notes"]="auto with 16 joints, root differences" #running id
-   params["model"]="lstm_auto"#kccnr,dccnr
+   params["notes"]="lstm skelton training with 16 joints, root differences" #running id
+   params["model"]="lstm_skelton"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['seq_length']= 50
    params['validate']= 1
@@ -62,7 +62,7 @@ def get_params():
        params["data_dir"]="/home/huseyin/data/joints16/"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=10
+       params['max_count']=10000000000000000
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
