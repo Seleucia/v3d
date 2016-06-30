@@ -40,9 +40,9 @@ def train_rnn(params):
    best_loss=1000
    for epoch_counter in range(nb_epochs):
       batch_loss = 0.
+       is_train=1
       for minibatch_index in range(n_train_batches):
           # x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_train, Y_train)
-          # is_train=1
           # loss= model.train(x, y,is_train)
           # batch_loss += loss
 
@@ -62,7 +62,6 @@ def train_rnn(params):
               loss= model.train(x, y,is_train)
 
           batch_loss += loss
-
       if params['shufle_data']==1:
          F_list_train,Y_train=du.shuffle_in_unison_inplace(F_list_train,Y_train)
       train_errors[epoch_counter] = batch_loss
@@ -72,12 +71,31 @@ def train_rnn(params):
       if(epoch_counter%1==0):
           print("Model testing")
           batch_loss3d = []
+          is_train=0
           for minibatch_index in range(n_test_batches):
-             x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_test, Y_test)
-             is_train=0
+             # x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_test, Y_test)
              pred= np.asarray(model.predictions(x,is_train))
              loss3d =np.mean(np.square(pred - y))
              batch_loss3d.append(loss3d)
+          if(minibatch_index==0):
+              x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_test, Y_test)
+          pool = ThreadPool(processes=2)
+          async_t = pool.apply_async(model.predictions, (x,is_train))
+          async_b = pool.apply_async(du.prepare_cnn_batch, (minibatch_index, batch_size, F_list_train, Y_train))
+          pool.close()
+          pool.join()
+          pred = async_t.get()  # get the return value from your function.
+          x=[]
+          y=[]
+          (x,y) = async_b.get()  # get the return value from your function.
+          loss3d =np.mean(np.square(pred - y))
+          batch_loss3d.append(loss3d)
+
+          if(minibatch_index==n_train_batches-1):
+              pred= model.predictions(x,is_train)
+              loss3d =np.mean(np.square(pred - y))
+              batch_loss3d.append(loss3d)
+
           batch_loss3d=np.nanmean(batch_loss3d)
           if(batch_loss3d<best_loss):
              best_loss=batch_loss3d
