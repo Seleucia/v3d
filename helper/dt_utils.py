@@ -544,8 +544,8 @@ def load_file_nodiv(fl):
     with open(fl, "rb") as f:
         rd=f.read()
         data=rd.strip().split('\n')
-        x_d= [float(val) for val in data]
-        x_d=numpy.asarray(x_d)
+        x_d= [numpy.float32(val) for val in data]
+        x_d=numpy.asarray(x_d,dtype=numpy.float32)
         f.close()
         return x_d
 
