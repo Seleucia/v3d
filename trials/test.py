@@ -1,23 +1,52 @@
-import numpy as np
-import theano
+from multiprocessing.pool import ThreadPool
+from multiprocessing.dummy import Pool as ThreadPool2
+import time
+import random
+import sys
 
-mu, sigma = 0, 0.03 # mean and standard deviation
-s = np.random.normal(mu, sigma, 1000)
 
 
-from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
-rng = RandomStreams(seed=1234)
-import theano.tensor as T
+def mp(a):
+    time.sleep(0.1*random.random())
+    return a
 
-noise= rng.normal(size=(1,1), std=0.0003, avg=0.0,dtype=theano.config.floatX)
-# noise2=np.random.normal(loc=0.0, scale=0.001, size=(1,1))
-x, y = T.dscalars('x', 'y')
-z = x + y+noise
 
-f = theano.function([x, y], z)
 
-print(f(3,4))
-print(f(3,4))
-print(f(3,4))
 
-print 'done'
+def mul(a, b):
+    time.sleep(2)
+    pool = ThreadPool(1)
+    my_list=range(a,b)
+    results = pool.map(mp, my_list)
+    pool.close()
+    # print 'multilacation'
+    print results
+    return results
+
+def plus(a, b):
+    time.sleep(5)
+    # print 'plus'
+    return a + b
+
+
+print 'Multi thread'
+t1=time.time()
+pool = ThreadPool(processes=5)
+async_t = pool.apply_async(mul, (1,100))
+async_b = pool.apply_async(plus, (1,100))
+pool.close()
+pool.join()
+pl = async_b.get()
+ml = async_t.get()  # get the return value from your function.
+t2=time.time()
+print (t2-t1)
+# print ml
+# print pl
+
+print 'Single tread'
+t1=time.time()
+pl = mul(1,100)
+ml = plus(1,100)
+t2=time.time()
+print (t2-t1)
+

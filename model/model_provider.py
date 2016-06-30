@@ -12,6 +12,7 @@ from model.cnn2 import cnn2
 from model.cnn3 import cnn3
 from model.autoencoder import autoencoder
 from model.lstm_auto import lstm_auto
+from model.lstm_skelton import lstm_skelton
 from model.real_rcnn import real_rcnn
 from helper.optimizer import ClipRMSprop, RMSprop,Adam
 import helper.utils as u
@@ -48,6 +49,8 @@ def get_model(params,rng):
         model = autoencoder(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="lstm_auto"):
         model = lstm_auto(rng=rng,params=params,optimizer=Adam)
+    elif(params["model"]=="lstm_skelton"):
+        model = lstm_skelton(rng=rng,params=params,optimizer=Adam)
     else:
         model=None
     return model

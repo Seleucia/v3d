@@ -16,7 +16,8 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=read_full_midlayer #read_full_joints,read_full_midlayer
    # dataset_reader=read_full_joints #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
-   dataset_reader=multi_thr_read_full_midlayer_sequence #read_full_joints,read_full_midlayer
+   # dataset_reader=multi_thr_read_full_midlayer_sequence #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=read_full_midlayer_sequence #read_full_joints,read_full_midlayer
    # min_tr=0.000000
    # max_tr=8.190918
@@ -112,6 +113,70 @@ def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_fl
 
     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
 
+def multi_thr_read_full_joints_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
+    #LSTM training with only joints
+    base_file=base_file.replace('img','joints16')
+    if istest==0:
+        lst_act=['S1','S5','S6','S7','S8']
+    else:
+        lst_act=['S9','S11']
+    X_D=[]
+    Y_D=[]
+    F_L=[]
+    G_L=[]
+    S_L=[]
+    seq_id=0
+    for actor in lst_act:
+        tmp_folder=base_file+actor+"/"
+        lst_sq=os.listdir(tmp_folder)
+        for sq in lst_sq:
+            X_d=[]
+            Y_d=[]
+            F_l=[]
+            seq_id+=1
+            tmp_folder=base_file+actor+"/"+sq+"/"
+            id_list=os.listdir(tmp_folder)
+            joint_list=[tmp_folder + p1 for p1 in id_list]
+            midlayer_list=[actor+'/'+sq+'/'+p1 for p1 in id_list]
+            pool = ThreadPool(1000)
+            results = pool.map(load_file, joint_list)
+            pool.close()
+            for r in range(len(results)):
+                rs=results[r]
+                f=midlayer_list[r]
+                Y_d.append(rs)
+                F_l.append(f)
+                if len(Y_d)==p_count and p_count>0:
+                        Y_D.append(Y_d)
+                        F_L.append(F_l)
+                        S_L.append(seq_id)
+                        Y_d=[]
+                        F_l=[]
+                if len(Y_D)>=max_count:
+                    X_D=Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                    return (X_D,Y_D,F_L,G_L,S_L)
+        if(len(Y_d)>0):
+            residual=Y_d%p_count
+            residual=p_count-residual
+            y=residual*[Y_d[-1]]
+            f=residual*[F_l[-1]]
+            Y_d.extend(y)
+            F_l.extend(f)
+            if len(Y_d)==p_count and p_count>0:
+                S_L.append(seq_id)
+                Y_D.append(Y_d)
+                F_L.append(F_l)
+                S_L.append(seq_id)
+                Y_d=[]
+                F_l=[]
+                if len(Y_D)>=max_count:
+                    X_D=Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                    return (X_D,Y_D,F_L,G_L,S_L)
+
+
+    X_D=Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+    return (X_D,Y_D,F_L,G_L,S_L)
+
 def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
     base_file=base_file.replace('img','joints16')
     f_dir="/mnt/hc/auto/"
@@ -134,17 +199,16 @@ def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,ist
             F_l=[]
             seq_id+=1
             tmp_folder=base_file+actor+"/"+sq+"/"
-            file_list=os.listdir(tmp_folder)
-            file_list=os.listdir(tmp_folder)
-            my_list=[tmp_folder + p1 for p1 in file_list]
-            my_list2=[actor+'/'+sq+'/'+p1 for p1 in file_list]
+            id_list=os.listdir(tmp_folder)
+            joint_list=[tmp_folder + p1 for p1 in id_list]
+            midlayer_list=[actor+'/'+sq+'/'+p1 for p1 in id_list]
             pool = ThreadPool(1000)
-            results = pool.map(load_file, my_list)
+            results = pool.map(load_file, joint_list)
             pool.close()
 
             for r in range(len(results)):
                 rs=results[r]
-                f=my_list2[r]
+                f=midlayer_list[r]
                 Y_d.append(rs)
                 F_l.append(f)
                 if len(Y_d)==p_count and p_count>0:
@@ -155,6 +219,23 @@ def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,ist
                         F_l=[]
                 if len(Y_D)>=max_count:
                     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
+        if(len(Y_d)>0):
+            residual=Y_d%p_count
+            residual=p_count-residual
+            y=residual*[Y_d[-1]]
+            f=residual*[F_l[-1]]
+            Y_d.extend(y)
+            F_l.extend(f)
+            if len(Y_d)==p_count and p_count>0:
+                S_L.append(seq_id)
+                Y_D.append(Y_d)
+                F_L.append(F_l)
+                S_L.append(seq_id)
+                Y_d=[]
+                F_l=[]
+                if len(Y_D)>=max_count:
+                    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
+
 
     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
 
@@ -289,25 +370,6 @@ def multi_thr_read_full_joints(base_file,max_count,p_count,sindex,istest,get_fli
     X_D=Y_D
     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
 
-def load_file(fl):
-    with open(fl, "rb") as f:
-        data=f.read().strip().split(' ')
-        y_d= [float(val) for val in data]
-        y_d=numpy.asarray(y_d)/1000
-        f.close()
-        return y_d
-
-def load_file_nodiv(fl):
-    f_dir="/mnt/hc/auto/"
-    with open(f_dir+fl, "rb") as f:
-        rd=f.read()
-        data=rd.strip().split('\n')
-        x_d= [float(val) for val in data]
-        x_d=numpy.asarray(x_d)
-        f.close()
-        return x_d
-    
-
 def read_full_poseV5(base_file,max_count,p_count,sindex,istest,get_flist=False):
     base_file
     if istest==0:
@@ -410,12 +472,30 @@ def load_batch(params,x_lst,y_lst):
 
 def multi_thr_load_batch(my_list):
     lst=my_list[0]
-    pool2 = ThreadPool(len(lst))
-    results = pool2.map(load_file_nodiv, lst)
-    pool2.close()
+    pool = ThreadPool(len(lst))
+    results = pool.map(load_file_nodiv, lst)
+    pool.close()
     x=[]
     x.append(results)
     return numpy.asarray(x)
+
+def load_file(fl):
+    with open(fl, "rb") as f:
+        data=f.read().strip().split(' ')
+        y_d= [float(val) for val in data]
+        y_d=numpy.asarray(y_d)/1000
+        f.close()
+        return y_d
+
+def load_file_nodiv(fl):
+    f_dir="/mnt/hc/auto/"
+    with open(f_dir+fl, "rb") as f:
+        rd=f.read()
+        data=rd.strip().split('\n')
+        x_d= [float(val) for val in data]
+        x_d=numpy.asarray(x_d)
+        f.close()
+        return x_d
 
 def prepare_training_set(index_train_list,minibatch_index,batch_size,S_Train_list,sid,H,C,F_list_test,params,Y_train):
     id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
@@ -463,7 +543,6 @@ def get_batch_indexes(params,S_list):
 
 
    return (index_list,SID_List)
-
 
 def get_folder_name_list(params):
    data_dir=params["data_dir"]
