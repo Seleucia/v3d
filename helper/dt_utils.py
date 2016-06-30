@@ -537,8 +537,7 @@ def load_file(fl):
         return y_d
 
 def load_file_nodiv(fl):
-    f_dir="/mnt/hc/auto/"
-    with open(f_dir+fl, "rb") as f:
+    with open(fl, "rb") as f:
         rd=f.read()
         data=rd.strip().split('\n')
         x_d= [float(val) for val in data]
