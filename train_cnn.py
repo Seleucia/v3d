@@ -1,4 +1,5 @@
 import numpy as np
+from multiprocessing.pool import ThreadPool
 import theano.tensor as T
 dtype = T.config.floatX
 import argparse
@@ -40,10 +41,28 @@ def train_rnn(params):
    for epoch_counter in range(nb_epochs):
       batch_loss = 0.
       for minibatch_index in range(n_train_batches):
-          x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_train, Y_train)
-          is_train=1
-          loss= model.train(x, y,is_train)
+          # x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_train, Y_train)
+          # is_train=1
+          # loss= model.train(x, y,is_train)
+          # batch_loss += loss
+
+          if(minibatch_index==0):
+              x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_train, Y_train)
+          pool = ThreadPool(processes=2)
+          async_t = pool.apply_async(model.train, (x, y,is_train))
+          async_b = pool.apply_async(du.prepare_cnn_batch, (minibatch_index, batch_size, F_list_train, Y_train))
+          pool.close()
+          pool.join()
+          loss = async_t.get()  # get the return value from your function.
+          x=[]
+          y=[]
+          (x,y) = async_b.get()  # get the return value from your function.
+
+          if(minibatch_index==n_train_batches-1):
+              loss= model.train(x, y,is_train)
+
           batch_loss += loss
+
       if params['shufle_data']==1:
          F_list_train,Y_train=du.shuffle_in_unison_inplace(F_list_train,Y_train)
       train_errors[epoch_counter] = batch_loss
