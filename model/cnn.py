@@ -17,7 +17,7 @@ class cnn(object):
         batch_size=params["batch_size"]
 
         # minibatch)
-        X = T.matrix(name="input",dtype=dtype) # batch of sequence of vector
+        X = T.tensor4(name="input",dtype=dtype) # batch of sequence of vector
         Y = T.matrix(name="output",dtype=dtype) # batch of sequence of vector
         is_train = T.iscalar('is_train') # pseudo boolean for switching between training and prediction
 
@@ -31,7 +31,7 @@ class cnn(object):
         #Layer1: conv2+pool+drop
         filter_shape=(64,3,10,10)
         input_shape=(cnn_batch_size,3,112,112) #input_shape= (samples, channels, rows, cols)
-        input= X.reshape(input_shape)
+        input= X.dimshuffle(0,3,1,2)
         c1=ConvLayer(rng, input,filter_shape, input_shape,border_mode,subsample, activation=nn.relu)
         p1=PoolLayer(c1.output,pool_size=pool_size,input_shape=c1.output_shape)
         dl1=DropoutLayer(rng,input=p1.output,prob=p_1,is_train=is_train)
