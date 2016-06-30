@@ -562,6 +562,7 @@ def load_file_patch(fl):
     img = Image.open(f_dir+fl)
     img = img.crop(patch_loc)
     arr=numpy.asarray(img)
+    arr.flags.writeable = True
     arr/=normalizer
     return arr
 
