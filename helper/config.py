@@ -6,7 +6,7 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2,X
-   params["rn_id"]="0" #running id, model
+   params["rn_id"]="1" #running id, model
    params["notes"]="cnn trainign with autoencoder values" #running id
    params["model"]="cnn"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
@@ -54,7 +54,7 @@ def get_params():
        params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=1000
+       params['max_count']=1000000000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
