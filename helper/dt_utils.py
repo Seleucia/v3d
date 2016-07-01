@@ -584,6 +584,23 @@ def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_li
     y=Y_train[id_lst]
     return (sid,H,C,x,y)
 
+
+def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list_test, params, Y_train, X_train):
+    id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
+    tmp_sid=S_Train_list[(minibatch_index + 1) * batch_size-1]
+    if(sid==0):
+      sid=tmp_sid
+    if(tmp_sid!=sid):
+      sid=tmp_sid
+      h_t_1=c_t_1=h_t_2=c_t_2=h_t_3=c_t_3=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # initial hidden state
+    if params['model']=='lstm_skelton':
+        x=X_train[id_lst]
+    else:
+        x_fl=[F_list_test[f] for f in id_lst]
+        x=multi_thr_load_batch(my_list=x_fl)
+    y=Y_train[id_lst]
+    return (sid,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3,x,y)
+
 def prepare_cnn_batch(minibatch_index, batch_size, F_list, Y):
     id_lst=range(minibatch_index * batch_size, (minibatch_index + 1) * batch_size,1)
     x_fl=F_list[id_lst].tolist()
