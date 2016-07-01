@@ -5,12 +5,12 @@ import platform
 def get_params():
    global params
    params={}
-   params['run_mode']=0 #0,full,1:resume, 2 = combine models
+   params['run_mode']=1 #0,full,1:resume, 2 = combine models
    params["rn_id"]="lstm3" #running id, model
    params["notes"]="lstm 3lyaer trainign with autoencoder values" #running id
    params["model"]="lstm3"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
-   params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
+   params['mfile']= "cnn_1_1_24.6707_best.p,lstm_auto_lstm_15_0.00984423_best.p"
 
    params['shufle_data']=0
    params['batch_size']=1
@@ -46,7 +46,7 @@ def get_params():
        params['n_patch']= 1
        params['n_repeat']= 1
        params["data_dir"]="/home/coskun/PycharmProjects/data/auto/"
-       params['n_hidden']= 128
+       params['n_hidden']= 512
        params['max_count']= 10000
 
    if(platform.node()=="milletari-workstation"):
@@ -54,7 +54,7 @@ def get_params():
        params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=1000000000
+       params['max_count']=100
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"

@@ -453,9 +453,21 @@ def write_params(mparams,params,ext):
 
 def read_params(params):
     wd=params["wd"]
-    with open(wd+"/cp/"+params['mfile']) as f:
-        mparams=pickle.load(f)
+    if(',' in params['mfile']>0):
+        lst=params['mfile'].split(',')
+        mparams=[]
+        with open(wd+"/cp/"+lst[0]) as f:
+            mparams.extend(pickle.load(f))
+
+        with open(wd+"/cp/"+lst[1]) as f:
+            mparams.extend(pickle.load(f))
         return mparams
+
+    else:
+        with open(wd+"/cp/"+params['mfile']) as f:
+            mparams=pickle.load(f)
+            return mparams
+
 
 def set_params(model,mparams):
     counter=0

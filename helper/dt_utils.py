@@ -562,6 +562,7 @@ def load_file_patch(fl):
     arr.flags.writeable = True
     arr/=normalizer
     arr=numpy.squeeze(arr)
+    arr=arr.reshape(3*112*112)
     return arr
 
 def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, H, C, F_list_test, params, Y_train, X_train):

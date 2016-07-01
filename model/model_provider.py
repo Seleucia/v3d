@@ -8,6 +8,7 @@ from model.cnn2 import cnn2
 from model.cnn3 import cnn3
 from model.autoencoder import autoencoder
 from model.lstm_auto import lstm_auto
+from model.cnn_lstm_auto import cnn_lstm_auto
 from model.lstm_auto_3layer import lstm_auto_3layer
 from model.lstm_skelton import lstm_skelton
 from model.real_rcnn import real_rcnn
@@ -19,18 +20,6 @@ def get_model(params,rng):
         model = lstm(rng,params, optimizer=Adam)
     elif(params["model"]=="cnn_lstm_s"):
         model = cnn_lstm_s(rng,params, optimizer=Adam)
-    elif(params["model"]=="erd"):
-        model = erd(1024, params['n_hidden'], params['n_output'],batch_size=params['batch_size'],lr=params['lr'], optimizer=Adam)
-    elif(params["model"]=="erd_pre"):
-        model = erd_pre(1024, params['n_hidden'], params['n_output'],batch_size=params['batch_size'],lr=params['lr'], optimizer=Adam)
-    elif(params["model"]=="gru"):
-        model = gru(rng=rng,n_in=1024, n_lstm=params['n_hidden'],n_out= params['n_output'],batch_size=params['batch_size'],lr=params['lr'], optimizer=Adam)
-    elif(params["model"]=="egd"):
-        model = egd(1024, params['n_hidden'], params['n_output'],batch_size=params['batch_size'],lr=params['lr'], optimizer=Adam)
-    elif(params["model"]=="lstm2erd"):
-        model = lstm2erd(1024, params['n_hidden'], params['n_output'],batch_size=params['batch_size'],lr=params['lr'], optimizer=Adam)
-    elif(params["model"]=="blstmnp"):
-        model = blstmnp(1024, params['n_hidden'], params['n_output'],batch_size=params['batch_size'],lr=params['lr'], optimizer=Adam)
     elif(params["model"]=="cnn_lstm"):
         model = cnn_lstm(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="real_rcnn"):
@@ -45,6 +34,8 @@ def get_model(params,rng):
         model = autoencoder(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="lstm_auto"):
         model = lstm_auto(rng=rng,params=params,optimizer=Adam)
+    elif(params["model"]=="cnn_lstm_auto"):
+        model = cnn_lstm_auto(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="lstm_auto_3layer"):
         model = lstm_auto_3layer(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="lstm_skelton"):
