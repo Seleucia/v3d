@@ -649,9 +649,7 @@ def prepare_cnn_lstm_batch(index_train_list, minibatch_index, batch_size, S_Trai
     print len(result)
     x_lst=[]
     x_lst.append(result)
-    print len(x_lst)
     x=numpy.asarray(x_lst)
-    print x.shape
     y=Y[id_lst]
     return (sid,H,C,x,y)
 

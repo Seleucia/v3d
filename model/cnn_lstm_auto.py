@@ -27,7 +27,7 @@ class cnn_lstm_auto(object):
         #CNN global parameters.
         subsample=(1,1)
         p_1=0.5
-        border_mode="valid"
+        border_mode="same"
         cnn_batch_size=batch_size*sequence_length
         pool_size=(2,2)
 
@@ -41,7 +41,6 @@ class cnn_lstm_auto(object):
         dl1=DropoutLayer(rng,input=p1.output,prob=p_1,is_train=is_train)
 
         #Layer2: conv2+pool
-        subsample=(1,1)
         filter_shape=(128,p1.output_shape[1],3,3)
         c2=ConvLayer(rng, dl1.output, filter_shape,p1.output_shape,border_mode,subsample, activation=nn.relu)
         p2=PoolLayer(c2.output,pool_size=pool_size,input_shape=c2.output_shape)
@@ -60,15 +59,12 @@ class cnn_lstm_auto(object):
         #Layer5: hidden
         n_in= reduce(lambda x, y: x*y, p4.output_shape[1:])
         x_flat = p4.output.flatten(2)
-
         h1=HiddenLayer(rng,x_flat,n_in,1024,activation=nn.relu)
 
-
-        #Layer6: hidden
+        #Layer6: Regressin layer
         lreg=LogisticRegression(rng,h1.output,1024,2048)
 
         #LSTM paramaters
-
         self.n_in = 2048
         self.n_lstm = params['n_hidden']
         self.n_out = params['n_output']
