@@ -18,9 +18,9 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=read_full_joints #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_sequence #read_full_joints,read_full_midlayer
-   dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
+   # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   # dataset_reader=read_full_midlayer_sequence #read_full_joints,read_full_midlayer
+   dataset_reader=read_full_midlayer_sequence #lstm training with autoencoder layer
    # min_tr=0.000000
    # max_tr=8.190918
    # norm=2#numpy.linalg.norm(X_test)
@@ -61,8 +61,6 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    return (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)
 
 def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
-    base_file=base_file.replace('img','joints16')
-
     f_dir="/mnt/Data1/hc/auto/"
     if istest==0:
         lst_act=['S1','S5','S6','S7','S8']
@@ -113,7 +111,7 @@ def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_fl
     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
 
 def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
-    #LSTM training with only joints
+    #CNN training with only autoencoder layer
     joints_file=base_file
     img_folder=base_file.replace('auto','h36m_rgb_img_crop')
     if istest==0:

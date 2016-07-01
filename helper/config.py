@@ -41,7 +41,7 @@ def get_params():
 
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
-       params['batch_size']=20
+       params['batch_size']=1
        params["WITH_GPU"]=False
        params['n_patch']= 1
        params['n_repeat']= 1
@@ -58,7 +58,7 @@ def get_params():
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
-       params["data_dir"]="/home/huseyin/data/joints16/"
+       params["data_dir"]="/mnt/hc/joints16/"
        params["WITH_GPU"]=True
        params['n_hidden']= 2
        params['max_count']=100
