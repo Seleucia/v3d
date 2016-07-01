@@ -18,8 +18,8 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=read_full_joints #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_sequence #read_full_joints,read_full_midlayer
-   # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
-   dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
+   # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
    # dataset_reader=read_full_midlayer_sequence #read_full_joints,read_full_midlayer
    # min_tr=0.000000
    # max_tr=8.190918
@@ -535,8 +535,8 @@ def multi_thr_load_cnn_batch(my_list):
 def load_file(fl):
     with open(fl, "rb") as f:
         data=f.read().strip().split(' ')
-        y_d= [float(val) for val in data]
-        y_d=numpy.asarray(y_d)/1000
+        y_d= [numpy.float32(val) for val in data]
+        y_d=numpy.asarray(y_d,dtype=numpy.float32)/1000
         f.close()
         return y_d
 
