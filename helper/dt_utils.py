@@ -259,7 +259,7 @@ def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,ist
                         Y_d=[]
                         F_l=[]
                 if len(Y_D)>=max_count:
-                    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
+                    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),numpy.asarray(F_L),G_L,S_L)
         if(len(Y_d)>0):
             residual=Y_d%p_count
             residual=p_count-residual
@@ -275,10 +275,10 @@ def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,ist
                 Y_d=[]
                 F_l=[]
                 if len(Y_D)>=max_count:
-                    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
+                    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),numpy.asarray(F_L),G_L,S_L)
 
 
-    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
+    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),numpy.asarray(F_L),G_L,S_L)
 
 def read_full_midlayer(base_file,max_count,p_count,sindex,istest,get_flist=False):
     base_file=base_file.replace('img','joints')
@@ -581,7 +581,7 @@ def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_li
     return (sid,H,C,x,y)
 
 
-def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list_test, params, Y_train, X_train):
+def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list, params, Y_train, X_train):
     f_dir="/mnt/hc/auto/"
     id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
     tmp_sid=S_Train_list[(minibatch_index + 1) * batch_size-1]
@@ -593,7 +593,7 @@ def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_T
     if params['model']=='lstm_skelton':
         x=X_train[id_lst]
     else:
-        x_fl=[f_dir+F_list_test[f] for f in id_lst]
+        x_fl=F_list[id_lst]
         x=multi_thr_load_batch(my_list=x_fl)
     y=Y_train[id_lst]
     return (sid,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3,x,y)
