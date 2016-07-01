@@ -261,7 +261,7 @@ def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,ist
                 if len(Y_D)>=max_count:
                     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),numpy.asarray(F_L),G_L,S_L)
         if(len(Y_d)>0):
-            residual=Y_d%p_count
+            residual=len(Y_d)%p_count
             residual=p_count-residual
             y=residual*[Y_d[-1]]
             f=residual*[F_l[-1]]
