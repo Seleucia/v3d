@@ -694,37 +694,14 @@ def prepare_cnn_batch(minibatch_index, batch_size, F_list, Y):
 
 
 def get_batch_indexes(params,S_list):
-   batch_size=params['batch_size']
    SID_List=[]
-   index_list=[]
    counter=collections.Counter(S_list)
    grb_count=counter.values()
-   last_index=0;
    s_id=0
+   index_list=range(0,len(S_list),1)
    for mx in grb_count:
-       tmp_list=range(mx)
-       residual=mx%batch_size
-       r=tmp_list[-1]
-       #residual=0
-       if residual>0:
-           residual=batch_size-residual
-           tmp_list.extend(numpy.repeat(r,residual))
-       n_batches = len(tmp_list)
-       n_batches /= batch_size
-       SID_List.extend(numpy.repeat(s_id,len(tmp_list)))
+       SID_List.extend(numpy.repeat(s_id,mx))
        s_id+=1
-       for n in range(0,n_batches,batch_size):
-           for starter in range(batch_size):
-               l=range(starter,mx,batch_size)
-               r=l[-1]
-               if residual>0:
-                   residual=batch_size-residual
-                   l.extend(numpy.repeat(r,residual))
-               l = [x+last_index for x in l]
-               index_list.extend(l[n:(n + batch_size)])
-       last_index+=mx
-
-
    return (index_list,SID_List)
 
 def write_predictions(params,pred,N_list):
