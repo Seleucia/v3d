@@ -15,9 +15,9 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    max_count=params["max_count"]
    seq_length=params["seq_length"]
    # dataset_reader=read_full_midlayer #read_full_joints,read_full_midlayer
-   # dataset_reader=read_full_joints #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_joints_sequence_cnn #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
-   dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
+   # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
    # min_tr=0.000000
