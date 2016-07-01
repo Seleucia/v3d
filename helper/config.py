@@ -37,7 +37,7 @@ def get_params():
    params['squared_filter_length_limit']=15.0
    params['n_epochs']=25600
    params['n_hidden']= 1000
-   params['n_output']= 2048
+   params['n_output']= 48
 
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
@@ -60,7 +60,7 @@ def get_params():
        params["caffe"]="/usr/local/caffe/python"
        params["data_dir"]="/home/huseyin/data/joints16/"
        params["WITH_GPU"]=True
-       params['n_hidden']= 256
+       params['n_hidden']= 2
        params['max_count']=100
 
    if(platform.node()=="cmp-comp"):
