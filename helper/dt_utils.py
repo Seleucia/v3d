@@ -109,7 +109,80 @@ def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_fl
 
     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
 
-def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
+def multi_thr_read_full_joints_sequence_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
+    joints_file=base_file
+    img_folder=base_file.replace('joints16','h36m_rgb_img_crop')
+    if istest==0:
+        lst_act=['S1','S5','S6','S7','S8']
+    else:
+        lst_act=['S9','S11']
+    X_D=[]
+    Y_D=[]
+    F_L=[]
+    G_L=[]
+    S_L=[]
+    seq_id=0
+    for actor in lst_act:
+        tmp_folder=base_file+actor+"/"
+        lst_sq=os.listdir(tmp_folder)
+        for sq in lst_sq:
+            X_d=[]
+            Y_d=[]
+            F_l=[]
+            seq_id+=1
+            tmp_folder=joints_file+actor+"/"+sq+"/"
+            tmp_folder_img=img_folder+actor+"/"+sq.replace('.cdf','')+"/"
+            id_list=os.listdir(tmp_folder)
+            if os.path.exists(tmp_folder_img)==False:
+                continue
+            img_count=len(os.listdir(tmp_folder_img))
+            min_count=img_count
+            if(len(id_list)<img_count):
+                min_count=len(id_list)
+            if min_count==0:
+                continue
+            seq_id+=1
+            id_list=id_list[0:min_count]
+            joint_list=[tmp_folder + p1 for p1 in id_list]
+            img_list=[img_folder+actor+'/'+sq.replace('.cdf','')+'/frame_'+(p1.replace('.txt','')).zfill(5)+'.png' for p1 in id_list]
+            pool = ThreadPool(1000)
+            results = pool.map(load_file, joint_list)
+            pool.close()
+
+            for r in range(len(results)):
+                rs=results[r]
+                f=img_list[r]
+                Y_d.append(rs)
+                F_l.append(f)
+                if len(Y_d)==p_count and p_count>0:
+                        Y_D.append(Y_d)
+                        F_L.append(F_l)
+                        S_L.append(seq_id)
+                        Y_d=[]
+                        F_l=[]
+                if len(Y_D)>=max_count:
+                    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),numpy.asarray(F_L),G_L,S_L)
+        if(len(Y_d)>0):
+            residual=len(Y_d)%p_count
+            residual=p_count-residual
+            y=residual*[Y_d[-1]]
+            f=residual*[F_l[-1]]
+            Y_d.extend(y)
+            F_l.extend(f)
+            if len(Y_d)==p_count and p_count>0:
+                S_L.append(seq_id)
+                Y_D.append(Y_d)
+                F_L.append(F_l)
+                S_L.append(seq_id)
+                Y_d=[]
+                F_l=[]
+                if len(Y_D)>=max_count:
+                    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),numpy.asarray(F_L),G_L,S_L)
+
+
+    return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),numpy.asarray(F_L),G_L,S_L)
+
+def multi_thr_read_full_midlayer_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
     #CNN training with only autoencoder layer
     joints_file=base_file
     img_folder=base_file.replace('auto','h36m_rgb_img_crop')
