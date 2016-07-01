@@ -6,9 +6,9 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="1" #running id, model
+   params["rn_id"]="lstm3" #running id, model
    params["notes"]="lstm 3lyaer trainign with autoencoder values" #running id
-   params["model"]="cnn"#kccnr,dccnr
+   params["model"]="lstm3"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
 
