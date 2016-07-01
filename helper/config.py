@@ -60,7 +60,7 @@ def get_params():
        params["caffe"]="/usr/local/caffe/python"
        params["data_dir"]="/mnt/hc/joints16/"
        params["WITH_GPU"]=True
-       params['n_hidden']= 2
+       params['n_hidden']= 256
        params['max_count']=100
 
    if(platform.node()=="cmp-comp"):
