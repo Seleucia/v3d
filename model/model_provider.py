@@ -1,22 +1,18 @@
 from model.lstm import  lstm
 from model.cnn_lstm_s import  cnn_lstm_s
 from model.lstm2erd import lstm2erd
-from model.erd import erd
 from model.gru import gru
-from model.egd import egd
-from model.blstmnp import blstmnp
-from model.erd_pre import erd_pre
 from model.cnn_lstm import cnn_lstm
 from model.cnn import cnn
 from model.cnn2 import cnn2
 from model.cnn3 import cnn3
 from model.autoencoder import autoencoder
 from model.lstm_auto import lstm_auto
+from model.lstm_auto_3layer import lstm_auto_3layer
 from model.lstm_skelton import lstm_skelton
 from model.real_rcnn import real_rcnn
 from helper.optimizer import ClipRMSprop, RMSprop,Adam
 import helper.utils as u
-import theano
 
 def get_model(params,rng):
     if(params["model"]=="lstm"):
@@ -49,6 +45,8 @@ def get_model(params,rng):
         model = autoencoder(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="lstm_auto"):
         model = lstm_auto(rng=rng,params=params,optimizer=Adam)
+    elif(params["model"]=="lstm_auto_3layer"):
+        model = lstm_auto_3layer(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="lstm_skelton"):
         model = lstm_skelton(rng=rng,params=params,optimizer=Adam)
     else:

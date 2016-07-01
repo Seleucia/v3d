@@ -8,7 +8,7 @@ from helper.optimizer import RMSprop
 
 dtype = T.config.floatX
 
-class lstm_auto:
+class lstm_auto_3layer:
    def __init__(self,rng, params,cost_function='mse',optimizer = RMSprop):
        batch_size=params['batch_size']
        sequence_length=params["seq_length"]
