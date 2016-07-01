@@ -69,6 +69,6 @@ class lstm_auto_3layer:
             lr=lr
         )
 
-       self.train = theano.function(inputs=[X,Y,is_train,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3],outputs=[cost,h_t_1[-1],c_t_1[-1],h_t_2[-1],c_t_2[-1],h_t_3[-1],c_t_3[-1]],updates=_optimizer.getUpdates(),allow_input_downcast=True)
-       self.predictions = theano.function(inputs = [X,is_train,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3], outputs = [self.output,h_t_1[-1],c_t_1[-1],h_t_2[-1],c_t_2[-1],h_t_3[-1],c_t_3[-1]],allow_input_downcast=True)
+       self.train = theano.function(inputs=[X,Y,is_train,h0_1, c0_1,h0_2, c0_2, h0_3, c0_3],outputs=[cost,h_t_1[-1],c_t_1[-1],h_t_2[-1],c_t_2[-1],h_t_3[-1],c_t_3[-1]],updates=_optimizer.getUpdates(),allow_input_downcast=True)
+       self.predictions = theano.function(inputs = [X,is_train,h0_1, c0_1,h0_2, c0_2, h0_3, c0_3], outputs = [self.output,h_t_1[-1],c_t_1[-1],h_t_2[-1],c_t_2[-1],h_t_3[-1],c_t_3[-1]],allow_input_downcast=True)
        self.n_param=count_params(self.params)
