@@ -645,7 +645,8 @@ def prepare_cnn_lstm_batch(index_train_list, minibatch_index, batch_size, S_Trai
       sid=tmp_sid
       H=C=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
     x_fl=F_list[id_lst][0]
-    x=multi_thr_load_cnn_batch(my_list=x_fl)
+    x=[]
+    x=numpy.asarray(x.append(multi_thr_load_cnn_batch(my_list=x_fl)))
     y=Y[id_lst]
     return (sid,H,C,x,y)
 
