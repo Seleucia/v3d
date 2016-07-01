@@ -17,10 +17,9 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=read_full_midlayer #read_full_joints,read_full_midlayer
    # dataset_reader=read_full_joints #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
-   # dataset_reader=multi_thr_read_full_midlayer_sequence #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   dataset_reader=read_full_midlayer_sequence #lstm training with autoencoder layer
    # min_tr=0.000000
    # max_tr=8.190918
    # norm=2#numpy.linalg.norm(X_test)
@@ -221,7 +220,6 @@ def multi_thr_read_full_joints_sequence(base_file,max_count,p_count,sindex,istes
     return (X_D,Y_D,F_L,G_L,S_L)
 
 def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
-    base_file=base_file.replace('img','joints16')
     f_dir="/mnt/hc/auto/"
     if istest==0:
         lst_act=['S1','S5','S6','S7','S8']
@@ -584,6 +582,7 @@ def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_li
 
 
 def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list_test, params, Y_train, X_train):
+    f_dir="/mnt/hc/auto/"
     id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
     tmp_sid=S_Train_list[(minibatch_index + 1) * batch_size-1]
     if(sid==0):
@@ -594,7 +593,7 @@ def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_T
     if params['model']=='lstm_skelton':
         x=X_train[id_lst]
     else:
-        x_fl=[F_list_test[f] for f in id_lst]
+        x_fl=[f_dir+F_list_test[f] for f in id_lst]
         x=multi_thr_load_batch(my_list=x_fl)
     y=Y_train[id_lst]
     return (sid,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3,x,y)

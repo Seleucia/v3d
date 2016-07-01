@@ -12,7 +12,7 @@ def get_params():
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']= "autoencoder_auto_lr_low_138_0.00340542_best.p"
 
-   params['shufle_data']=1
+   params['shufle_data']=0
    params['batch_size']=1
    params['seq_length']= 50
    params["corruption_level"]=0.5
