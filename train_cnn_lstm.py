@@ -15,7 +15,6 @@ import time
 
 def train_rnn(params):
    rng = RandomStreams(seed=1234)
-   model= model_provider.get_model_pretrained(params,rng)
    (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)=du.load_pose(params)
    params["len_train"]=Y_train.shape[0]*Y_train.shape[1]
    params["len_test"]=Y_test.shape[0]*Y_test.shape[1]
