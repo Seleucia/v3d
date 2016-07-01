@@ -242,7 +242,7 @@ def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,ist
             tmp_folder=base_file+actor+"/"+sq+"/"
             id_list=os.listdir(tmp_folder)
             joint_list=[tmp_folder + p1 for p1 in id_list]
-            midlayer_list=[actor+'/'+sq+'/'+p1 for p1 in id_list]
+            midlayer_list=[f_dir+actor+'/'+sq+'/'+p1 for p1 in id_list]
             pool = ThreadPool(1000)
             results = pool.map(load_file, joint_list)
             pool.close()
