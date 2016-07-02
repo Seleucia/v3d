@@ -22,6 +22,9 @@ def train_rnn(params):
    index_train_list,S_Train_list=du.get_batch_indexes(params,S_Train_list)
    index_test_list,S_Test_list=du.get_batch_indexes(params,S_Test_list)
    batch_size=params['batch_size']
+   print len(index_train_list)
+   print len(S_Train_list)
+   print Y_train.shape
    n_train_batches = len(index_train_list)
    n_train_batches /= batch_size
 
@@ -52,6 +55,7 @@ def train_rnn(params):
       for minibatch_index in range(n_train_batches):
           if(minibatch_index==0):
               (sid,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3,x,y)=du.prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list_train, params, Y_train, X_train)
+              minibatch_index=n_train_batches-1
           pool = ThreadPool(processes=2)
           async_t = pool.apply_async(model.train, (x, y,is_train,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3))
           async_b = pool.apply_async(du.prepare_lstm_3layer_batch, (index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list_train, params, Y_train, X_train))
