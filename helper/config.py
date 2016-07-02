@@ -61,7 +61,7 @@ def get_params():
        params["data_dir"]="/mnt/hc/joints16/"
        params["WITH_GPU"]=True
        params['n_hidden']= 256
-       params['max_count']=100
+       params['max_count']=1000000000
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
