@@ -49,8 +49,8 @@ def get_params():
        params['max_count']= 10000
 
    if(platform.node()=="milletari-workstation"):
-       # params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16
-       params["data_dir"]="/mnt/Data1/hc/auto/"
+       params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
+       # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
        params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
