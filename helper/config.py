@@ -23,7 +23,6 @@ def get_params():
    params['wd']=wd
    params['log_file']=wd+"/logs/"+params["model"]+"_"+params["rn_id"]+"_"+str(params['run_mode'])+"_"+utils.get_time()+".txt"
    params["model_file"]=wd+"/cp/"
-   params["data_dir"]="/mnt/Data2/DataFelix/hc/rnn/old_blanket/"
 
    # early-stopping parameters
    params['patience']= 10000  # look as this many examples regardless
@@ -50,11 +49,12 @@ def get_params():
        params['max_count']= 10000
 
    if(platform.node()=="milletari-workstation"):
-       params["data_dir"]="/mnt/Data1/hc/joints16/"
+       # params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16
+       params["data_dir"]="/mnt/Data1/hc/auto/"
        params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=1000
+       params['max_count']=10000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
