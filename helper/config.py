@@ -7,8 +7,8 @@ def get_params():
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
    params["rn_id"]="lstm3layer" #running id, model
-   params["notes"]="lstm +cnn fine tuning" #running id
-   params["model"]="cnn_lstm"#kccnr,dccnr
+   params["notes"]="lstm 3 layertuning" #running id
+   params["model"]="lstm"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']= "cnn_1_1_24.6707_best.p,lstm_auto_lstm_15_0.00984423_best.p"
 
