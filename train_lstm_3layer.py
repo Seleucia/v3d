@@ -38,8 +38,8 @@ def train_rnn(params):
    if params['run_mode']==1:
       model= model_provider.get_model_pretrained(params,rng)
       u.log_write("Pretrained loaded: %s"%(params['mfile']),params)
-   else:
-     model= model_provider.get_model(params,rng)
+   # else:
+   #   model= model_provider.get_model(params,rng)
    u.log_write("Number of parameters: %s"%(model.n_param),params)
    train_errors = np.ndarray(nb_epochs)
    u.log_write("Training started",params)
@@ -56,6 +56,8 @@ def train_rnn(params):
           if(minibatch_index==0):
               (sid,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3,x,y)=du.prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list_train, params, Y_train, X_train)
               minibatch_index=n_train_batches-1
+              print 'last one calling'
+              (sid,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3,x,y)=du.prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list_train, params, Y_train, X_train)
           pool = ThreadPool(processes=2)
           async_t = pool.apply_async(model.train, (x, y,is_train,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3))
           async_b = pool.apply_async(du.prepare_lstm_3layer_batch, (index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list_train, params, Y_train, X_train))
