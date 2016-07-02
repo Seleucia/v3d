@@ -216,7 +216,7 @@ def multi_thr_read_full_midlayer_cnn(base_file,max_count,p_count,sindex,istest,g
             seq_id+=1
             id_list=id_list[0:min_count]
             joint_list=[tmp_folder + p1 for p1 in id_list]
-            midlayer_list=[actor+'/'+sq.replace('.cdf','')+'/frame_'+(p1.replace('.txt','')).zfill(5)+'.png' for p1 in id_list]
+            midlayer_list=[img_folder+actor+'/'+sq.replace('.cdf','')+'/frame_'+(p1.replace('.txt','')).zfill(5)+'.png' for p1 in id_list]
             pool = ThreadPool(1000)
             results = pool.map(load_file_nodiv, joint_list)
             pool.close()
