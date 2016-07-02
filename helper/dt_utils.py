@@ -590,10 +590,21 @@ def multi_thr_load_batch(my_list):
     x.append(results)
     return numpy.asarray(x)
 
+def multi_thr_load_cnn_lstm_batch(my_list):
+    lst=my_list
+    pool = ThreadPool(len(lst))
+    results = pool.map(load_file_cnn_lstm_patch, lst)
+    pool.close()
+    return numpy.asarray(results)
+
+
 def multi_thr_load_cnn_batch(my_list):
     lst=my_list
     pool = ThreadPool(len(lst))
+    print len(lst)
     results = pool.map(load_file_patch, lst)
+    print 'Results come'
+    print len(results)
     pool.close()
     return numpy.asarray(results)
 
@@ -630,8 +641,28 @@ def load_file_patch(fl):
     arr.flags.writeable = True
     arr/=normalizer
     arr=numpy.squeeze(arr)
+    return arr
+
+
+def load_file_cnn_lstm_patch(fl):
+    patch_margin=(0,0)
+    orijinal_size=(128,128)
+    size=(112,112)
+    x1=randint(patch_margin[0],orijinal_size[0]-(patch_margin[0]+size[0]))
+    x2=x1+size[0]
+    y1=randint(patch_margin[1],orijinal_size[1]-(patch_margin[1]+size[1]))
+    y2=y1+size[1]
+    normalizer=255
+    patch_loc= (x1,y1,x2,y2)
+    img = Image.open(fl)
+    img = img.crop(patch_loc)
+    arr=numpy.asarray(img)
+    arr.flags.writeable = True
+    arr/=normalizer
+    arr=numpy.squeeze(arr)
     arr=arr.reshape(3*112*112)
     return arr
+
 
 def prepare_cnn_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, H, C, F_list, params, Y, X):
     id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
@@ -642,7 +673,7 @@ def prepare_cnn_lstm_batch(index_train_list, minibatch_index, batch_size, S_Trai
       sid=tmp_sid
       H=C=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
     x_fl=F_list[id_lst][0]
-    result=multi_thr_load_cnn_batch(my_list=x_fl)
+    result=multi_thr_load_cnn_lstm_batch(my_list=x_fl)
     x_lst=[]
     x_lst.append(result)
     x=numpy.asarray(x_lst)
@@ -678,7 +709,7 @@ def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_T
         x=X_train[id_lst]
     else:
         x_fl=F_list[id_lst]
-        x=multi_thr_load_batch(my_list=x_fl)
+        x=multi_thr_load_cnn_lstm_batch(my_list=x_fl)
     y=Y_train[id_lst]
     return (sid,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3,x,y)
 
