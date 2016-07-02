@@ -68,6 +68,8 @@ def train_rnn(params):
           print("Model testing")
           batch_loss3d = []
           is_train=0
+          x=[]
+          y=[]
           for minibatch_index in range(n_test_batches):
               if(minibatch_index==0):
                   x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list_test, Y_test)
@@ -79,9 +81,9 @@ def train_rnn(params):
               pred = async_t.get()  # get the return value from your function.
               x=[]
               y=[]
-              (x,y) = async_b.get()  # get the return value from your function.
               loss3d =np.mean(np.linalg.norm((np.asarray(pred) - y)))
               batch_loss3d.append(loss3d)
+              (x,y) = async_b.get()  # get the return value from your function.
 
               if(minibatch_index==n_train_batches-1):
                   pred= model.predictions(x,is_train)

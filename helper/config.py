@@ -5,16 +5,16 @@ import platform
 def get_params():
    global params
    params={}
-   params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="lstm3layer" #running id, model
-   params["notes"]="lstm 3 layertuning" #running id
-   params["model"]="lstm"#kccnr,dccnr
+   params['run_mode']=1 #0,full,1:resume, 2 = combine models
+   params["rn_id"]="cnn_training_resume" #running id, model
+   params["notes"]="cnn training after error fixed at test time" #running id
+   params["model"]="cnn"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
-   params['mfile']= "cnn_1_1_24.6707_best.p,lstm_auto_lstm_15_0.00984423_best.p"
+   params['mfile']= "cnn_1_0.p"
 
    params['shufle_data']=0
-   params['batch_size']=1
-   params['seq_length']= 50
+   params['batch_size']=500
+   params['seq_length']= 1
    params["corruption_level"]=0.5
 
    #system settings
@@ -37,7 +37,7 @@ def get_params():
    params['squared_filter_length_limit']=15.0
    params['n_epochs']=25600
    params['n_hidden']= 1000
-   params['n_output']= 48
+   params['n_output']= 2048
 
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
@@ -54,7 +54,7 @@ def get_params():
        params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=10000000000000
+       params['max_count']=1000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
