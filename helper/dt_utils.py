@@ -344,7 +344,6 @@ def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,ist
                 S_L.append(seq_id)
                 Y_D.append(Y_d)
                 F_L.append(F_l)
-                S_L.append(seq_id)
                 Y_d=[]
                 F_l=[]
                 if len(Y_D)>=max_count:
