@@ -17,9 +17,9 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=read_full_midlayer #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_sequence_cnn #cnn+lstm training data loading
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
-   dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
+   # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
-   # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_joints,read_full_midlayer
    # min_tr=0.000000
    # max_tr=8.190918
    # norm=2#numpy.linalg.norm(X_test)
@@ -601,10 +601,7 @@ def multi_thr_load_cnn_lstm_batch(my_list):
 def multi_thr_load_cnn_batch(my_list):
     lst=my_list
     pool = ThreadPool(len(lst))
-    print len(lst)
     results = pool.map(load_file_patch, lst)
-    print 'Results come'
-    print len(results)
     pool.close()
     return numpy.asarray(results)
 
