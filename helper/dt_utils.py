@@ -19,7 +19,7 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
-   dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
+   # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
    dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
    # min_tr=0.000000
    # max_tr=8.190918
@@ -219,7 +219,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get
             joint_list=[tmp_folder + p1 for p1 in id_list]
             midlayer_list=[img_folder+actor+'/'+sq.replace('.cdf','')+'/frame_'+(p1.replace('.txt','')).zfill(5)+'.png' for p1 in id_list]
             pool = ThreadPool(1000)
-            results = pool.map(load_file_nodiv, joint_list)
+            results = pool.map(load_file, joint_list)
             pool.close()
             Y_D.extend(results)
             F_L.extend(midlayer_list)
