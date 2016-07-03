@@ -487,9 +487,6 @@ def set_params(model,mparams):
     counter=0
     # for p in mparams[0:-2]:
     for p in mparams:
-        print list(p.shape)
-        print model.params[counter].shape.eval().tolist()
-        print 'assert test'
         assert (list(p.shape)==model.params[counter].shape.eval().tolist())
         model.params[counter].set_value(p)
         # if(counter<(len(mparams)-2)):
