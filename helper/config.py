@@ -6,15 +6,15 @@ def get_params():
    global params
    params={}
    params['run_mode']=1 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="cnn_lr" #running id, model
+   params["rn_id"]="cnn_decoder_test" #running id, model
    params["notes"]="cnn learning reate increased" #running id
-   params["model"]="cnn"#kccnr,dccnr
+   params["model"]="cnn_decoder"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
-   params['mfile']= "cnn_trainin_resume"
+   params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
 
    params['shufle_data']=1
-   params['batch_size']=500
+   params['batch_size']=10
    params['seq_length']= 1
    params["corruption_level"]=0.5
 
@@ -50,12 +50,12 @@ def get_params():
        params['max_count']= 10000
 
    if(platform.node()=="milletari-workstation"):
-       # params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
-       params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
+       params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
+       # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
        # params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=10000000000
+       params['max_count']=1000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"

@@ -311,6 +311,8 @@ def start_log(params):
     log_write("Running model: %s"%(params['model']),params)
     log_write("Batch size: %s"%(params['batch_size']),params)
     log_write("Sequence size: %s"%(params['seq_length']),params)
+    log_write("Learnig rate: %s"%(params['lr']),params)
+    log_write("Data Dir: %s"%(params['data_dir']),params)
 
     log_write("Starting Time:%s"%(ds),params)
     log_write("size of training data:%f"%(params["len_train"]),params)
@@ -453,7 +455,7 @@ def write_params(mparams,params,ext):
 
 def read_params(params):
     wd=params["wd"]
-    if(',' in params['mfile']>0):
+    if(params['model']=='cnn_lstm_auto'):
         lst=params['mfile'].split(',')
         mparams=[]
         with open(wd+"/cp/"+lst[0]) as f:
@@ -462,7 +464,19 @@ def read_params(params):
         with open(wd+"/cp/"+lst[1]) as f:
             mparams.extend(pickle.load(f))
         return mparams
-
+    elif(params['model']=='cnn_decoder'):
+        lst=params['mfile'].split(',')
+        mparams=[]
+        with open(wd+"/cp/"+lst[0]) as f:
+            mparams.extend(pickle.load(f))
+        auto=[]
+        with open(wd+"/cp/"+lst[1]) as f:
+            auto=pickle.load(f)
+        mparams.append(auto[2].T)
+        mparams.append(auto[4])
+        mparams.append(auto[0].T)
+        mparams.append(auto[5])
+        return mparams
     else:
         with open(wd+"/cp/"+params['mfile']) as f:
             mparams=pickle.load(f)
@@ -473,6 +487,10 @@ def set_params(model,mparams):
     counter=0
     # for p in mparams[0:-2]:
     for p in mparams:
+        print list(p.shape)
+        print model.params[counter].shape.eval().tolist()
+        print 'assert test'
+        assert (list(p.shape)==model.params[counter].shape.eval().tolist())
         model.params[counter].set_value(p)
         # if(counter<(len(mparams)-2)):
         #         model.params[counter].set_value(p)
