@@ -19,7 +19,8 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
-   dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
+   dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
    # min_tr=0.000000
    # max_tr=8.190918
    # norm=2#numpy.linalg.norm(X_test)
@@ -180,6 +181,56 @@ def multi_thr_read_full_joints_sequence_cnn(base_file,max_count,p_count,sindex,i
 
 
     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),numpy.asarray(F_L),G_L,S_L)
+
+def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
+    #CNN training with only autoencoder layer
+    joints_file=base_file
+    img_folder=base_file.replace('joints16','h36m_rgb_img_crop')
+    if istest==0:
+        lst_act=['S1','S5','S6','S7','S8']
+    else:
+        lst_act=['S9','S11']
+    X_D=[]
+    Y_D=[]
+    F_L=[]
+    G_L=[]
+    S_L=[]
+    seq_id=0
+    for actor in lst_act:
+        tmp_folder=joints_file+actor+"/"
+        lst_sq=os.listdir(tmp_folder)
+        for sq in lst_sq:
+            # X_d=[]
+            # Y_d=[]
+            # F_l=[]
+            tmp_folder=joints_file+actor+"/"+sq+"/"
+            tmp_folder_img=img_folder+actor+"/"+sq.replace('.cdf','')+"/"
+            id_list=os.listdir(tmp_folder)
+            if os.path.exists(tmp_folder_img)==False:
+                continue
+            img_count=len(os.listdir(tmp_folder_img))
+            min_count=img_count
+            if(len(id_list)<img_count):
+                min_count=len(id_list)
+            if min_count==0:
+                continue
+            seq_id+=1
+            id_list=id_list[0:min_count]
+            joint_list=[tmp_folder + p1 for p1 in id_list]
+            midlayer_list=[img_folder+actor+'/'+sq.replace('.cdf','')+'/frame_'+(p1.replace('.txt','')).zfill(5)+'.png' for p1 in id_list]
+            pool = ThreadPool(1000)
+            results = pool.map(load_file_nodiv, joint_list)
+            pool.close()
+            Y_D.extend(results)
+            F_L.extend(midlayer_list)
+            if len(Y_D)>=max_count:
+                Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                F_L=numpy.asarray(F_L)
+                return (X_D,Y_D,F_L,G_L,S_L)
+
+    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+    F_L=numpy.asarray(F_L)
+    return (X_D,Y_D,F_L,G_L,S_L)
 
 def multi_thr_read_full_midlayer_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
     #CNN training with only autoencoder layer
