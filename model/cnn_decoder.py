@@ -63,7 +63,7 @@ class cnn_decoder(object):
 
         h3=HiddenLayer(rng,h1.output,2048,1024,activation=do_nothing) #previus regression layer
 
-        lreg=LogisticRegression(rng,h2.output,1024,params['n_output'])
+        lreg=LogisticRegression(rng,h3.output,1024,params['n_output'])
         self.output = lreg.y_pred
 
         self.params =c1.params+c2.params+c3.params+c4.params+h1.params+h2.params+h3.params+lreg.params
