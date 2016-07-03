@@ -6,15 +6,16 @@ def get_params():
    global params
    params={}
    params['run_mode']=1 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="cnn_lstm" #running id, model
-   params["notes"]="cnn lstm fine tunning" #running id
-   params["model"]="cnn_lstm_auto"#kccnr,dccnr
+   params["rn_id"]="cnn_lr" #running id, model
+   params["notes"]="cnn learning reate increased" #running id
+   params["model"]="cnn"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
-   params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
+   # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
+   params['mfile']= "cnn_trainin_resume"
 
-   params['shufle_data']=0
-   params['batch_size']=1
-   params['seq_length']= 50
+   params['shufle_data']=1
+   params['batch_size']=500
+   params['seq_length']= 1
    params["corruption_level"]=0.5
 
    #system settings
@@ -31,7 +32,7 @@ def get_params():
 
    # learning parameters
    params['momentum']=0.9    # the params for momentum
-   params['lr']=0.0001
+   params['lr']=0.001
    params['learning_rate_decay']= 0.998
    params['squared_filter_length_limit']=15.0
    params['n_epochs']=25600
@@ -49,9 +50,9 @@ def get_params():
        params['max_count']= 10000
 
    if(platform.node()=="milletari-workstation"):
-       params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
-       # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
-       params["caffe"]="/usr/local/caffe/python"
+       # params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
+       params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
+       # params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
        params['max_count']=10000000000
