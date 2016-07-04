@@ -455,6 +455,12 @@ def write_params(mparams,params,ext):
 
 def read_params(params):
     wd=params["wd"]
+
+    if(len(params['mfile'].split(','))>1):
+        with open(wd+"/cp/"+params['mfile']) as f:
+            mparams=pickle.load(f)
+            return mparams
+
     if(params['model']=='cnn_lstm_auto'):
         lst=params['mfile'].split(',')
         mparams=[]
@@ -477,10 +483,8 @@ def read_params(params):
         mparams.append(auto[0].T)
         mparams.append(auto[5])
         return mparams
-    else:
-        with open(wd+"/cp/"+params['mfile']) as f:
-            mparams=pickle.load(f)
-            return mparams
+    return None
+
 
 
 def set_params(model,mparams):
