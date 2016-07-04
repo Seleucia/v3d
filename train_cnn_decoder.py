@@ -79,7 +79,7 @@ def train_rnn(params):
               pool.close()
               pool.join()
               pred = async_t.get()  # get the return value from your function.
-              loss3d =np.mean(np.linalg.norm((np.asarray(pred) - y)))
+              loss3d =u.get_loss(params,y,pred)
               x=[]
               y=[]
               batch_loss3d.append(loss3d)
