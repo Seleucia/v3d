@@ -211,7 +211,7 @@ def get_loss(params,gt,est):
     loss=[]
     if(len(gt.shape)==2):
         for b in range(batch_size):
-            diff_vec=np.abs(gt[b].reshape(['n_output']/3,3) - est[b].reshape(params['n_output']/3,3)) #13*3
+            diff_vec=np.abs(gt[b].reshape(params['n_output']/3,3) - est[b].reshape(params['n_output']/3,3)) #13*3
             diff_vec=diff_vec[~np.any(np.isnan(diff_vec), axis=1)]
             sq_m=np.sqrt(np.sum(diff_vec**2,axis=1))
             loss.append(np.mean(sq_m))
