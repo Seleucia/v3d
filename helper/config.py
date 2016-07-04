@@ -5,16 +5,16 @@ import platform
 def get_params():
    global params
    params={}
-   params['run_mode']=1 #0,full,1:resume, 2 = combine models
+   params['run_mode']=0 #0,full,1:resume, 2 = combine models
    params["rn_id"]="cnn_decoder_test" #running id, model
-   params["notes"]="cnn learning reate increased" #running id
+   params["notes"]="cnn training without pretraining" #running id
    params["model"]="cnn_decoder"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
-   params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
+   # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
 
    params['shufle_data']=1
-   params['batch_size']=10
+   params['batch_size']=128
    params['seq_length']= 1
    params["corruption_level"]=0.5
 
@@ -55,7 +55,7 @@ def get_params():
        # params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=1000
+       params['max_count']=1000000000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
