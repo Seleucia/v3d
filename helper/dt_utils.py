@@ -646,7 +646,6 @@ def multi_thr_load_cnn_lstm_batch(my_list):
     pool = ThreadPool(len(lst))
     results = pool.map(load_file_cnn_lstm_patch, lst)
     pool.close()
-    print numpy.mean(numpy.mean(numpy.mean(results,axis=0),axis=1),axis=1)
     return numpy.asarray(results)
 
 
