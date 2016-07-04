@@ -10,6 +10,7 @@ def get_params():
    params["notes"]="cnn training without pretraining" #running id
    params["model"]="cnn_decoder"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
+   params['mfile']=""
    # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
    # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
 
