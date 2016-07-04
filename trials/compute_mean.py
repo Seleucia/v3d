@@ -11,9 +11,10 @@ def load_file_cnn_lstm_patch(fl):
     return arr
 
 
-base_file="/mnt/hc/joints16/"
+base_file="/mnt/Data1/hc/joints16/"
 istest=0
-
+total=0
+s_total=0
 joints_file=base_file
 img_folder=base_file.replace('joints16','h36m_rgb_img_crop')
 if istest==0:
@@ -21,10 +22,13 @@ if istest==0:
 else:
     lst_act=['S9','S11']
 S_L=[]
+f_mean=0
 seq_id=0
 for actor in lst_act:
+    s_total=0
     tmp_folder=joints_file+actor+"/"
     lst_sq=os.listdir(tmp_folder)
+    mn=0
     for sq in lst_sq:
         tmp_folder=joints_file+actor+"/"+sq+"/"
         tmp_folder_img=img_folder+actor+"/"+sq.replace('.cdf','')+"/"
@@ -38,11 +42,20 @@ for actor in lst_act:
         if min_count==0:
             continue
         seq_id+=1
-        id_list=id_list[0:min_count]
+        id_list=id_list[0:20]
         joint_list=[tmp_folder + p1 for p1 in id_list]
         midlayer_list=[img_folder+actor+'/'+sq.replace('.cdf','')+'/frame_'+(p1.replace('.txt','')).zfill(5)+'.png' for p1 in id_list]
-        pool = ThreadPool(1000)
+        pool = ThreadPool(1)
         results = pool.map(load_file_cnn_lstm_patch, midlayer_list)
         pool.close()
-        print numpy.mean(numpy.mean(numpy.mean(results,axis=0),axis=1),axis=1)
+        mn=mn+numpy.mean(numpy.mean(numpy.mean(results,axis=1),axis=1),axis=0)*min_count
+        # S_L.append(mn)
+        total=total+min_count
+        s_total=min_count+s_total
+    s_mn=mn/s_total
+    f_mean=f_mean+mn
+    print actor
+    print("Subject %s, subject mean: %s total frame: %d"%(actor,str(s_mn),s_total))
 
+f_mean=str(f_mean/total)
+print("Final mean: %s, total frame: %df"%(f_mean,s_total))

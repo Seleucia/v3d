@@ -687,6 +687,7 @@ def load_file_patch(fl):
     img = img.crop(patch_loc)
     arr=numpy.asarray(img)
     arr.flags.writeable = True
+    arr=arr-(130.70753799,84.31474484,72.801691)
     arr/=normalizer
     arr=numpy.squeeze(arr)
     return arr
