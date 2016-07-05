@@ -6,9 +6,9 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="cnn_decoder_test" #running id, model
+   params["rn_id"]="cnnX" #running id, model
    params["notes"]="cnn training without pretraining" #running id
-   params["model"]="cnn_decoder"#kccnr,dccnr
+   params["model"]="cnnX"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
    # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
