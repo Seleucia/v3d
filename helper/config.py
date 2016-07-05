@@ -56,7 +56,7 @@ def get_params():
        # params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=1000000000
+       params['max_count']=1000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
