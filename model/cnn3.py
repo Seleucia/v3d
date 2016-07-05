@@ -54,13 +54,13 @@ class cnn3(object):
         h1=HiddenLayer(rng,x_flat,n_in,512,activation=nn.relu)
         dl1=DropoutLayer(rng,input=h1.output,prob=p_1,is_train=is_train)
 
-        h2=HiddenLayer(rng,dl1.output,n_in,2048,activation=nn.relu)
+        h2=HiddenLayer(rng,dl1.output,512,2048,activation=nn.relu)
         dl2=DropoutLayer(rng,input=h2.output,prob=p_1,is_train=is_train)
 
-        h3=HiddenLayer(rng,dl2.output,n_in,4096,activation=nn.relu)
+        h3=HiddenLayer(rng,dl2.output,2048,4096,activation=nn.relu)
         dl3=DropoutLayer(rng,input=h3.output,prob=p_1,is_train=is_train)
 
-        h4=HiddenLayer(rng,dl3.output,n_in,2048,activation=do_nothing)
+        h4=HiddenLayer(rng,dl3.output,4096,300,activation=do_nothing)
 
         #Layer6: hidden
         lreg=LogisticRegression(rng,h4.output,300,params['n_output'])
