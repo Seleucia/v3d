@@ -109,11 +109,6 @@ parser = argparse.ArgumentParser(description='Training the module')
 parser.add_argument('-m','--model',help='Model: lstm, lstm2, erd current('+params["model"]+')',default=params["model"])
 parser.add_argument('-x','--x',help='Any parameter to be set',default=params["lr"])
 args = vars(parser.parse_args())
-if(args["x"] !=None):
-    p_name=args["x"].split('{')[0]
-    p_value=args["x"].split('{')[1].replace('}','')
-    params[p_name]=p_value
-
 params["model"]=args["model"]
 params=config.update_params(params)
 train_rnn(params)
