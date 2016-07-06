@@ -2,7 +2,6 @@ import glob
 from PIL import Image
 import os
 import numpy
-import h5py
 import collections
 from multiprocessing.dummy import Pool as ThreadPool
 import theano
@@ -343,11 +342,12 @@ def multi_thr_read_full_joints_sequence(base_file,max_count,p_count,sindex,istes
 
 def joints_sequence_tp1(base_file,max_count,p_count,sindex,istest,get_flist=False):
     #LSTM training with only joints
-    base_file=base_file.replace('img','joints16')
     if istest==0:
-        lst_act=['S1','S5','S6','S7','S8']
+        # lst_act=['S1','S5','S6','S7','S8']
+        lst_act=['S5','S6']
     else:
-        lst_act=['S9','S11']
+        # lst_act=['S9','S11']
+        lst_act=['S11']
     X_D=[]
     Y_D=[]
     F_L=[]
