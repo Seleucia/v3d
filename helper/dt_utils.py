@@ -369,7 +369,7 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,istest,get_flist=Fals
             pool = ThreadPool(1000)
             results = pool.map(load_file, joint_list)
             pool.close()
-            for r in range(len(results)):
+            for r in range(len(results)-1):
                 rs=results[r]
                 X_d.append(rs)
                 rs_1=results[r+1]
