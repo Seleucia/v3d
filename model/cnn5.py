@@ -58,7 +58,6 @@ class cnn5(object):
         x_flat = p4.output.flatten(2)
 
         h1=HiddenLayer(rng,x_flat,n_in,1024,activation=nn.relu)
-
         h2=HiddenLayer(rng,h1.output,1024,1024,activation=nn.relu)
 
 

@@ -19,8 +19,8 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
-   # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   # dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
    # min_tr=0.000000
    # max_tr=8.190918
    # norm=2#numpy.linalg.norm(X_test)
@@ -218,7 +218,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get
             id_list=id_list[0:min_count]
             joint_list=[tmp_folder + p1 for p1 in id_list]
             midlayer_list=[img_folder+actor+'/'+sq.replace('.cdf','')+'/frame_'+(p1.replace('.txt','')).zfill(5)+'.png' for p1 in id_list]
-            pool = ThreadPool(1000)
+            pool = ThreadPool(500)
             results = pool.map(load_file, joint_list)
             pool.close()
             Y_D.extend(results)
@@ -720,21 +720,23 @@ def prepare_cnn_lstm_batch(index_train_list, minibatch_index, batch_size, S_Trai
     y=Y[id_lst]
     return (sid,H,C,x,y)
 
-def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, H, C, F_list_test, params, Y, X):
-    id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-    tmp_sid=S_Train_list[(minibatch_index + 1) * batch_size-1]
-    if(sid==0):
-      sid=tmp_sid
-    if(tmp_sid!=sid):
-      sid=tmp_sid
-      H=C=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
+def prepare_lstm_batch(index_list, minibatch_index, batch_size, S_list,LStateList, H, C, F_list, params, Y, X,state_reset_counter):
+    id_lst=index_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
+    pre_sid=S_list[(minibatch_index) * batch_size-1]
+    curr_sid=S_list[(minibatch_index + 1) * batch_size-1]
+    if(pre_sid!=curr_sid) or (state_reset_counter%params['reset_state']==0):
+      state_reset_counter=0
+      new_list=[numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2] # initial hidden state
+    else:
+        new_list=LStateList
+
     if params['model']=='lstm_joints':
         x=X[id_lst]
     else:
-        x_fl=[F_list_test[f] for f in id_lst]
+        x_fl=[F_list[f] for f in id_lst]
         x=multi_thr_load_batch(my_list=x_fl)
     y=Y[id_lst]
-    return (sid,H,C,x,y)
+    return (new_list,x,y,state_reset_counter)
 
 
 def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list, params, Y_train, X_train):

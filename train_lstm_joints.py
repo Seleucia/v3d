@@ -42,28 +42,33 @@ def train_rnn(params):
    u.log_write("Training started",params)
    val_counter=0
    best_loss=1000
+   state_reset_counter=0
    for epoch_counter in range(nb_epochs):
+      state_reset_counter+=1
       batch_loss = 0.
-      H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # initial hidden state
-      sid=0
+      LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2] # initial hidden state
+      LStateList_b=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2] # initial hidden state
       is_train=1
       x=[]
       y=[]
       for minibatch_index in range(n_train_batches):
           if(minibatch_index==0):
-              (sid,H,C,x,y)=du.prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, H, C, F_list_train, params, Y_train, X_train)
+              (LStateList_b,x,y,state_reset_counter)=du.prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list,LStateList_t, F_list_train, params, Y_train, X_train,state_reset_counter)
           pool = ThreadPool(processes=2)
-          async_t = pool.apply_async(model.train, (x, y,is_train,H,C))
-          async_b = pool.apply_async(du.prepare_lstm_batch, (index_train_list, minibatch_index, batch_size, S_Train_list, sid, H, C, F_list_train, params, Y_train, X_train))
+          args=(x, y,is_train)+LStateList_b
+          async_t = pool.apply_async(model.train, args)
+          async_b = pool.apply_async(du.prepare_lstm_batch, (index_train_list, minibatch_index, batch_size, S_Train_list,  LStateList_t, F_list_train, params, Y_train, X_train,state_reset_counter))
           pool.close()
           pool.join()
-          (loss,H,C) = async_t.get()  # get the return value from your function.
-          x=[]
-          y=[]
-          (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
-
+          result = async_t.get()  # get the return value from your function.
+          loss=result[0]
+          LStateList_t=result[1:len(result)]
+          (LStateList_b,x,y,state_reset_counter) = async_b.get()  # get the return value from your function.
           if(minibatch_index==n_train_batches-1):
-              loss,H,C= model.train(x, y,is_train,H,C)
+              args=(x, y,is_train)+LStateList_b
+              result= model.train(*args)
+              loss=result[0]
+              LStateList_t=result[1:len(result)]
 
           batch_loss += loss
       if params['shufle_data']==1:
@@ -72,27 +77,33 @@ def train_rnn(params):
       batch_loss/=n_train_batches
       s='TRAIN--> epoch %i | error %f'%(epoch_counter, batch_loss)
       u.log_write(s,params)
-      if(epoch_counter%3==0):
+      if(epoch_counter%1==0):
           print("Model testing")
+          state_reset_counter=0
           batch_loss3d = []
-          H=C=np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-          sid=0
+          LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2] # initial hidden state
+          LStateList_b=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2] # initial hidden state
           for minibatch_index in range(n_test_batches):
+             state_reset_counter+=1
              if(minibatch_index==0):
-               (sid,H,C,x,y)=du.prepare_lstm_batch(index_test_list, minibatch_index, batch_size, S_Test_list, sid, H, C, F_list_test, params, Y_test, X_test)
+               (H,C,x,y,state_reset_counter)=du.prepare_lstm_batch(index_test_list, minibatch_index, batch_size, S_Test_list, LStateList_t, F_list_test, params, Y_test, X_test,state_reset_counter)
              pool = ThreadPool(processes=2)
-             async_t = pool.apply_async(model.predictions, (x,is_train,H,C))
-             async_b = pool.apply_async(du.prepare_lstm_batch, (index_test_list, minibatch_index, batch_size, S_Test_list, sid, H, C, F_list_test, params, Y_test, X_test))
+             args=(x, y,is_train)+LStateList_b
+             async_t = pool.apply_async(model.predictions, args)
+             async_b = pool.apply_async(du.prepare_lstm_batch, (index_test_list, minibatch_index, batch_size, S_Test_list, LStateList_t, F_list_test, params, Y_test, X_test,state_reset_counter))
              pool.close()
              pool.join()
-             (pred,H,C) = async_t.get()  # get the return value from your function.
+             result = async_t.get()  # get the return value from your function.
+             pred=result[0]
+             LStateList_t=result[1:len(result)]
              loss3d =u.get_loss(params,y,pred)
              batch_loss3d.append(loss3d)
-             x=[]
-             y=[]
-             (sid,H,C,x,y) = async_b.get()  # get the return value from your function.
+             (LStateList_b,x,y,state_reset_counter) = async_b.get()  # get the return value from your function.
              if(minibatch_index==n_train_batches-1):
-                 pred,H,C= model.predictions(x,is_train,H,C)
+                 args=(x, y,is_train)+LStateList_b
+                 result = model.predictions(*args)
+                 pred=result[0]
+                 LStateList_t=result[1:len(result)]
                  loss3d =u.get_loss(params,y,pred)
                  batch_loss3d.append(loss3d)
 
