@@ -19,7 +19,8 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
-   dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
    # min_tr=0.000000
    # max_tr=8.190918
    # norm=2#numpy.linalg.norm(X_test)
