@@ -6,9 +6,9 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="cnnX" #running id, model
-   params["notes"]="lstm training with lstm 3 best model,titanx2 machine using" #running id
-   params["model"]="cnnX"#kccnr,dccnr
+   params["rn_id"]="lstm3" #running id, model
+   params["notes"]="lstm3 training with lstm 3 best model,titanx2 machine using" #running id
+   params["model"]="lstm3"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
    # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
@@ -64,7 +64,7 @@ def get_params():
        # params["caffe"]="/usr/local/caffe/python"
        params["WITH_GPU"]=True
        params['n_hidden']= 512
-       params['max_count']=100
+       params['max_count']=100000000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
