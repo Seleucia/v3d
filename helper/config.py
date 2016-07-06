@@ -15,7 +15,7 @@ def get_params():
    # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
 
    params['shufle_data']=1
-   params['batch_size']=100
+   params['batch_size']=500
    params['seq_length']= 1
    params["corruption_level"]=0.5
 

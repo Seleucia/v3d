@@ -19,8 +19,8 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
-   # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   # dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
    # min_tr=0.000000
    # max_tr=8.190918
    # norm=2#numpy.linalg.norm(X_test)
@@ -188,8 +188,10 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get
     img_folder=base_file.replace('joints16','h36m_rgb_img_crop')
     if istest==0:
         lst_act=['S1','S5','S6','S7','S8']
+        lst_act=['S7']
     else:
         lst_act=['S9','S11']
+        lst_act=['S11']
     X_D=[]
     Y_D=[]
     F_L=[]
@@ -344,11 +346,9 @@ def multi_thr_read_full_joints_sequence(base_file,max_count,p_count,sindex,istes
 def joints_sequence_tp1(base_file,max_count,p_count,sindex,istest,get_flist=False):
     #LSTM training with only joints
     if istest==0:
-        # lst_act=['S1','S5','S6','S7','S8']
-        lst_act=['S5','S6']
+        lst_act=['S1','S5','S6','S7','S8']
     else:
-        # lst_act=['S9','S11']
-        lst_act=['S11']
+        lst_act=['S9','S11']
     X_D=[]
     Y_D=[]
     F_L=[]
