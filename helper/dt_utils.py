@@ -390,7 +390,7 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,istest,get_flist=Fals
             x=residual*[X_d[-1]]
             # f=residual*[F_l[-1]]
             Y_d.extend(y)
-            X_d.append(x)
+            X_d.extend(x)
             if len(Y_d)==p_count and p_count>0:
                 S_L.append(seq_id)
                 Y_D.append(Y_d)
