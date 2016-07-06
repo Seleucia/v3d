@@ -341,6 +341,73 @@ def multi_thr_read_full_joints_sequence(base_file,max_count,p_count,sindex,istes
     X_D=Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
     return (X_D,Y_D,F_L,G_L,S_L)
 
+def joints_sequence_tp1(base_file,max_count,p_count,sindex,istest,get_flist=False):
+    #LSTM training with only joints
+    base_file=base_file.replace('img','joints16')
+    if istest==0:
+        lst_act=['S1','S5','S6','S7','S8']
+    else:
+        lst_act=['S9','S11']
+    X_D=[]
+    Y_D=[]
+    F_L=[]
+    G_L=[]
+    S_L=[]
+    seq_id=0
+    for actor in lst_act:
+        tmp_folder=base_file+actor+"/"
+        lst_sq=os.listdir(tmp_folder)
+        for sq in lst_sq:
+            X_d=[]
+            Y_d=[]
+            F_l=[]
+            seq_id+=1
+            tmp_folder=base_file+actor+"/"+sq+"/"
+            id_list=os.listdir(tmp_folder)
+            joint_list=[tmp_folder + p1 for p1 in id_list]
+            pool = ThreadPool(1000)
+            results = pool.map(load_file, joint_list)
+            pool.close()
+            for r in range(len(results)):
+                rs=results[r]
+                X_d.append(rs)
+                rs_1=results[r+1]
+                Y_d.append(rs_1)
+                if len(Y_d)==p_count and p_count>0:
+                        Y_D.append(Y_d)
+                        X_D.append(X_d)
+                        S_L.append(seq_id)
+                        Y_d=[]
+                        F_l=[]
+                if len(Y_D)>=max_count:
+                    X_D=numpy.asarray(X_D,dtype=numpy.float32)
+                    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                    return (X_D,Y_D,F_L,G_L,S_L)
+        if(len(Y_d)>0):
+            residual=len(Y_d)%p_count
+            residual=p_count-residual
+            y=residual*[Y_d[-1]]
+            x=residual*[X_d[-1]]
+            # f=residual*[F_l[-1]]
+            Y_d.extend(y)
+            X_d.append(x)
+            if len(Y_d)==p_count and p_count>0:
+                S_L.append(seq_id)
+                Y_D.append(Y_d)
+                X_D.append(X_d)
+                # F_L.append(F_l)
+                Y_d=[]
+                # F_l=[]
+                if len(Y_D)>=max_count:
+                    X_D=numpy.asarray(X_D,dtype=numpy.float32)
+                    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                    return (X_D,Y_D,F_L,G_L,S_L)
+
+
+    X_D=numpy.asarray(X_D,dtype=numpy.float32)
+    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+    return (X_D,Y_D,F_L,G_L,S_L)
+
 def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
     f_dir="/mnt/hc/auto/"
     if istest==0:
@@ -652,7 +719,7 @@ def prepare_cnn_lstm_batch(index_train_list, minibatch_index, batch_size, S_Trai
     y=Y[id_lst]
     return (sid,H,C,x,y)
 
-def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, H, C, F_list_test, params, Y_train, X_train):
+def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, H, C, F_list_test, params, Y, X):
     id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
     tmp_sid=S_Train_list[(minibatch_index + 1) * batch_size-1]
     if(sid==0):
@@ -660,13 +727,14 @@ def prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_li
     if(tmp_sid!=sid):
       sid=tmp_sid
       H=C=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # resetting initial state, since seq change
-    if params['model']=='lstm_skelton':
-        x=X_train[id_lst]
+    if params['model']=='lstm_joints':
+        x=X[id_lst]
     else:
         x_fl=[F_list_test[f] for f in id_lst]
         x=multi_thr_load_batch(my_list=x_fl)
-    y=Y_train[id_lst]
+    y=Y[id_lst]
     return (sid,H,C,x,y)
+
 
 def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list, params, Y_train, X_train):
     f_dir="/mnt/hc/auto/"
