@@ -14,7 +14,7 @@ class lstm_joints:
        sequence_length=params["seq_length"]
 
        lr=params['lr']
-       self.n_in = 2048
+       self.n_in = 48
        self.n_lstm = params['n_hidden']
        self.n_out = params['n_output']
 

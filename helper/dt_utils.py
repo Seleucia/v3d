@@ -188,10 +188,8 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get
     img_folder=base_file.replace('joints16','h36m_rgb_img_crop')
     if istest==0:
         lst_act=['S1','S5','S6','S7','S8']
-        lst_act=['S7']
     else:
         lst_act=['S9','S11']
-        lst_act=['S11']
     X_D=[]
     Y_D=[]
     F_L=[]
