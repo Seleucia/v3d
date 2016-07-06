@@ -379,6 +379,7 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,istest,get_flist=Fals
                         X_D.append(X_d)
                         S_L.append(seq_id)
                         Y_d=[]
+                        X_d=[]
                         F_l=[]
                 if len(Y_D)>=max_count:
                     X_D=numpy.asarray(X_D,dtype=numpy.float32)
@@ -398,6 +399,7 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,istest,get_flist=Fals
                 X_D.append(X_d)
                 # F_L.append(F_l)
                 Y_d=[]
+                X_d=[]
                 # F_l=[]
                 if len(Y_D)>=max_count:
                     X_D=numpy.asarray(X_D,dtype=numpy.float32)
