@@ -17,7 +17,7 @@ def get_params():
    params['mtype']="NO"
    params['shufle_data']=1
    params['nlayer']= 1 #LSTM
-   params['batch_size']=500
+   params['batch_size']=600
    params['seq_length']= 1
    params['reset_state']= 1000000000#-1=Never, n=every n batch
    params["corruption_level"]=0.5
@@ -63,7 +63,7 @@ def get_params():
        params["data_dir"]="/home/users/achilles/human36/joints16/" #joints with 16, cnn+lstm and autoencder training
        # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
        # params["caffe"]="/usr/local/caffe/python"
-       params['max_count']=1000
+       params['max_count']=10000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
