@@ -15,7 +15,7 @@ def get_params():
    # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
 
    params['shufle_data']=1
-   params['nlayer']= 1 #LSTM
+   params['nlayer']= 3 #LSTM
    params['batch_size']=1
    params['seq_length']= 50
    params['reset_state']= 10#-1=Never, n=every n batch
