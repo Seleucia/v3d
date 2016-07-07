@@ -728,6 +728,7 @@ def prepare_lstm_batch(index_list, minibatch_index, batch_size, S_list,LStateLis
       print 'New batch'
       print curr_sid
       print state_reset_counter
+      print minibatch_index
       state_reset_counter=0
       new_list=[numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2] # initial hidden state
     else:
