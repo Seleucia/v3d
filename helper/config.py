@@ -6,8 +6,8 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="gredient_clipp" #running id, model
-   params["notes"]="lstm training with  with gredient clipping, no resetting" #running id
+   params["rn_id"]="gredient_clipprs10" #running id, model
+   params["notes"]="lstm training with  with gredient clipping, resetting 10 batch" #running id
    params["model"]="lstm"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
@@ -19,7 +19,7 @@ def get_params():
    params['nlayer']= 1 #LSTM
    params['batch_size']=1
    params['seq_length']= 50
-   params['reset_state']= 10000000000000#-1=Never, n=every n batch
+   params['reset_state']= 10#-1=Never, n=every n batch
    params["corruption_level"]=0.5
 
    #system settings
