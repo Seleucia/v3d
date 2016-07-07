@@ -6,7 +6,7 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="lstm3layer" #running id, model
+   params["rn_id"]="lstm3layer_std008" #running id, model
    params["notes"]="lstm3layer training with  with NO gredient clipping, NO resetting10" #running id
    params["model"]="train_lstm_3layer"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
