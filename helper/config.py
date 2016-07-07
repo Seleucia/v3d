@@ -17,7 +17,7 @@ def get_params():
    params['mtype']="NO"
    params['shufle_data']=1
    params['nlayer']= 1 #LSTM
-   params['batch_size']=750
+   params['batch_size']=500
    params['seq_length']= 1
    params['reset_state']= 1000000000#-1=Never, n=every n batch
    params["corruption_level"]=0.5
