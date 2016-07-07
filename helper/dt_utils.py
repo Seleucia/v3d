@@ -730,7 +730,7 @@ def prepare_lstm_batch(index_list, minibatch_index, batch_size, S_list,LStateLis
     else:
         new_list=LStateList
 
-    if params['model']=='lstm_joints':
+    if params['mtype']=="seq":
         x=X[id_lst]
     else:
         x_fl=[F_list[f] for f in id_lst]
