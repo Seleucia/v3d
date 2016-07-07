@@ -720,7 +720,7 @@ def prepare_cnn_lstm_batch(index_train_list, minibatch_index, batch_size, S_Trai
     y=Y[id_lst]
     return (sid,H,C,x,y)
 
-def prepare_lstm_batch(index_list, minibatch_index, batch_size, S_list,LStateList, H, C, F_list, params, Y, X,state_reset_counter):
+def prepare_lstm_batch(index_list, minibatch_index, batch_size, S_list,LStateList, F_list, params, Y, X,state_reset_counter):
     id_lst=index_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
     pre_sid=S_list[(minibatch_index) * batch_size-1]
     curr_sid=S_list[(minibatch_index + 1) * batch_size-1]
