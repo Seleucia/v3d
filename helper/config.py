@@ -6,9 +6,9 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="lstm3layer_std008" #running id, model
-   params["notes"]="lstm3layer training with  with NO gredient clipping, NO resetting10" #running id
-   params["model"]="train_lstm_3layer"#kccnr,dccnr
+   params["rn_id"]="del_cnn training." #running id, model
+   params["notes"]="cnn4 best model training" #running id
+   params["model"]="cnn4"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
    # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
@@ -63,7 +63,7 @@ def get_params():
        params["data_dir"]="/home/users/achilles/human36/joints16/" #joints with 16, cnn+lstm and autoencder training
        # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
        # params["caffe"]="/usr/local/caffe/python"
-       params['max_count']=1000000000000
+       params['max_count']=1000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
