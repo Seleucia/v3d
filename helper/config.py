@@ -6,19 +6,19 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="cnn4_training." #running id, model
-   params["notes"]="cnn4 best model training, learning rate 0.0001" #running id
-   params["model"]="cnn4"#kccnr,dccnr
+   params["rn_id"]="lstm_lowlr." #running id, model
+   params["notes"]="lstm training with low learnign rate learning rate 0.0001" #running id
+   params["model"]="lstm"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
    # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
    # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
 
-   params['mtype']="NO"
-   params['shufle_data']=1
+   params['mtype']="seq"
+   params['shufle_data']=0
    params['nlayer']= 1 #LSTM
-   params['batch_size']=500
-   params['seq_length']= 1
+   params['batch_size']=1
+   params['seq_length']= 50
    params['reset_state']= 1000000000#-1=Never, n=every n batch
    params["corruption_level"]=0.5
 
