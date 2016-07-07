@@ -55,7 +55,7 @@ def train_rnn(params):
           if(minibatch_index==0):
               (LStateList_b,x,y,state_reset_counter)=du.prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list,LStateList_t, F_list_train, params, Y_train, X_train,state_reset_counter)
           pool = ThreadPool(processes=2)
-          args=(x, y,is_train)+LStateList_b
+          args=(x, y,is_train)+tuple(LStateList_b)
           async_t = pool.apply_async(model.train, args)
           async_b = pool.apply_async(du.prepare_lstm_batch, (index_train_list, minibatch_index, batch_size, S_Train_list,  LStateList_t, F_list_train, params, Y_train, X_train,state_reset_counter))
           pool.close()
@@ -65,7 +65,7 @@ def train_rnn(params):
           LStateList_t=result[1:len(result)]
           (LStateList_b,x,y,state_reset_counter) = async_b.get()  # get the return value from your function.
           if(minibatch_index==n_train_batches-1):
-              args=(x, y,is_train)+LStateList_b
+              args=(x, y,is_train)+tuple(LStateList_b)
               result= model.train(*args)
               loss=result[0]
               LStateList_t=result[1:len(result)]
@@ -86,9 +86,9 @@ def train_rnn(params):
           for minibatch_index in range(n_test_batches):
              state_reset_counter+=1
              if(minibatch_index==0):
-               (H,C,x,y,state_reset_counter)=du.prepare_lstm_batch(index_test_list, minibatch_index, batch_size, S_Test_list, LStateList_t, F_list_test, params, Y_test, X_test,state_reset_counter)
+               (LStateList_b,x,y,state_reset_counter)=du.prepare_lstm_batch(index_test_list, minibatch_index, batch_size, S_Test_list, LStateList_t, F_list_test, params, Y_test, X_test,state_reset_counter)
              pool = ThreadPool(processes=2)
-             args=(x, y,is_train)+LStateList_b
+             args=(x, y,is_train)+tuple(LStateList_b)
              async_t = pool.apply_async(model.predictions, args)
              async_b = pool.apply_async(du.prepare_lstm_batch, (index_test_list, minibatch_index, batch_size, S_Test_list, LStateList_t, F_list_test, params, Y_test, X_test,state_reset_counter))
              pool.close()
@@ -100,7 +100,7 @@ def train_rnn(params):
              batch_loss3d.append(loss3d)
              (LStateList_b,x,y,state_reset_counter) = async_b.get()  # get the return value from your function.
              if(minibatch_index==n_train_batches-1):
-                 args=(x, y,is_train)+LStateList_b
+                 args=(x, y,is_train)+tuple(LStateList_b)
                  result = model.predictions(*args)
                  pred=result[0]
                  LStateList_t=result[1:len(result)]
