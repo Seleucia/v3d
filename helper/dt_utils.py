@@ -724,9 +724,10 @@ def prepare_lstm_batch(index_list, minibatch_index, batch_size, S_list,LStateLis
     id_lst=index_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
     pre_sid=S_list[(minibatch_index) * batch_size-1]
     curr_sid=S_list[(minibatch_index + 1) * batch_size-1]
-    if(pre_sid!=curr_sid) or (state_reset_counter%params['reset_state']==0):
+    if(pre_sid!=curr_sid) or ((state_reset_counter%params['reset_state']==0) and state_reset_counter*params['reset_state']>0):
       print 'New batch'
       print curr_sid
+      print pre_sid
       print state_reset_counter
       print minibatch_index
       state_reset_counter=0
