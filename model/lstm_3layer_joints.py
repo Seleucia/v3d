@@ -52,7 +52,7 @@ class lstm_3layer_joints:
        p_1=0.5
        mask= rng.binomial(size=mask_shape, p=p_1, dtype=X.dtype)
 
-       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.004, avg=0.0,dtype=theano.config.floatX)
+       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.002, avg=0.0,dtype=theano.config.floatX)
        X_train=noise+X
        X_tilde= T.switch(T.neq(is_train, 0), X_train, X)
 
