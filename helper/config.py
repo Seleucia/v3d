@@ -7,7 +7,7 @@ def get_params():
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
    params["rn_id"]="del_cnn training." #running id, model
-   params["notes"]="cnn4 best model training" #running id
+   params["notes"]="cnn4 best model training, learning rate 0.0001" #running id
    params["model"]="cnn4"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
@@ -36,7 +36,7 @@ def get_params():
 
    # learning parameters
    params['momentum']=0.9    # the params for momentum
-   params['lr']=0.001
+   params['lr']=0.0001
    params['learning_rate_decay']= 0.998
    params['squared_filter_length_limit']=15.0
    params['n_epochs']=25600
