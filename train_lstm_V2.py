@@ -44,13 +44,13 @@ def train_rnn(params):
    best_loss=1000
    state_reset_counter=0
    for epoch_counter in range(nb_epochs):
-      state_reset_counter+=1
       batch_loss = 0.
       LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2] # initial hidden state
       is_train=1
       x=[]
       y=[]
       for minibatch_index in range(n_train_batches):
+          state_reset_counter+=1
           (LStateList_b,x,y,state_reset_counter)=du.prepare_lstm_batch(index_train_list, minibatch_index, batch_size, S_Train_list,LStateList_t, F_list_train, params, Y_train, X_train,state_reset_counter)
           args=(x, y,is_train)+tuple(LStateList_b)
           result= model.train(*args)
