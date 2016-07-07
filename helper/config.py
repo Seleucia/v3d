@@ -16,7 +16,7 @@ def get_params():
 
    params['mtype']="seq"
    params['shufle_data']=1
-   params['nlayer']= 3 #LSTM
+   params['nlayer']= 1 #LSTM
    params['batch_size']=1
    params['seq_length']= 50
    params['reset_state']= 100000000000#-1=Never, n=every n batch
