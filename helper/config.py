@@ -6,8 +6,8 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="lstm_std008" #running id, model
-   params["notes"]="lstm training with  std=0.008, orijinal was 0.002" #running id
+   params["rn_id"]="lstmreset" #running id, model
+   params["notes"]="lstm training with  resetting" #running id
    params["model"]="lstm"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
@@ -19,7 +19,7 @@ def get_params():
    params['nlayer']= 1 #LSTM
    params['batch_size']=1
    params['seq_length']= 50
-   params['reset_state']= 100000000000#-1=Never, n=every n batch
+   params['reset_state']= 10#-1=Never, n=every n batch
    params["corruption_level"]=0.5
 
    #system settings
@@ -40,7 +40,7 @@ def get_params():
    params['learning_rate_decay']= 0.998
    params['squared_filter_length_limit']=15.0
    params['n_epochs']=25600
-   params['n_hidden']= 1000
+   params['n_hidden']= 512
    params['n_output']= 48
 
    if(platform.node()=="coskunh"):
@@ -57,23 +57,17 @@ def get_params():
        params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
        # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
        # params["caffe"]="/usr/local/caffe/python"
-       params["WITH_GPU"]=True
-       params['n_hidden']= 512
        params['max_count']=10000000000
 
    if(platform.node()=="titanx2"):
        params["data_dir"]="/home/users/achilles/human36/joints16/" #joints with 16, cnn+lstm and autoencder training
        # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
        # params["caffe"]="/usr/local/caffe/python"
-       params["WITH_GPU"]=True
-       params['n_hidden']= 512
        params['max_count']=1000000000000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
        params["data_dir"]="/mnt/hc/joints16/"
-       params["WITH_GPU"]=True
-       params['n_hidden']= 256
        params['max_count']=1000000000
 
    if(platform.node()=="cmp-comp"):

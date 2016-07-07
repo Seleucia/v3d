@@ -38,7 +38,7 @@ class lstm_joints:
        H = T.matrix(name="H",dtype=dtype) # initial hidden state
        C = T.matrix(name="C",dtype=dtype) # initial hidden state
 
-       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.008, avg=0.0,dtype=theano.config.floatX)
+       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.002, avg=0.0,dtype=theano.config.floatX)
        X_train=noise+X
 
        X_tilde= T.switch(T.neq(is_train, 0), X_train, X)
