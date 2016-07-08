@@ -207,7 +207,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
         tmp_folder=joints_file+actor+"/"
         lst_sq=os.listdir(tmp_folder)
         for sq in lst_sq:
-            if 'Photo' not in sq:
+            if 'Greeting' not in sq:
                 continue
             # X_d=[]
             # Y_d=[]
