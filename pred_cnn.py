@@ -59,13 +59,6 @@ sq_loss_lst=[]
 for minibatch_index in range(n_test_batches):
    x=X[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
    y=Y[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-   # x=np.asarray(x[0])
-   # y=np.asarray(y[0])
-   # x=np.expand_dims(x,axis=0)
-   # y=np.expand_dims(y,axis=0)
-
-   last_index=first_index+sum([len(i) for i in y])
-   first_index=last_index
    pred = model.predictions(x,is_train)
    # print("Prediction done....")
    if residual>0:
@@ -76,19 +69,14 @@ for minibatch_index in range(n_test_batches):
 #   du.write_predictions(params,pred,n_list)
    #u.write_pred(pred,minibatch_index,G_list,params)
    loss=np.nanmean(np.abs(pred -y))*2
-   (loss3d,l_list,s_list) =u.get_loss(y,pred)
+   loss3d =u.get_loss(params,y,pred)
    #print(s_list)
-   sq_loss_lst.append(s_list)
-   loss_list=loss_list+l_list
    batch_loss += loss
    batch_loss3d += loss3d
-sq_loss_lst=np.nanmean(sq_loss_lst,axis=0)
 batch_loss/=n_test_batches
 batch_loss3d/=n_test_batches
 print "============================================================================"
 print sq_loss_lst
-s ='error %f, %f, %f,%f'%(batch_loss,batch_loss3d,n_test_batches,len(loss_list))
+s ='error %f, %f, %f,%f'%(batch_loss,batch_loss3d,n_test_batches)
 print (s)
-pu.plot_histograms(loss_list)
-pu.plot_error_frame(loss_list)
 #pu.plot_cumsum(loss_list)

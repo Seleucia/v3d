@@ -19,8 +19,8 @@ def load_pose(params,load_mode=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
-   # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   # dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
 
    if(load_mode==2):
        mode=2
@@ -108,13 +108,17 @@ def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_fl
 
     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),F_L,G_L,S_L)
 
-def multi_thr_read_full_joints_sequence_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
+def multi_thr_read_full_joints_sequence_cnn(base_file,max_count,p_count,sindex,mode,get_flist=False):
     joints_file=base_file
     img_folder=base_file.replace('joints16','h36m_rgb_img_crop')
-    if istest==0:
+    if mode==0:#load training data.
         lst_act=['S1','S5','S6','S7','S8']
-    else:
+    elif mode==1:#load test data
         lst_act=['S9','S11']
+    elif mode==2:#load full data
+        lst_act=['S1','S5','S6','S7','S8','S9','S11']
+    else:
+        raise Exception('You should pass mode argument for data loading.!') #
     X_D=[]
     Y_D=[]
     F_L=[]
@@ -180,14 +184,18 @@ def multi_thr_read_full_joints_sequence_cnn(base_file,max_count,p_count,sindex,i
 
     return (numpy.asarray(X_D,dtype=numpy.float32),numpy.asarray(Y_D,dtype=numpy.float32),numpy.asarray(F_L),G_L,S_L)
 
-def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,istest,get_flist=False):
+def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_flist=False):
     #CNN training with only autoencoder layer
     joints_file=base_file
     img_folder=base_file.replace('joints16','h36m_rgb_img_crop')
-    if istest==0:
+    if mode==0:#load training data.
         lst_act=['S1','S5','S6','S7','S8']
-    else:
+    elif mode==1:#load test data
         lst_act=['S9','S11']
+    elif mode==2:#load full data
+        lst_act=['S1','S5','S6','S7','S8','S9','S11']
+    else:
+        raise Exception('You should pass mode argument for data loading.!') #
     X_D=[]
     Y_D=[]
     F_L=[]
