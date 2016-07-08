@@ -456,7 +456,7 @@ def write_params(mparams,params,ext):
 def read_params(params):
     wd=params["wd"]
 
-    if(len(params['mfile'].split(','))>1):
+    if(len(params['mfile'].split(','))<2):
         with open(wd+"/cp/"+params['mfile']) as f:
             mparams=pickle.load(f)
             return mparams
