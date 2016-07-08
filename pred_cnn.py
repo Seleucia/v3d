@@ -21,7 +21,7 @@ is_train=0
 params['seq_length']= 1
 params['batch_size']=10
 batch_size=params['batch_size']
-params['max_count']=100
+params['max_count']=1000000000
 
 u.prep_pred_file(params)
 sindex=0
