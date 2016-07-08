@@ -25,9 +25,9 @@ def load_pose(params,load_mode=0,only_pose=1,sindex=0):
    if(load_mode==2):
        mode=2
        get_flist=False
-       (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       (X,Y,F_list,G_list,S_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Full data set loaded"
-       return (X_test,Y_test,F_list_test,G_list_test,S_Test_list)
+       return (X,Y,F_list,G_list,S_list)
 
    elif load_mode==1:#load only test
        mode=1
