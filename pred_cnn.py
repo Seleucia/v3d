@@ -52,8 +52,8 @@ print ("Model loading started")
 model= model_provider.get_model_pretrained(params,rng)
 print("Prediction started")
 batch_loss = 0.
-batch_loss3d = 0.
-batch_bb_loss = 0.
+batch_loss3d = []
+batch_loss = 0.
 loss_list=[]
 last_index=0
 first_index=0
@@ -68,9 +68,11 @@ for minibatch_index in range(n_batches):
    pool.join()
    pred = async_t.get()  # get the return value from your function.
    loss3d =u.get_loss(params,y,pred)
+   loss=np.nanmean(np.abs(pred -y))
+   batch_loss3d.append(loss3d)
+   batch_loss.append(loss)
    x=[]
    y=[]
-   batch_loss3d.append(loss3d)
    (x,y) = async_b.get()  # get the return value from your function.
 
    if(minibatch_index==n_batches-1):
@@ -82,13 +84,9 @@ for minibatch_index in range(n_batches):
 
 #   du.write_predictions(params,pred,n_list)
    #u.write_pred(pred,minibatch_index,G_list,params)
-   loss=np.nanmean(np.abs(pred -y))*2
-   loss3d =u.get_loss(params,y,pred)
-   #print(s_list)
-   batch_loss += loss
-   batch_loss3d += loss3d
-batch_loss/=n_batches
-batch_loss3d/=n_batches
+
+batch_loss=np.mean(batch_loss)
+batch_loss3d=np.mean(batch_loss3d)
 print "============================================================================"
 print sq_loss_lst
 s ='error %f, %f, %f,%f'%(batch_loss,batch_loss3d,n_batches)
