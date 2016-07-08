@@ -60,7 +60,7 @@ def get_model(params,rng):
     elif(params["model"]=="lstm_skelton"):
         model = lstm_skelton(rng=rng,params=params,optimizer=Adam)
     else:
-        model=None
+        raise Exception('Wrong model calling....') #
     return model
 
 def get_model_pretrained(params,rng):
