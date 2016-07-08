@@ -44,11 +44,11 @@ class Adam():
         self.e=e
         self.gparams = T.grad(self.cost, self.params)
         # Gradient clipping, not helping for te results.....
-        # clip_lower_bound=-1
-        # clip_upper_bound=1
-        # r_params=self.gparams[0:15]
-        # r_params =[T.clip(g, clip_lower_bound, clip_upper_bound) for g in r_params]
-        # self.gparams[0:15]=r_params
+        clip_lower_bound=-1
+        clip_upper_bound=1
+        r_params=self.gparams[0:15]
+        r_params =[T.clip(g, clip_lower_bound, clip_upper_bound) for g in r_params]
+        self.gparams[0:15]=r_params
 
     def getUpdates(self):
         updates = []
