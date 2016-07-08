@@ -53,7 +53,7 @@ model= model_provider.get_model_pretrained(params,rng)
 print("Prediction started")
 batch_loss = 0.
 batch_loss3d = []
-batch_loss = 0.
+batch_loss = []
 loss_list=[]
 last_index=0
 first_index=0
