@@ -193,7 +193,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
     elif mode==1:#load test data
         lst_act=['S9','S11']
     elif mode==2:#load full data
-        lst_act=['S1','S5','S6','S7','S8','S9','S11']
+        lst_act=['S11','S1','S5','S6','S7','S8','S9']
     else:
         raise Exception('You should pass mode argument for data loading.!') #
     X_D=[]

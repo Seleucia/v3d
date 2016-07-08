@@ -9,6 +9,7 @@ params= config.get_params()
 params["model"]="cnn4"
 params['mfile']= "autoenconder_auto_0.p"
 params["data_dir"]="/mnt/Data1/hc/joints16/"
+params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
 # params["data_dir"]="/home/coskun/PycharmProjects/data/rnn/180k/"
 #0, error 0.087360, 0.177598, 20.323595
 #error 0.078438, 0.161955, 16.453038
@@ -42,10 +43,10 @@ if residual>0:
    n_test = len(Y)
 
 # n_test_batches =n_test/ batch_size
-n_test_batches = len(X)
-n_test_batches /= batch_size
+n_batches = len(X)
+n_batches /= batch_size
 
-print("Test sample size: %i, Batch size: %i, test batch size: %i"%(X_test.shape[0]*X_test.shape[1],batch_size,n_test_batches))
+print("Test sample size: %i, Batch size: %i, #batch: %i"%(len(X),batch_size,n_batches))
 print ("Model loading started")
 model= model_provider.get_model_pretrained(params,rng)
 print("Prediction started")
@@ -56,13 +57,13 @@ loss_list=[]
 last_index=0
 first_index=0
 sq_loss_lst=[]
-for minibatch_index in range(n_test_batches):
+for minibatch_index in range(n_batches):
    x=X[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
    y=Y[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
    pred = model.predictions(x,is_train)
    # print("Prediction done....")
    if residual>0:
-      if(minibatch_index==n_test_batches-1):
+      if(minibatch_index==n_batches-1):
          pred = pred[0:(len(pred)-residual)]
          y=y[0:(len(y)-residual)]
 
@@ -73,10 +74,10 @@ for minibatch_index in range(n_test_batches):
    #print(s_list)
    batch_loss += loss
    batch_loss3d += loss3d
-batch_loss/=n_test_batches
-batch_loss3d/=n_test_batches
+batch_loss/=n_batches
+batch_loss3d/=n_batches
 print "============================================================================"
 print sq_loss_lst
-s ='error %f, %f, %f,%f'%(batch_loss,batch_loss3d,n_test_batches)
+s ='error %f, %f, %f,%f'%(batch_loss,batch_loss3d,n_batches)
 print (s)
 #pu.plot_cumsum(loss_list)
