@@ -6,8 +6,8 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="lstm_lowlr." #running id, model
-   params["notes"]="lstm training with low learnign rate learning rate 0.0001" #running id
+   params["rn_id"]="lstm_bs100_sq100." #running id, model
+   params["notes"]="lstm training with low learnign rate  and batch size 100 and seqeunce 100" #running id
    params["model"]="lstm"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
