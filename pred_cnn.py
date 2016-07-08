@@ -9,7 +9,7 @@ params= config.get_params()
 params["model"]="cnn4"
 params['mfile']= "autoenconder_auto_0.p"
 params["data_dir"]="/mnt/Data1/hc/joints16/"
-params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
+# params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
 # params["data_dir"]="/home/coskun/PycharmProjects/data/rnn/180k/"
 #0, error 0.087360, 0.177598, 20.323595
 #error 0.078438, 0.161955, 16.453038
