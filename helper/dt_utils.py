@@ -367,7 +367,7 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
             tmp_folder=base_file+actor+"/"+sq+"/"
             id_list=os.listdir(tmp_folder)
             joint_list=[tmp_folder + p1 for p1 in id_list]
-            pool = ThreadPool(500)
+            pool = ThreadPool(1000)
             results = pool.map(load_file, joint_list)
             pool.close()
             for r in range(len(results)-1):
