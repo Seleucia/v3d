@@ -1,4 +1,5 @@
 import numpy as np
+from multiprocessing.pool import ThreadPool
 import helper.config as config
 import model.model_provider as model_provider
 import helper.dt_utils as du
@@ -26,24 +27,24 @@ u.prep_pred_file(params)
 sindex=0
 (X,Y,F_list,G_list,S_list)=du.load_pose(params,load_mode=2,sindex=0)
 
-n_test = len(X)
+n_test = len(Y)
 residual=n_test%batch_size
 #residual=0
 if residual>0:
    residual=batch_size-residual
-   X_List=X.tolist()
+   F_list=F_list.tolist()
    Y_List=Y.tolist()
-   x=X_List[-1]
+   f=F_list[-1]
    y=Y_List[-1]
    for i in range(residual):
-      X_List.append(x)
+      F_list.append(f)
       Y_List.append(y)
-   X=np.asarray(X_List)
+   F_list=np.asarray(F_list)
    Y=np.asarray(Y_List)
    n_test = len(Y)
 
 # n_test_batches =n_test/ batch_size
-n_batches = len(X)
+n_batches = len(Y)
 n_batches /= batch_size
 
 print("Test sample size: %i, Batch size: %i, #batch: %i"%(len(X),batch_size,n_batches))
@@ -58,14 +59,26 @@ last_index=0
 first_index=0
 sq_loss_lst=[]
 for minibatch_index in range(n_batches):
-   x=X[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-   y=Y[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-   pred = model.predictions(x,is_train)
-   # print("Prediction done....")
-   if residual>0:
-      if(minibatch_index==n_batches-1):
-         pred = pred[0:(len(pred)-residual)]
-         y=y[0:(len(y)-residual)]
+   if(minibatch_index==0):
+      x,y=du.prepare_cnn_batch(minibatch_index, batch_size, F_list, Y)
+   pool = ThreadPool(processes=2)
+   async_t = pool.apply_async(model.predictions, (x,is_train))
+   async_b = pool.apply_async(du.prepare_cnn_batch, (minibatch_index, batch_size, F_list, Y))
+   pool.close()
+   pool.join()
+   pred = async_t.get()  # get the return value from your function.
+   loss3d =u.get_loss(params,y,pred)
+   x=[]
+   y=[]
+   batch_loss3d.append(loss3d)
+   (x,y) = async_b.get()  # get the return value from your function.
+
+   if(minibatch_index==n_batches-1):
+      pred= model.predictions(x,is_train)
+      pred = pred[0:(len(pred)-residual)]
+      y=y[0:(len(y)-residual)]
+      loss3d =u.get_loss(params,y,pred)
+      batch_loss3d.append(loss3d)
 
 #   du.write_predictions(params,pred,n_list)
    #u.write_pred(pred,minibatch_index,G_list,params)
