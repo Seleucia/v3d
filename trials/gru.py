@@ -1,38 +1,49 @@
-import cv2
-print(cv2.__version__)
+import matplotlib.pyplot as plt
+import numpy as np
+import tensorflow as tf
+import math
 
-fl='/mnt/Data1/hc/rgb/S1/Videos/Directions.55011271.mp4'
-sv='frms/'
-vidcap = cv2.VideoCapture('/mnt/Data1/hc/rgb/S1/Videos/Directions.55011271.mp4')
-vidcap = cv2.VideoCapture('/home/coskun/PycharmProjects/RNNPoseV2/pred/3.6m/output.avi')
-success,image = vidcap.read()
-print vidcap.isOpened()
-import os, sys
-from PIL import Image
+NSAMPLE = 1000
+x_data = np.float32(np.random.uniform(-10.5, 10.5, (1, NSAMPLE))).T
+r_data = np.float32(np.random.normal(size=(NSAMPLE,1)))
+y_data = np.float32(np.sin(0.75*x_data)*7.0+x_data*0.5+r_data*1.0)
 
-
-# a, b, c = os.popen3("ffmpeg -i "+fl)
-# out = c.read()
-# dp = out.index("Duration: ")
-# duration = out[dp+10:dp+out[dp:].index(",")]
-# hh, mm, ss = map(float, duration.split(":"))
-# total = (hh*60 + mm)*60 + ss
-# for i in xrange(100):
-#     # t = (i + 1) * 100 / 10
-#     # os.system("ffmpeg -i test.avi -ss %0.3fs frame%i.png" % (t, i))
-#     cmd="ffmpeg -i %s -vcodec png -ss %i -vframes 1 -an -f rawvideo frms/frame%i.png" % (fl,i, i)
-#     # print(cmd)
-#     os.system(cmd)
-#     # ffmpeg -i test.avi -vcodec png -ss 10 -vframes 1 -an -f rawvideo test.png
-#
+# plt.figure(figsize=(8, 8))
+# plot_out = plt.plot(x_data,y_data,'ro',alpha=0.3)
+# plt.show()/
 
 
+x = tf.placeholder(dtype=tf.float32, shape=[None,1])
+y = tf.placeholder(dtype=tf.float32, shape=[None,1])
 
+NHIDDEN = 20
+W = tf.Variable(tf.random_normal([1,NHIDDEN], stddev=1.0, dtype=tf.float32))
+b = tf.Variable(tf.random_normal([1,NHIDDEN], stddev=1.0, dtype=tf.float32))
 
-count = 0
-success = True
-while success:
-  success,image = vidcap.read()
-  print 'Read a new frame: ', success
-  cv2.imwrite("frms/frame%d.jpg" % count, image)     # save frame as JPEG file
-  count += 1
+W_out = tf.Variable(tf.random_normal([NHIDDEN,1], stddev=1.0, dtype=tf.float32))
+b_out = tf.Variable(tf.random_normal([1,1], stddev=1.0, dtype=tf.float32))
+
+hidden_layer = tf.nn.tanh(tf.matmul(x, W) + b)
+y_out = tf.matmul(hidden_layer,W_out) + b_out
+
+lossfunc = tf.nn.l2_loss(y_out-y);
+
+train_op = tf.train.RMSPropOptimizer(learning_rate=0.1, decay=0.8).minimize(lossfunc)
+
+sess = tf.InteractiveSession()
+sess.run(tf.initialize_all_variables())
+
+NEPOCH = 1000
+for i in range(NEPOCH):
+  sess.run(train_op,feed_dict={x:y_data, y: x_data})
+
+print 'Training finished...'
+x_test = np.float32(np.arange(-10.5,10.5,0.1))
+x_test = x_test.reshape(x_test.size,1)
+y_test = sess.run(y_out,feed_dict={x: x_test})
+
+plt.figure(figsize=(8, 8))
+plt.plot(y_data,x_data,'ro', x_test,y_test,'bo',alpha=0.3)
+plt.show()
+
+sess.close()

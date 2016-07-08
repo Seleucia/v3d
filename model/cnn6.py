@@ -10,7 +10,7 @@ from helper.optimizer import RMSprop
 # theano.config.exception_verbosity="high"
 dtype = T.config.floatX
 
-class cnn5(object):
+class cnn6(object):
     def __init__(self,rng,params,cost_function='mse',optimizer = RMSprop):
 
         lr=params["lr"]
@@ -38,18 +38,18 @@ class cnn5(object):
 
         #Layer2: conv2+pool
         subsample=(1,1)
-        filter_shape=(256,p1.output_shape[1],3,3)
+        filter_shape=(128,p1.output_shape[1],3,3)
         c2=ConvLayer(rng, dl1.output, filter_shape,p1.output_shape,border_mode,subsample, activation=nn.relu)
         p2=PoolLayer(c2.output,pool_size=pool_size,input_shape=c2.output_shape)
 
         #Layer3: conv2+pool
-        filter_shape=(256,p2.output_shape[1],3,3)
+        filter_shape=(128,p2.output_shape[1],3,3)
         c3=ConvLayer(rng, p2.output,filter_shape,p2.output_shape,border_mode,subsample, activation=nn.relu)
         p3=PoolLayer(c3.output,pool_size=pool_size,input_shape=c3.output_shape)
 
 
         #Layer4: conv2+pool
-        filter_shape=(128,p3.output_shape[1],3,3)
+        filter_shape=(64,p3.output_shape[1],3,3)
         c4=ConvLayer(rng, p3.output,filter_shape,p3.output_shape,border_mode,subsample, activation=nn.relu)
         p4=PoolLayer(c4.output,pool_size=pool_size,input_shape=c4.output_shape)
 
@@ -57,11 +57,12 @@ class cnn5(object):
         n_in= reduce(lambda x, y: x*y, p4.output_shape[1:])
         x_flat = p4.output.flatten(2)
 
-        h1=HiddenLayer(rng,x_flat,n_in,1024,activation=nn.relu)
-        h2=HiddenLayer(rng,h1.output,1024,1024,activation=nn.relu)
+        h1=HiddenLayer(rng,x_flat,n_in,2048,activation=nn.relu)
+
+        h2=HiddenLayer(rng,h1.output,2048,2048,activation=nn.relu)
 
         #Layer6: hidden
-        lreg=LogisticRegression(rng,h2.output,1024,params['n_output'])
+        lreg=LogisticRegression(rng,h2.output,2048,params['n_output'])
         self.output = lreg.y_pred
 
         self.params =c1.params+c2.params+c3.params+c4.params+h1.params+h2.params+lreg.params

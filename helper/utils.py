@@ -27,7 +27,7 @@ def conv_output_length(input_length, filter_size, border_mode, stride):
         return None
     assert border_mode in {'full', 'valid','same'}
     if border_mode == 'full':
-        output_length = input_length++ filter_size-1
+        output_length = input_length+ filter_size-1
     elif border_mode == 'valid':
         output_length = input_length - filter_size + 1
     elif border_mode == 'same':

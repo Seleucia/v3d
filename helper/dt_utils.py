@@ -9,7 +9,7 @@ import theano.tensor as T
 from random import randint
 dtype = T.config.floatX
 
-def load_pose(params,only_test=0,only_pose=1,sindex=0):
+def load_pose(params,load_mode=0,only_pose=1,sindex=0):
    data_dir=params["data_dir"]
    max_count=params["max_count"]
    seq_length=params["seq_length"]
@@ -21,35 +21,33 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
    dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
-   # min_tr=0.000000
-   # max_tr=8.190918
-   # norm=2#numpy.linalg.norm(X_test)
 
-   # min_tr=0.000000
-   # max_tr=3
-   # norm=2#numpy.linalg.norm(X_test)
+   if(load_mode==2):
+       mode=2
+       get_flist=False
+       (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       print "Full data set loaded"
+       return (X_test,Y_test,F_list_test,G_list_test,S_Test_list)
 
-   istest=True
-   get_flist=False
-   F_list=[]
-   G_list=[]
-   S_Test_list=[]
-   (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,istest,get_flist)
-   print "Test set loaded"
-   # Y_test=Y_test/norm
-   # X_test=(X_test -min_tr) / (max_tr -min_tr)
-   if only_test==1:
-      return (X_test,Y_test,F_list_test,G_list_test,S_Test_list)
+   elif load_mode==1:#load only test
+       mode=1
+       get_flist=False
+       (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       print "Test set loaded"
+       return (X_test,Y_test,F_list_test,G_list_test,S_Test_list)
 
-   istest=False
-   get_flist=False
-   X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,istest,get_flist)
-   print "Training set loaded"
+   elif load_mode==0:#Load training and testing seperate list
+       mode=0
+       get_flist=False
+       X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       print "Test set loaded"
+       mode=1
+       (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       print "Training set loaded"
+       return (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)
+   else:
+        raise Exception('You should pass mode argument for data loading.!') #
 
-   #print("min: %f, max: %f "%(numpy.min(X_train),numpy.max(X_train)))
-   # Y_train=Y_train/norm
-   # X_train=(X_train -min_tr) / (max_tr -min_tr)
-   print "Dataset Loading completed..."
 
    # if(params["model"]=="cnn"):
    #     X_train=X_train.reshape(X_train.shape[0]*X_train.shape[1],X_train.shape[2])
@@ -58,7 +56,7 @@ def load_pose(params,only_test=0,only_pose=1,sindex=0):
    #     Y_test=Y_test.reshape(Y_test.shape[0]*Y_test.shape[1],Y_test.shape[2])
 
 
-   return (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)
+
 
 def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
     f_dir="/mnt/Data1/hc/auto/"
@@ -341,12 +339,17 @@ def multi_thr_read_full_joints_sequence(base_file,max_count,p_count,sindex,istes
     X_D=Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
     return (X_D,Y_D,F_L,G_L,S_L)
 
-def joints_sequence_tp1(base_file,max_count,p_count,sindex,istest,get_flist=False):
+def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False):
     #LSTM training with only joints
-    if istest==0:
+    if mode==0:#load training data.
         lst_act=['S1','S5','S6','S7','S8']
-    else:
+    elif mode==1:#load test data
         lst_act=['S9','S11']
+    elif mode==2:#load full data
+        lst_act=['S1','S5','S6','S7','S8','S9','S11']
+    else:
+        raise Exception('You should pass mode argument for data loading.!') #
+
     X_D=[]
     Y_D=[]
     F_L=[]
