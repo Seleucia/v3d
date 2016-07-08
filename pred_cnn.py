@@ -88,7 +88,6 @@ for minibatch_index in range(n_batches):
 batch_loss=np.mean(batch_loss)
 batch_loss3d=np.mean(batch_loss3d)
 print "============================================================================"
-print sq_loss_lst
-s ='error %f, %f, %f,%f'%(batch_loss,batch_loss3d,n_batches)
+s ='error %f, 3d error: %f'%(batch_loss,batch_loss3d)
 print (s)
 #pu.plot_cumsum(loss_list)
