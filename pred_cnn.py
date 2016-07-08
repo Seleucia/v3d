@@ -8,7 +8,7 @@ import plot.plot_utils as pu
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 params= config.get_params()
 params["model"]="cnn4"
-params['mfile']= "autoenconder_auto_0.p"
+params['mfile']= "cnn4_cnnX_0_0.185977_best.p"
 params["data_dir"]="/mnt/Data1/hc/joints16/"
 # params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
 # params["data_dir"]="/home/coskun/PycharmProjects/data/rnn/180k/"
@@ -47,7 +47,7 @@ if residual>0:
 n_batches = len(Y)
 n_batches /= batch_size
 
-print("Test sample size: %i, Batch size: %i, #batch: %i"%(len(X),batch_size,n_batches))
+print("Sample size: %i, Batch size: %i, #batch: %i"%(len(Y),batch_size,n_batches))
 print ("Model loading started")
 model= model_provider.get_model_pretrained(params,rng)
 print("Prediction started")
