@@ -228,7 +228,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
                 continue
             seq_id+=1
             id_list=id_list[0:min_count]
-            if(max_count>-1):
+            if(max_count>-1 and total>max_count):
                 divider=total/max_count
                 cnt=int(math.ceil(float(min_count)/divider))
                 id_list=random.sample(id_list,cnt)
