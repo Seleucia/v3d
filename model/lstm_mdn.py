@@ -54,11 +54,12 @@ class lstm_mdn:
                                            input=mdn_input,
                                            n_in=n_fc,
                                            n_out=params['n_output'],
-                                           mu_activation=T.tanh,
-                                           n_components=5)
-       self.params.append(mdn.W_mixing)
-       self.params.append(mdn.W_mu)
-       self.params.append(mdn.W_sigma)
+                                           mu_activation=do_nothing,
+                                         n_components=5)
+       self.params=self.params+mdn.params
+       # self.params.append(mdn.W_mixing)
+       # self.params.append(mdn.W_mu)
+       # self.params.append(mdn.W_sigma)
 
        cost = nll(mu = mdn.mu,
                  sigma = mdn.sigma,
