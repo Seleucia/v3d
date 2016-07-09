@@ -210,7 +210,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
         if(max_count>-1):
             avg=2000.
             cnt=math.ceil(float(max_count)/(float(len(lst_act))*avg))
-            lst_sq=random(lst_act,cnt)
+            lst_sq=random.sample(lst_act,cnt)
 
         for sq in lst_sq:
             # if 'Greeting' not in sq:
