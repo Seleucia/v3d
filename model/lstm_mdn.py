@@ -14,7 +14,7 @@ class lstm_mdn:
        self.n_in = 48
        self.n_lstm = params['n_hidden']
        self.n_out = params['n_output']
-       n_fc=256
+       n_fc=512
 
        self.W_hy = init_weight((self.n_lstm, n_fc), rng=rng,name='W_hy', sample= 'glorot')
        self.b_y = init_bias(n_fc,rng=rng, sample='zero')
@@ -55,7 +55,7 @@ class lstm_mdn:
                                            n_in=n_fc,
                                            n_out=params['n_output'],
                                            mu_activation=T.tanh,
-                                           n_components=32)
+                                           n_components=48)
        self.params.append(mdn.W_mixing)
        self.params.append(mdn.W_mu)
        self.params.append(mdn.W_sigma)
