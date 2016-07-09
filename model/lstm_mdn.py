@@ -14,7 +14,7 @@ class lstm_mdn:
        self.n_in = 48
        self.n_lstm = params['n_hidden']
        self.n_out = params['n_output']
-       n_fc=512
+       n_fc=1024
 
        self.W_hy = init_weight((self.n_lstm, n_fc), rng=rng,name='W_hy', sample= 'glorot')
        self.b_y = init_bias(n_fc,rng=rng, sample='zero')
