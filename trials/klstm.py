@@ -1,24 +1,12 @@
-from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation
-from keras.layers.embeddings import Embedding
-from keras.layers.recurrent import LSTM
-import helper.dt_utils as du
-import numpy
+import theano.tensor as T
 
-maxlen=1024
-data = numpy.random.randint(1,12,(5000,12))
-train_data=du.laod_pose()
+a,b = T.dmatrices('a','b')
+x,y = T.dmatrices('x','y')
 
-# build the model: 2 stacked LSTM
-print('Build model...')
-model = Sequential()
-model.add(LSTM(2, return_sequences=False, input_shape=(maxlen,0)))
-model.add(Dropout(0.2))
-model.add(Dense(54))
-model.add(Activation('linear'))
+is_train=1
 
-model.compile(loss='mean_squared_error', optimizer='rmsprop')
+#1=training,2=test
+z= T.switch(T.neq(is_train, 0), 1, 2)
 
-train_data=du.laod_pose()
-i, o = train_data[1]
-model.fit(i, o, batch_size=1, nb_epoch=1)
+print z.eval()
+

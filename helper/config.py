@@ -6,19 +6,19 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="bgfx_lstm_bs40_seq50" #running id, model
-   params["notes"]="lstm training with, gradient,reset,5 coppenendt used, nobias" #running id
-   params["model"]="lstm_mdn"#kccnr,dccnr
+   params["rn_id"]="cnnX" #running id, model
+   params["notes"]="CNN training." #running id
+   params["model"]="cnn7"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
    # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
    # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
 
-   params['mtype']="seq"
+   params['mtype']="cnn"
    params['shufle_data']=1
    params['nlayer']= 3 #LSTM
-   params['batch_size']=40
-   params['seq_length']= 50
+   params['batch_size']=100
+   params['seq_length']= 1
    params['reset_state']= 1#-1=Never, n=every n batch
    params["corruption_level"]=0.5
 
@@ -59,7 +59,7 @@ def get_params():
        params["data_dir"]="/home/users/achilles/human36/joints16/" #joints with 16, cnn+lstm and autoencder training
        # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
        # params["caffe"]="/usr/local/caffe/python"
-       params['max_count']=10000000000
+       params['max_count']=1000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"

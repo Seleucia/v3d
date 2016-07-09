@@ -1,4 +1,6 @@
 import glob
+import random
+import math
 from PIL import Image
 import os
 import numpy
@@ -19,8 +21,8 @@ def load_pose(params,load_mode=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
-   # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
+   dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   # dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
 
    if(load_mode==2):
        mode=2
@@ -205,12 +207,18 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
     for actor in lst_act:
         tmp_folder=joints_file+actor+"/"
         lst_sq=os.listdir(tmp_folder)
+        if(max_count>-1):
+            avg=2000.
+            cnt=math.ceil(float(max_count)/(float(len(lst_act))*avg))
+            lst_sq=random(lst_act,cnt)
+
         for sq in lst_sq:
             # if 'Greeting' not in sq:
             #     continue
             # X_d=[]
             # Y_d=[]
             # F_l=[]
+            print sq
             tmp_folder=joints_file+actor+"/"+sq+"/"
             tmp_folder_img=img_folder+actor+"/"+sq.replace('.cdf','')+"/"
             id_list=os.listdir(tmp_folder)
