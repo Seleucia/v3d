@@ -192,8 +192,10 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
     img_folder=base_file.replace('joints16','h36m_rgb_img_crop')
     if mode==0:#load training data.
         lst_act=['S1','S5','S6','S7','S8']
+        total=1544050.
     elif mode==1:#load test data
         lst_act=['S9','S11']
+        total=544700.
     elif mode==2:#load full data
         lst_act=['S11','S1','S5','S6','S7','S8','S9']
     else:
@@ -207,18 +209,12 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
     for actor in lst_act:
         tmp_folder=joints_file+actor+"/"
         lst_sq=os.listdir(tmp_folder)
-        if(max_count>-1):
-            avg=2000.
-            cnt=math.ceil(float(max_count)/(float(len(lst_act))*avg))
-            lst_sq=random.sample(lst_sq,cnt)
-
         for sq in lst_sq:
             # if 'Greeting' not in sq:
             #     continue
             # X_d=[]
             # Y_d=[]
             # F_l=[]
-            print sq
             tmp_folder=joints_file+actor+"/"+sq+"/"
             tmp_folder_img=img_folder+actor+"/"+sq.replace('.cdf','')+"/"
             id_list=os.listdir(tmp_folder)
@@ -237,8 +233,16 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
             pool = ThreadPool(1000)
             results = pool.map(load_file, joint_list)
             pool.close()
-            Y_D.extend(results)
-            F_L.extend(midlayer_list)
+            if(max_count>-1):
+                divider=total/max_count
+                cnt=math.ceil(float(min_count)/divider)
+                idx=range(min_count)
+                idx_lst=random.sample(idx,cnt)
+                F_L.extend(numpy.asarray(midlayer_list)[idx_lst])
+                Y_D.extend(numpy.asarray(results)[idx_lst])
+            else:
+                Y_D.extend(results)
+                F_L.extend(midlayer_list)
             if len(Y_D)>=max_count:
                 Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
                 F_L=numpy.asarray(F_L)
