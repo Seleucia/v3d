@@ -59,7 +59,7 @@ class cnn7(object):
         lreg=LogisticRegression(rng,h2.output,1024,params['n_output'])
         self.output = lreg.y_pred
 
-        self.params =c1.params+c2.params+c3.params+c4.params+h1.params+h2.params+lreg.params
+        self.params =c1.params+c2.params+c3.params+h1.params+h2.params+lreg.params
 
         cost=get_err_fn(self,cost_function,Y)
         L2_reg=0.0001
