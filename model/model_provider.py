@@ -15,6 +15,7 @@ from model.cnn_decoder import cnn_decoder
 from model.lstm_auto import lstm_auto
 from model.lstm_joints import lstm_joints
 from model.lstm_mdn import lstm_mdn
+from model.lstm_3layer_mdn import lstm_3layer_mdn
 from model.lstm_3layer_joints import lstm_3layer_joints
 from model.cnn_lstm_auto import cnn_lstm_auto
 from model.lstm_auto_3layer import lstm_auto_3layer
@@ -62,6 +63,8 @@ def get_model(params,rng):
         model = lstm_skelton(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="lstm_mdn"):
         model = lstm_mdn(rng=rng,params=params,optimizer=Adam)
+    elif(params["model"]=="lstm_3layer_mdn"):
+        model = lstm_3layer_mdn(rng=rng,params=params,optimizer=Adam)
     else:
         raise Exception('Wrong model calling....') #
     return model
