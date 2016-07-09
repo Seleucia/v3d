@@ -204,7 +204,7 @@ class MDNoutputLayer(object):
         self.mixing = T.nnet.softmax(T.dot(input, self.W_mixing)+self.b_mixing.dimshuffle('x',0))
 
         # parameters of the model
-        self.params = [self.W_mu, self.b_mu, self.W_sigma, self.b_sigma,self.W_mixing, self.b_mixing]
+        # self.params = [self.W_mu, self.b_mu, self.W_sigma, self.b_sigma,self.W_mixing, self.b_mixing]
 
-        # self.params = [self.W_mu, self.W_sigma, self.W_mixing]
+        self.params = [self.W_mu, self.W_sigma, self.W_mixing]
 

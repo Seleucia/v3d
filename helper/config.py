@@ -6,8 +6,8 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="bgfx_lstm_bs1_seq50_bias" #running id, model
-   params["notes"]="lstm training with, gradient,reset,5 coppenendt used" #running id
+   params["rn_id"]="bgfx_lstm_bs40_seq50" #running id, model
+   params["notes"]="lstm training with, gradient,reset,5 coppenendt used, nobias" #running id
    params["model"]="lstm_mdn"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
@@ -45,7 +45,6 @@ def get_params():
 
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
-       params['batch_size']=1
        params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
        params['n_hidden']= 512
        params['max_count']= 100

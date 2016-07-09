@@ -23,8 +23,8 @@ class lstm_3layer_mdn:
        Y = T.tensor3() # batch of sequence of vector
        is_train = T.iscalar('is_train') # pseudo boolean for switching between training and prediction
 
-       self.W_hy = init_weight((self.n_lstm, self.n_out), rng=rng,name='W_hy', sample= 'glorot')
-       self.b_y = init_bias(self.n_out,rng=rng, sample='zero')
+       self.W_hy = init_weight((self.n_lstm, n_fc), rng=rng,name='W_hy', sample= 'glorot')
+       self.b_y = init_bias(n_fc,rng=rng, sample='zero')
 
        layer1=LSTMLayer(rng,0,self.n_in,self.n_lstm)
        layer2=LSTMLayer(rng,1,self.n_lstm,self.n_lstm)
