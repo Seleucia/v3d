@@ -1,7 +1,7 @@
 import theano
 from layers import LSTMLayer,MDNoutputLayer
 import theano.tensor as T
-from helper.utils import init_weight,init_bias,count_params,nll
+from helper.utils import init_weight,init_bias,count_params,nll, do_nothing
 from helper.optimizer import RMSprop
 dtype = T.config.floatX
 
@@ -14,7 +14,7 @@ class lstm_mdn:
        self.n_in = 48
        self.n_lstm = params['n_hidden']
        self.n_out = params['n_output']
-       n_fc=1024
+       n_fc=512
 
        self.W_hy = init_weight((self.n_lstm, n_fc), rng=rng,name='W_hy', sample= 'glorot')
        self.b_y = init_bias(n_fc,rng=rng, sample='zero')
@@ -54,7 +54,7 @@ class lstm_mdn:
                                            input=mdn_input,
                                            n_in=n_fc,
                                            n_out=params['n_output'],
-                                           mu_activation=T.tanh,
+                                           mu_activation=do_nothing,
                                            n_components=5)
        self.params.append(mdn.W_mixing)
        self.params.append(mdn.W_mu)
