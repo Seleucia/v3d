@@ -235,7 +235,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
             pool.close()
             if(max_count>-1):
                 divider=total/max_count
-                cnt=math.ceil(float(min_count)/divider)
+                cnt=int(math.ceil(float(min_count)/divider))
                 idx=range(min_count)
                 idx_lst=random.sample(idx,cnt)
                 F_L.extend(numpy.asarray(midlayer_list)[idx_lst])
