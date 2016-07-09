@@ -17,9 +17,9 @@ def get_params():
    params['mtype']="seq"
    params['shufle_data']=0
    params['nlayer']= 1 #LSTM
-   params['batch_size']=100
+   params['batch_size']=1
    params['seq_length']= 50
-   params['reset_state']= 1#-1=Never, n=every n batch
+   params['reset_state']= 1000000000#-1=Never, n=every n batch
    params["corruption_level"]=0.5
 
    #system settings
@@ -65,7 +65,7 @@ def get_params():
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
        params["data_dir"]="/mnt/hc/joints16/"
-       params['max_count']=1000
+       params['max_count']=1000000000
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
