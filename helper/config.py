@@ -19,7 +19,7 @@ def get_params():
    params['nlayer']= 1 #LSTM
    params['batch_size']=100
    params['seq_length']= 50
-   params['reset_state']= -1#-1=Never, n=every n batch
+   params['reset_state']= 1#-1=Never, n=every n batch
    params["corruption_level"]=0.5
 
    #system settings
