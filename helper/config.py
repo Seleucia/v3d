@@ -6,9 +6,9 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="lstmbs500sq20clipping" #running id, model
-   params["notes"]="lstm training with different seqeuence and bathcsize with clipping" #running id
-   params["model"]="lstm"#kccnr,dccnr
+   params["rn_id"]="lstm_mdn" #running id, model
+   params["notes"]="lstm training with different mdn" #running id
+   params["model"]="lstm_mdn"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
    # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
@@ -65,7 +65,7 @@ def get_params():
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
        params["data_dir"]="/mnt/hc/joints16/"
-       params['max_count']=1000000000
+       params['max_count']=1000
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
