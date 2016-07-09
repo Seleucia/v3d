@@ -10,7 +10,7 @@ from helper.optimizer import RMSprop
 # theano.config.exception_verbosity="high"
 dtype = T.config.floatX
 
-class cnn4(object):
+class cnn7(object):
     def __init__(self,rng,params,cost_function='mse',optimizer = RMSprop):
 
         lr=params["lr"]
