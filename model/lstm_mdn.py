@@ -65,7 +65,6 @@ class lstm_mdn:
                  mixing = mdn.mixing,
                  y = Y_ll) #+ L2_reg * self.frame_pred.L2_sqr
 
-       # cost=get_err_fn(self,cost_function,Y)
 
        _optimizer = optimizer(
             cost,
