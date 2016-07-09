@@ -187,21 +187,24 @@ class MDNoutputLayer(object):
         shape=(n_in, n_out, n_components)
         self.W_mu=u.init_weight(shape,rng=rng,name='whid',sample='glorot')
 
-        b_values =  np.zeros((n_out,n_components), dtype=theano.config.floatX)
-        self.b_mu = theano.shared(value=b_values, name='b_mu', borrow=True)
+        # b_values =  np.zeros((n_out,n_components), dtype=theano.config.floatX)
+        # self.b_mu = theano.shared(value=b_values, name='b_mu', borrow=True)
+        # self.mu = mu_activation(T.tensordot(input, self.W_mu,axes = [[1],[0]]) +self.b_mu.dimshuffle('x',0,1))
 
-        self.mu = mu_activation(T.tensordot(input, self.W_mu,axes = [[1],[0]]) +self.b_mu.dimshuffle('x',0,1))
+        self.mu = mu_activation(T.tensordot(input, self.W_mu,axes = [[1],[0]]) )
 
         shape=(n_in, n_components)
         self.W_sigma=u.init_weight(shape,rng=rng,name='W_sigma',sample='glorot')
         self.W_mixing=u.init_weight(shape,rng=rng,name='W_mixing',sample='glorot')
 
-        b_values = np.zeros((n_components,), dtype=theano.config.floatX)
-        self.b_sigma = theano.shared(value=b_values.copy(), name='b_sigma', borrow=True)
-        self.b_mixing = theano.shared(value=b_values.copy(), name='b_mixing',borrow=True)
+        # b_values = np.zeros((n_components,), dtype=theano.config.floatX)
+        # self.b_sigma = theano.shared(value=b_values.copy(), name='b_sigma', borrow=True)
+        # self.b_mixing = theano.shared(value=b_values.copy(), name='b_mixing',borrow=True)
+        # self.sigma = T.nnet.softplus(T.dot(input, self.W_sigma)+self.b_sigma.dimshuffle('x',0))
+        # self.mixing = T.nnet.softmax(T.dot(input, self.W_mixing)+self.b_mixing.dimshuffle('x',0))
 
-        self.sigma = T.nnet.softplus(T.dot(input, self.W_sigma)+self.b_sigma.dimshuffle('x',0))
-        self.mixing = T.nnet.softmax(T.dot(input, self.W_mixing)+self.b_mixing.dimshuffle('x',0))
+        self.sigma = T.nnet.softplus(T.dot(input, self.W_sigma))
+        self.mixing = T.nnet.softmax(T.dot(input, self.W_mixing))
 
         # parameters of the model
         # self.params = [self.W_mu, self.b_mu, self.W_sigma, self.b_sigma,self.W_mixing, self.b_mixing]
