@@ -2,16 +2,21 @@ import numpy as np
 import theano
 import theano.tensor as T
 from theano import shared
-from helper.utils import init_weight,init_bias,get_err_fn
+from helper.utils import init_weight,init_bias,get_err_fn,count_params
 from helper.optimizer import RMSprop
 
 dtype = T.config.floatX
 
 class lstm2erd:
-   def __init__(self, n_in, n_lstm, n_out, lr=0.05, batch_size=64, output_activation=theano.tensor.nnet.relu,cost_function='mse',optimizer = RMSprop):
-       self.n_in = n_in
-       self.n_lstm = n_lstm
-       self.n_out = n_out
+   def __init__(self,rng, params,cost_function='mse',optimizer = RMSprop):
+       batch_size=params['batch_size']
+       lr=params['lr']
+       self.n_in = 48
+       self.n_lstm = params['n_hidden']
+       self.n_out = params['n_output']
+
+       # self.n_lstm = n_lstm
+       # self.n_out = n_out
 
        self.n_fc1=256
        self.n_fc2=256
@@ -119,6 +124,6 @@ class lstm2erd:
             lr=lr
         )
 
-       self.train = theano.function(inputs=[X, Y],outputs=cost,updates=_optimizer.getUpdates(),allow_input_downcast=True)
-       self.predictions = theano.function(inputs = [X], outputs = y_vals.dimshuffle(1,0,2),allow_input_downcast=True)
-       self.n_param=(n_lstm*n_lstm*4+n_in*n_lstm*4+n_lstm*n_out+n_lstm*3)*2
+       self.train = theano.function(inputs=[X,Y,is_train,H,C],outputs=[cost,h_t_1[-1],c_t_1[-1]],updates=_optimizer.getUpdates(),allow_input_downcast=True)
+       self.predictions = theano.function(inputs = [X,is_train,H,C], outputs = [self.output,h_t_1[-1],c_t_1[-1]],allow_input_downcast=True)
+       self.n_param=count_params(self.params)

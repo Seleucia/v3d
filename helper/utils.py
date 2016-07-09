@@ -122,10 +122,34 @@ def init_weight(shape, rng,name, sample='glorot', seed=None):
 
     return shared(values, name=name, borrow=True)
 
+
+def nll(mu, sigma, mixing, y):
+    """Computes the mean of negative log likelihood for P(y|x)
+
+    y = T.matrix('y') # (minibatch_size, output_size)
+    mu = T.tensor3('mu') # (minibatch_size, output_size, n_components)
+    sigma = T.matrix('sigma') # (minibatch_size, n_components)
+    mixing = T.matrix('mixing') # (minibatch_size, n_components)
+
+    """
+
+    # multivariate Gaussian
+    exponent = -0.5 * T.inv(sigma) * T.sum((y.dimshuffle(0,1,'x') - mu)**2, axis=1)
+    normalizer = (2 * np.pi * sigma)
+    exponent = exponent + T.log(mixing) - (y.shape[1]*.5)*T.log(normalizer)
+    max_exponent = T.max(exponent ,axis=1, keepdims=True)
+    mod_exponent = exponent - max_exponent
+    gauss_mix = T.sum(T.exp(mod_exponent),axis=1)
+    log_gauss = max_exponent + T.log(gauss_mix)
+    res = -T.mean(log_gauss)
+    return res
+
+
 def get_err_fn(self,cost_function,Y):
        cxe = T.mean(T.nnet.binary_crossentropy(self.output, Y))
        nll = -T.mean(Y * T.log(self.output)+ (1.- Y) * T.log(1. - self.output))
-
+       # mse=T.mean(T.square(self.output - Y), axis=-1)
+       #
        tmp = (self.output - Y)
        tmp = theano.tensor.switch(theano.tensor.isnan(tmp),0,tmp)
        mse = T.sum((tmp) ** 2)

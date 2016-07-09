@@ -15,11 +15,11 @@ def get_params():
    # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
 
    params['mtype']="seq"
-   params['shufle_data']=1
+   params['shufle_data']=0
    params['nlayer']= 1 #LSTM
-   params['batch_size']=250
+   params['batch_size']=1
    params['seq_length']= 20
-   params['reset_state']= 1#-1=Never, n=every n batch
+   params['reset_state']= -1#-1=Never, n=every n batch
    params["corruption_level"]=0.5
 
    #system settings
@@ -46,12 +46,9 @@ def get_params():
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
        params['batch_size']=1
-       params["WITH_GPU"]=False
-       params['n_patch']= 1
-       params['n_repeat']= 1
-       params["data_dir"]="/home/coskun/PycharmProjects/data/auto/"
+       params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
        params['n_hidden']= 512
-       params['max_count']= 10000
+       params['max_count']= 100
 
    if(platform.node()=="milletari-workstation"):
        params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
