@@ -46,8 +46,8 @@ def get_model(params,rng):
         model = cnn5(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="cnn6"):
         model = cnn6(rng=rng,params=params,optimizer=Adam)
-    elif(params["model"]=="cnn6"):
-        model = cnn6(rng=rng,params=params,optimizer=Adam)
+    elif(params["model"]=="cnn7"):
+        model = cnn7(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="autoencoder"):
         model = autoencoder(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="cnn_decoder"):
