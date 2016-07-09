@@ -72,11 +72,13 @@ class lstm_mdn:
             lr=lr
         )
 
+       #Sampling from the GMM
        component = rng.multinomial(pvals=mdn.mixing)
        component_mean =  T.sum(mdn.mu * component.dimshuffle(0,'x',1),axis=2)
        component_std = T.sum(mdn.sigma * component, axis=1, keepdims=True)
+       samples=rng.normal(size=(batch_size*sequence_length,params['n_output']),avg = component_mean, std=component_std)
 
-       self.output = T.reshape(rng.normal(size=(batch_size*sequence_length,params['n_output']),avg = component_mean, std=component_std),(batch_size,sequence_length,params['n_output']))
+       self.output = T.reshape(samples,(batch_size,sequence_length,params['n_output']))
 
        self.train = theano.function(inputs=[X,Y,is_train,H,C],outputs=[cost,h_t_1[-1],c_t_1[-1]],updates=_optimizer.getUpdates(),allow_input_downcast=True)
        self.predictions = theano.function(inputs = [X,is_train,H,C], outputs = [self.output,h_t_1[-1],c_t_1[-1]],allow_input_downcast=True)
