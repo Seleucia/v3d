@@ -36,7 +36,7 @@ def get_params():
 
    # learning parameters
    params['momentum']=0.9    # the params for momentum
-   params['lr']=0.0005
+   params['lr']=0.001
    params['learning_rate_decay']= 0.998
    params['squared_filter_length_limit']=15.0
    params['n_epochs']=25600
@@ -53,7 +53,7 @@ def get_params():
        params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
        # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
        # params["caffe"]="/usr/local/caffe/python"
-       params['max_count']=1000000000
+       params['max_count']=100000
 
    if(platform.node()=="titanx2"):
        params["data_dir"]="/home/users/achilles/human36/joints16/" #joints with 16, cnn+lstm and autoencder training
