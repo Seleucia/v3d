@@ -7,7 +7,7 @@ def get_params():
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
    params["rn_id"]="lstm_mdn_noreset_bs0_seq50_clipp" #running id, model
-   params["notes"]="lstm training with different mdn" #running id
+   params["notes"]="lstm training with mdn, gradient clipping, bs o" #running id
    params["model"]="lstm_mdn"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
