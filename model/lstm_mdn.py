@@ -55,7 +55,7 @@ class lstm_mdn:
                                            n_in=n_fc,
                                            n_out=params['n_output'],
                                            mu_activation=T.tanh,
-                                           n_components=16)
+                                           n_components=32)
        self.params.append(mdn.W_mixing)
        self.params.append(mdn.W_mu)
        self.params.append(mdn.W_sigma)
