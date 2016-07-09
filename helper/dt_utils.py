@@ -231,6 +231,7 @@ def multi_thr_read_full_joints_cnn(base_file,max_count,p_count,sindex,mode,get_f
             if(max_count>-1):
                 divider=total/max_count
                 cnt=int(math.ceil(float(min_count)/divider))
+                print "a:%s, sq:%s, cnt:%f"%(actor,sq,cnt)
                 id_list=random.sample(id_list,cnt)
 
             joint_list=[tmp_folder + p1 for p1 in id_list]
