@@ -360,7 +360,6 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
         lst_act=['S1','S5','S6','S7','S8','S9','S11']
     else:
         raise Exception('You should pass mode argument for data loading.!') #
-    # lst_act=['S11']
 
     X_D=[]
     Y_D=[]

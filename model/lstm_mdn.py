@@ -14,9 +14,10 @@ class lstm_mdn:
        self.n_in = 48
        self.n_lstm = params['n_hidden']
        self.n_out = params['n_output']
+       n_fc=256
 
-       self.W_hy = init_weight((self.n_lstm, self.n_lstm), rng=rng,name='W_hy', sample= 'glorot')
-       self.b_y = init_bias(self.n_lstm,rng=rng, sample='zero')
+       self.W_hy = init_weight((self.n_lstm, n_fc), rng=rng,name='W_hy', sample= 'glorot')
+       self.b_y = init_bias(n_fc,rng=rng, sample='zero')
 
        layer1=LSTMLayer(rng,0,self.n_in,self.n_lstm)
 
@@ -46,15 +47,15 @@ class lstm_mdn:
 
        # self.output = y_vals.dimshuffle(1,0,2)
        mdn_input=y_vals.dimshuffle(1,0,2)
-       mdn_input=T.reshape(mdn_input,(batch_size*sequence_length,self.n_lstm))
+       mdn_input=T.reshape(mdn_input,(batch_size*sequence_length,n_fc))
        Y_ll=T.reshape(Y,(batch_size*sequence_length,params['n_output']))
 
        mdn =  MDNoutputLayer(rng=rng,
                                            input=mdn_input,
-                                           n_in=self.n_lstm,
+                                           n_in=n_fc,
                                            n_out=params['n_output'],
                                            mu_activation=T.tanh,
-                                           n_components=96)
+                                           n_components=16)
        self.params.append(mdn.W_mixing)
        self.params.append(mdn.W_mu)
        self.params.append(mdn.W_sigma)
