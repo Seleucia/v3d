@@ -63,6 +63,7 @@ def train_rnn(params):
       s='TRAIN--> epoch %i | error %f'%(epoch_counter, batch_loss)
       u.log_write(s,params)
       if(epoch_counter%1==0):
+          is_train=0
           print("Model testing")
           state_reset_counter=0
           batch_loss3d = []
