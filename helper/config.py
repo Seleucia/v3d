@@ -6,7 +6,7 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="del-cnnX" #running id, model
+   params["rn_id"]="del-cnnX-lr0005" #running id, model
    params["notes"]="CNN training." #running id
    params["model"]="cnn7"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
