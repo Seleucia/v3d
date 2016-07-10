@@ -21,8 +21,8 @@ def load_pose(params,load_mode=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
-   dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   # dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
+   # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
 
    if(load_mode==2):
        mode=2
@@ -391,10 +391,11 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
             pool = ThreadPool(1000)
             results = pool.map(load_file, joint_list)
             pool.close()
-            for r in range(len(results)-1):
+            sift=0
+            for r in range(len(results)-sift):
                 rs=results[r]
                 X_d.append(rs)
-                rs_1=results[r+1]
+                rs_1=results[r+sift]
                 Y_d.append(rs_1)
                 if len(Y_d)==p_count and p_count>0:
                         Y_D.append(Y_d)

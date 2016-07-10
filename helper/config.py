@@ -6,39 +6,39 @@ def get_params():
    global params
    params={}
    params['run_mode']=0 #0,full,1:resume, 2 = combine models
-   params["rn_id"]="cnnX" #running id, model
-   params["notes"]="CNN training parameter finding.." #running id
-   params["model"]="cnn"#kccnr,dccnr
-   params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
-   params['mfile']=""
-   # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
-   # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
-
-   params['lr']=0.001
-   params['mtype']="cnn"
-   params['shufle_data']=1
-   params['nlayer']= 1 #LSTM
-   params['batch_size']=300
-   params['seq_length']= 1
-   params['reset_state']= 1#-1=Never, n=every n batch
-   params["corruption_level"]=0.5
-
-   # params["rn_id"]="greeting-lstm" #running id, model
-   # params["notes"]="LSTM training action based.." #running id
-   # params["model"]="lstm"#kccnr,dccnr
+   # params["rn_id"]="cnnX" #running id, model
+   # params["notes"]="CNN training parameter finding.." #running id
+   # params["model"]="cnn"#kccnr,dccnr
    # params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    # params['mfile']=""
    # # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
    # # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
    #
-   # params['lr']=0.0001
-   # params['mtype']="seq"
+   # params['lr']=0.001
+   # params['mtype']="cnn"
    # params['shufle_data']=1
-   # params['nlayer']= 3 #LSTM
-   # params['batch_size']=40
-   # params['seq_length']= 50
+   # params['nlayer']= 1 #LSTM
+   # params['batch_size']=300
+   # params['seq_length']= 1
    # params['reset_state']= 1#-1=Never, n=every n batch
    # params["corruption_level"]=0.5
+
+   params["rn_id"]="greeting-lstm" #running id, model
+   params["notes"]="LSTM training action based.." #running id
+   params["model"]="lstm"#kccnr,dccnr
+   params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
+   params['mfile']=""
+   # params['mfile']= "cnn_1_0.p,lstm_auto_lstm_21_0.0078104_best.p"
+   # params['mfile']= "cnn_1_1_24.6707_best2.p,autoencoder_auto_lr_low_138_0.00340542_best.p"
+
+   params['lr']=0.0001
+   params['mtype']="seq"
+   params['shufle_data']=1
+   params['nlayer']= 1 #LSTM
+   params['batch_size']=40
+   params['seq_length']= 50
+   params['reset_state']= 1#-1=Never, n=every n batch
+   params["corruption_level"]=0.5
 
    #system settings
    wd=os.path.dirname(os.path.realpath(__file__))
