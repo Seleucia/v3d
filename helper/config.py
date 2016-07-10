@@ -60,7 +60,7 @@ def get_params():
        params["data_dir"]="/home/users/achilles/human36/joints16/" #joints with 16, cnn+lstm and autoencder training
        # params["data_dir"]="/mnt/Data1/hc/auto/" #cnn and lstm seperate training must be this
        # params["caffe"]="/usr/local/caffe/python"
-       params['max_count']=100000
+       params['max_count']=1000000000
 
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
