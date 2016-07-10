@@ -49,7 +49,7 @@ def get_model(params,rng):
     elif(params["model"]=="cnn6"):
         model = cnn6(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="cnn7"):
-        model = cnn7(rng=rng,params=params,optimizer=Adam)
+        model = cnn7(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="cnn8"):
         model = cnn8(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="cnn9"):
