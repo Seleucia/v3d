@@ -21,8 +21,8 @@ def load_pose(params,load_mode=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_midlayer_sequence #lstm training with autoencoder layer
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
-   dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   # dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
+   # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
+   dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
 
    if(load_mode==2):
        mode=2
@@ -379,8 +379,8 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
         tmp_folder=base_file+actor+"/"
         lst_sq=os.listdir(tmp_folder)
         for sq in lst_sq:
-            if 'Greeting' not in sq:
-                continue
+            # if 'Greeting' not in sq:
+            #     continue
             X_d=[]
             Y_d=[]
             F_l=[]
@@ -388,7 +388,7 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
             tmp_folder=base_file+actor+"/"+sq+"/"
             id_list=os.listdir(tmp_folder)
             joint_list=[tmp_folder + p1 for p1 in id_list]
-            pool = ThreadPool(1000)
+            pool = ThreadPool(300)
             results = pool.map(load_file, joint_list)
             pool.close()
             sift=1

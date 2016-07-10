@@ -20,6 +20,7 @@ from model.lstm_joints import lstm_joints
 from model.lstm_mdn import lstm_mdn
 from model.lstm_3layer_mdn import lstm_3layer_mdn
 from model.lstm_3layer_joints import lstm_3layer_joints
+from model.lstm_3layer_joints2 import lstm_3layer_joints2
 from model.cnn_lstm_auto import cnn_lstm_auto
 from model.lstm_auto_3layer import lstm_auto_3layer
 from model.lstm_skelton import lstm_skelton
@@ -64,6 +65,8 @@ def get_model(params,rng):
         model = lstm_joints(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="lstm_3layer_joints"):
         model = lstm_3layer_joints(rng=rng,params=params,optimizer=AdamClip)
+    elif(params["model"]=="lstm_3layer_joints2"):
+        model = lstm_3layer_joints2(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="cnn_lstm_auto"):
         model = cnn_lstm_auto(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="lstm_auto_3layer"):
