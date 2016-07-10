@@ -12,6 +12,7 @@ from model.cnn5 import cnn5
 from model.cnn6 import cnn6
 from model.cnn7 import cnn7
 from model.cnn8 import cnn8
+from model.cnn9 import cnn9
 from model.autoencoder import autoencoder
 from model.cnn_decoder import cnn_decoder
 from model.lstm_auto import lstm_auto
@@ -51,6 +52,8 @@ def get_model(params,rng):
         model = cnn7(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="cnn8"):
         model = cnn8(rng=rng,params=params,optimizer=Adam)
+    elif(params["model"]=="cnn9"):
+        model = cnn9(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="autoencoder"):
         model = autoencoder(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="cnn_decoder"):
