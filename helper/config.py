@@ -82,7 +82,7 @@ def get_params():
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
        params["data_dir"]="/mnt/hc/joints16/"
-       params['max_count']=1000000000
+       params['max_count']=1000
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
