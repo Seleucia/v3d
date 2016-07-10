@@ -24,7 +24,7 @@ from model.cnn_lstm_auto import cnn_lstm_auto
 from model.lstm_auto_3layer import lstm_auto_3layer
 from model.lstm_skelton import lstm_skelton
 from model.real_rcnn import real_rcnn
-from helper.optimizer import ClipRMSprop, RMSprop,Adam
+from helper.optimizer import ClipRMSprop, RMSprop,Adam,AdamClip
 import helper.utils as u
 
 def get_model(params,rng):
@@ -59,21 +59,21 @@ def get_model(params,rng):
     elif(params["model"]=="cnn_decoder"):
         model = cnn_decoder(rng=rng,params=params,optimizer=Adam)
     elif(params["model"]=="lstm_auto"):
-        model = lstm_auto(rng=rng,params=params,optimizer=Adam)
+        model = lstm_auto(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="lstm_joints"):
-        model = lstm_joints(rng=rng,params=params,optimizer=Adam)
+        model = lstm_joints(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="lstm_3layer_joints"):
-        model = lstm_3layer_joints(rng=rng,params=params,optimizer=Adam)
+        model = lstm_3layer_joints(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="cnn_lstm_auto"):
-        model = cnn_lstm_auto(rng=rng,params=params,optimizer=Adam)
+        model = cnn_lstm_auto(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="lstm_auto_3layer"):
-        model = lstm_auto_3layer(rng=rng,params=params,optimizer=Adam)
+        model = lstm_auto_3layer(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="lstm_skelton"):
-        model = lstm_skelton(rng=rng,params=params,optimizer=Adam)
+        model = lstm_skelton(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="lstm_mdn"):
-        model = lstm_mdn(rng=rng,params=params,optimizer=Adam)
+        model = lstm_mdn(rng=rng,params=params,optimizer=AdamClip)
     elif(params["model"]=="lstm_3layer_mdn"):
-        model = lstm_3layer_mdn(rng=rng,params=params,optimizer=Adam)
+        model = lstm_3layer_mdn(rng=rng,params=params,optimizer=AdamClip)
     else:
         raise Exception('Wrong model calling....') #
     return model

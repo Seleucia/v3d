@@ -43,12 +43,6 @@ class Adam():
         self.b2 = b2
         self.e=e
         self.gparams = T.grad(self.cost, self.params)
-        # Gradient clipping, not helping for te results.....
-        clip_lower_bound=-1
-        clip_upper_bound=1
-        r_params=self.gparams[0:15]
-        r_params =[T.clip(g, clip_lower_bound, clip_upper_bound) for g in r_params]
-        self.gparams[0:15]=r_params
 
     def getUpdates(self):
         updates = []
@@ -64,6 +58,43 @@ class Adam():
             updates.append((p, p_t))
         updates.append((self.i, self.i_t))
         return updates
+
+
+class AdamClip():
+    def __init__(self,cost,params,lr=0.0001, b1=0.1, b2=0.001, e=1e-8):
+        self.cost = cost
+        self.params = params
+        self.i = theano.shared(np.float32(0.))
+        self.i_t = self.i + 1.
+        fix1 = 1. - (1. - b1)**self.i_t
+        fix2 = 1. - (1. - b2)**self.i_t
+        self.lr = lr * (T.sqrt(fix2) / fix1)
+        self.b1 = b1
+        self.b2 = b2
+        self.e=e
+        self.gparams = T.grad(self.cost, self.params)
+        # Gradient clipping, not helping for te results.....
+        clip_lower_bound=-1
+        clip_upper_bound=1
+        r_params=self.gparams[0:-1]
+        r_params =[T.clip(g, clip_lower_bound, clip_upper_bound) for g in r_params]
+        self.gparams[0:-1]=r_params
+
+    def getUpdates(self):
+        updates = []
+        for p, g in zip(self.params, self.gparams):
+            m = theano.shared(p.get_value() * 0.)
+            v = theano.shared(p.get_value() * 0.)
+            m_t = (self.b1 * g) + ((1. - self.b1) * m)
+            v_t = (self.b2 * T.sqr(g)) + ((1. - self.b2) * v)
+            g_t = m_t / (T.sqrt(v_t) + self.e)
+            p_t = p - (self.lr * g_t)
+            updates.append((m, m_t))
+            updates.append((v, v_t))
+            updates.append((p, p_t))
+        updates.append((self.i, self.i_t))
+        return updates
+
 
 class ClipRMSprop:
     def __init__(self, cost, params, lr=0.0001, rho=0.9, epsilon=1e-6, momentum=0.9,rescale=5.):
