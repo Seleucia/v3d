@@ -24,7 +24,7 @@ def get_params():
    # params["corruption_level"]=0.5
 
    params["rn_id"]="lstm" #running id, model
-   params["notes"]="LSTM training action based.." #running id
+   params["notes"]="3 layer LSTM training with drout.." #running id
    params["model"]="lstm"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
@@ -82,7 +82,7 @@ def get_params():
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
        params["data_dir"]="/mnt/hc/joints16/"
-       params['max_count']=1000
+       params['max_count']=10000000000000
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
