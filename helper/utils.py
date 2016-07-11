@@ -123,46 +123,6 @@ def init_weight(shape, rng,name, sample='glorot', seed=None):
     return shared(values, name=name, borrow=True)
 
 
-def nll(mu, sigma, mixing, y):
-    """Computes the mean of negative log likelihood for P(y|x)
-
-    y = T.matrix('y') # (minibatch_size, output_size)
-    mu = T.tensor3('mu') # (minibatch_size, output_size, n_components)
-    sigma = T.matrix('sigma') # (minibatch_size, n_components)
-    mixing = T.matrix('mixing') # (minibatch_size, n_components)
-
-    """
-
-    # multivariate Gaussian
-    exponent = -0.5 * T.inv(sigma) * T.sum((y.dimshuffle(0,1,'x') - mu)**2, axis=1)
-    normalizer = (2 * np.pi * sigma)
-    exponent = exponent + T.log(mixing) - (y.shape[1]*.5)*T.log(normalizer)
-    max_exponent = T.max(exponent ,axis=1, keepdims=True)
-    mod_exponent = exponent - max_exponent
-    gauss_mix = T.sum(T.exp(mod_exponent),axis=1)
-    log_gauss = max_exponent + T.log(gauss_mix)
-    res = -T.mean(log_gauss)
-    return res
-
-
-def get_err_fn(self,cost_function,Y):
-       cxe = T.mean(T.nnet.binary_crossentropy(self.output, Y))
-       nll = -T.mean(Y * T.log(self.output)+ (1.- Y) * T.log(1. - self.output))
-       # mse=T.mean(T.square(self.output - Y), axis=-1)
-       #
-       tmp = (self.output - Y)
-       tmp = theano.tensor.switch(theano.tensor.isnan(tmp),0,tmp)
-       mse = T.sum((tmp) ** 2)
-
-       cost = 0
-       if cost_function == 'mse':
-           cost = mse
-       elif cost_function == 'cxe':
-           cost = cxe
-       else:
-           cost = nll
-       return cost
-
 def prep_pred_file(params):
     f_dir=params["wd"]+"/pred/";
     if not os.path.exists(f_dir):
@@ -415,6 +375,54 @@ def log_read_train(params):
     #numpy.array([[b, c, d] for (b, c, d) in list_val if b==1 ])[:,2] #first epoch all error
     return list
 
+
+def nll(mu, sigma, mixing, y):
+    """Computes the mean of negative log likelihood for P(y|x)
+
+    y = T.matrix('y') # (minibatch_size, output_size)
+    mu = T.tensor3('mu') # (minibatch_size, output_size, n_components)
+    sigma = T.matrix('sigma') # (minibatch_size, n_components)
+    mixing = T.matrix('mixing') # (minibatch_size, n_components)
+
+    """
+
+    # multivariate Gaussian
+    exponent = -0.5 * T.inv(sigma) * T.sum((y.dimshuffle(0,1,'x') - mu)**2, axis=1)
+    normalizer = (2 * np.pi * sigma)
+    exponent = exponent + T.log(mixing) - (y.shape[1]*.5)*T.log(normalizer)
+    max_exponent = T.max(exponent ,axis=1, keepdims=True)
+    mod_exponent = exponent - max_exponent
+    gauss_mix = T.sum(T.exp(mod_exponent),axis=1)
+    log_gauss = max_exponent + T.log(gauss_mix)
+    res = -T.mean(log_gauss)
+    return res
+
+
+def get_err_fn(self,cost_function,Y):
+       cxe = T.mean(T.nnet.binary_crossentropy(self.output, Y))
+       nll = -T.mean(Y * T.log(self.output)+ (1.- Y) * T.log(1. - self.output))
+       # mse=T.mean(T.square(self.output - Y), axis=-1)
+       #
+       tmp = (self.output - Y)
+       tmp = theano.tensor.switch(theano.tensor.isnan(tmp),0,tmp)
+       mse = T.sum((tmp) ** 2)
+
+       epsilon=0.05
+       loss = T.maximum(T.abs_(tmp)-epsilon,0)
+       ssei= T.sum(T.sqr(loss))
+
+
+       cost = 0
+       if cost_function == 'mse':
+           cost = mse
+       elif cost_function == 'ssei':
+           cost = ssei
+       elif cost_function == 'cxe':
+           cost = cxe
+       else:
+           cost = nll
+       return cost
+
 def huber(y_true, y_pred, epsilon=0.1):
     """Huber regression loss
     Variant of the SquaredLoss that is robust to outliers (quadratic near zero,
@@ -436,7 +444,7 @@ def alpha_huber(y_true, y_pred):
     # idx = abs_r <= epsilon
     # loss[idx] = epsilon * abs_r[idx] - 0.5 * T.sqr(epsilon)
     #switch(cond, ift, iff)
-    alpha=0.95
+    alpha=0.90
     abs_r = T.abs_(y_pred - y_true)
     epsilon = np.percentile(0.5 * T.sqr(abs_r), alpha * 100)
     loss =T.switch(T.le(abs_r,epsilon),epsilon * abs_r - 0.5 * T.sqr(epsilon),0.5 * T.sqr(abs_r))
@@ -450,14 +458,14 @@ def epsilon_insensitive(y_true,y_pred, epsilon):
     loss = T.maximum(T.abs_(y_true-y_pred)-epsilon,0)
     return loss
 
-def mean_squared_epislon_insensitive(y_true, y_pred):
+def sum_squared_epislon_insensitive(y_true, y_pred):
     """Epsilon-Insensitive loss.
     loss = max(0, |y - p| - epsilon)^2
     """
     epsilon=0.05
-    return T.mean(T.sqr(epsilon_insensitive(y_true, y_pred, epsilon)))
+    return T.sum(T.sqr(epsilon_insensitive(y_true, y_pred, epsilon)))
 
-msei=mean_squared_epislon_insensitive
+ssei=sum_squared_epislon_insensitive
 ah=alpha_huber
 
 
