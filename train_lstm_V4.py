@@ -71,7 +71,6 @@ def train_rnn(params):
           result= model.train(*args)
           loss=result[0]
           LStateList_t=result[1:len(result)]
-
           batch_loss += loss
       if params['shufle_data']==1:
          X_train,Y_train=du.shuffle_in_unison_inplace(X_train,Y_train)
@@ -82,7 +81,6 @@ def train_rnn(params):
       if(epoch_counter%1==0):
           is_train=0
           print("Model testing")
-          state_reset_counter=0
           batch_loss3d = []
           LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer']*2)] # initial hidden state
           LStateList_pre=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer']*2)] # initial hidden sta

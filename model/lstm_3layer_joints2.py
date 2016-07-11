@@ -37,8 +37,8 @@ class lstm_3layer_joints2:
            [h_t_1,c_t_1,y_t_1]=layer1.run(x_t,h_tm1_1,c_tm1_1)
            dl1=DropoutLayer(rng,input=y_t_1,prob=0.5,is_train=is_train,mask=mask1)
            [h_t_2,c_t_2,y_t_2]=layer2.run(dl1.output,h_tm1_2,c_tm1_2)
-           dl2=DropoutLayer(rng,input=y_t_1,prob=0.5,is_train=is_train,mask=mask2)
-           [h_t_3,c_t_3,y_t_3]=layer3.run(y_t_2,h_tm1_3,c_tm1_3)
+           dl2=DropoutLayer(rng,input=y_t_2,prob=0.5,is_train=is_train,mask=mask2)
+           [h_t_3,c_t_3,y_t_3]=layer3.run(dl2.output,h_tm1_3,c_tm1_3)
            y = T.dot(y_t_3, self.W_hy) + self.b_y
            return [h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3,y]
 
@@ -54,7 +54,7 @@ class lstm_3layer_joints2:
        mask1= rng.binomial(size=mask_shape, p=p_1, dtype=X.dtype)
        mask2= rng.binomial(size=mask_shape, p=p_1, dtype=X.dtype)
 
-       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.002, avg=0.0,dtype=theano.config.floatX)
+       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.008, avg=0.0,dtype=theano.config.floatX)
        X_train=noise+X
        X_tilde= T.switch(T.neq(is_train, 0), X_train, X)
 
@@ -62,8 +62,16 @@ class lstm_3layer_joints2:
                                          sequences=[X_tilde.dimshuffle(1,0,2),mask1,mask2],
                                          outputs_info=[h0_1, c0_1,h0_2, c0_2, h0_3, c0_3, None])
 
+
        self.output = y_vals.dimshuffle(1,0,2)
        cost=get_err_fn(self,cost_function,Y)
+
+       L2_reg=0.0001
+       L2_sqr = theano.shared(0.)
+       for param in self.params:
+           L2_sqr += (T.sum(param[0] ** 2)+T.sum(param[1] ** 2))
+
+       cost += L2_reg*L2_sqr
 
        _optimizer = optimizer(
             cost,
