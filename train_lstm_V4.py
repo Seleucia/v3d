@@ -52,7 +52,7 @@ def train_rnn(params):
               u.log_write("One cycle completed",params)
           u.log_write("Training set loading with %d, sliding"%(params["sindex"]),params)
           params["load_mode"]=4
-          (X_train,Y_train,S_Train_list_org,F_list_train,G_list_train)=du.load_pose(params)
+          (X_train,Y_train,S_Train_list_org,F_list_train,G_list_train)=du.load_pose(params,db_train=db_train)
 
       index_train_list,S_Train_list=du.get_seq_indexes(params,S_Train_list_org)
       n_train_batches = len(index_train_list)
