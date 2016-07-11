@@ -15,7 +15,7 @@ import time
 
 def train_rnn(params):
    rng = RandomStreams(seed=1234)
-   (X_train,Y_train,S_Train_list_org,F_list_train,G_list_train,X_test,Y_test,S_Test_list_org,F_list_test,G_list_test)=du.load_pose(params)
+   (db_train,X_train,Y_train,S_Train_list_org,F_list_train,G_list_train,db_test,X_test,Y_test,S_Test_list_org,F_list_test,G_list_test)=du.load_pose(params)
    index_train_list,S_Train_list=du.get_seq_indexes(params,S_Train_list_org)
    index_test_list,S_Test_list=du.get_seq_indexes(params,S_Test_list_org)
    params["len_train"]=len(index_train_list)*params['seq_length']

@@ -12,7 +12,7 @@ import theano.tensor as T
 from random import randint
 dtype = T.config.floatX
 
-def load_pose(params):
+def load_pose(params,db_train=dict(),db_test=dict(),):
    data_dir=params["data_dir"]
    max_count=params["max_count"]
    seq_length=params["seq_length"]
@@ -26,12 +26,12 @@ def load_pose(params):
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
+   dataset_reader=joints_sequence_tp1_v2 #read_full_joints,read_full_midlayer
    # dataset_reader=joints_sequence_tp12 #read_full_joints,read_full_midlayer
 
    if load_mode==4:#only trainings
        mode=0
-       X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       db_train,X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(db_train,data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Training set loaded"
        return (X_train,Y_train,S_Train_list,F_list_train,G_list_train)
    elif load_mode==3:#Load parameter search
@@ -57,13 +57,13 @@ def load_pose(params):
        return (X_test,Y_test,F_list_test,G_list_test,S_Test_list)
    elif load_mode==0:#Load training and testing seperate list
        mode=0
-       X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       db_train,X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(db_train,data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Training set loaded"
        mode=1
        sindex=0
-       (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       (db_test,X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(db_test,data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Test set loaded"
-       return (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)
+       return (db_train,X_train,Y_train,S_Train_list,F_list_train,G_list_train,db_test,X_test,Y_test,S_Test_list,F_list_test,G_list_test)
    else:
         raise Exception('You should pass mode argument for data loading.!') #
 
@@ -447,7 +447,91 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
     Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
     return (X_D,Y_D,F_L,G_L,S_L)
 
-def joints_sequence_tp12(base_file,max_count,p_count,sindex,mode,get_flist=False):
+def joints_sequence_tp1_v2(db,base_file,max_count,p_count,sindex,mode,get_flist=False):
+    #LSTM training with only joints
+    if mode==0:#load training data.
+        lst_act=['S1','S5','S6','S7','S8']
+    elif mode==1:#load test data
+        lst_act=['S9','S11']
+    elif mode==2:#load full data
+        lst_act=['S1','S5','S6','S7','S8','S9','S11']
+    elif mode==3:#load full data
+        lst_act=['S1',]
+    elif mode==4:#load full data
+        lst_act=['S11']
+    else:
+        raise Exception('You should pass mode argument for data loading.!') #
+    X_D=[]
+    Y_D=[]
+    F_L=[]
+    G_L=[]
+    S_L=[]
+    seq_id=0
+    for actor in lst_act:
+        tmp_folder=base_file+actor+"/"
+        lst_sq=os.listdir(tmp_folder)
+        for sq in lst_sq:
+            # if 'Greeting' not in sq:
+            #     continue
+            X_d=[]
+            Y_d=[]
+            F_l=[]
+            seq_id+=1
+            tmp_folder=base_file+actor+"/"+sq+"/"
+            if tmp_folder not in db:
+                id_list=os.listdir(tmp_folder)
+                joint_list=[tmp_folder + p1 for p1 in id_list]
+                pool = ThreadPool(1000)
+                results = pool.map(load_file, joint_list)
+                pool.close()
+                db[tmp_folder]=results
+            else:
+                results=db[tmp_folder]
+            sift=1
+            for r in range(len(results)-(sift+sindex)):
+                t_r=r+sindex
+                rs=results[t_r]
+                X_d.append(rs)
+                rs_1=results[t_r+sift]
+                Y_d.append(rs_1)
+                if len(Y_d)==p_count and p_count>0:
+                        Y_D.append(Y_d)
+                        X_D.append(X_d)
+                        S_L.append(seq_id)
+                        Y_d=[]
+                        X_d=[]
+                        F_l=[]
+                if len(Y_D)>=max_count and max_count>0:
+                    X_D=numpy.asarray(X_D,dtype=numpy.float32)
+                    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                    return (db,X_D,Y_D,F_L,G_L,S_L)
+        if(len(Y_d)>0):
+            residual=len(Y_d)%p_count
+            residual=p_count-residual
+            y=residual*[Y_d[-1]]
+            x=residual*[X_d[-1]]
+            # f=residual*[F_l[-1]]
+            Y_d.extend(y)
+            X_d.extend(x)
+            if len(Y_d)==p_count and p_count>0:
+                S_L.append(seq_id)
+                Y_D.append(Y_d)
+                X_D.append(X_d)
+                # F_L.append(F_l)
+                Y_d=[]
+                X_d=[]
+                # F_l=[]
+                if len(Y_D)>=max_count and max_count>0:
+                    X_D=numpy.asarray(X_D,dtype=numpy.float32)
+                    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                    return (db,X_D,Y_D,F_L,G_L,S_L)
+
+
+    X_D=numpy.asarray(X_D,dtype=numpy.float32)
+    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+    return (db,X_D,Y_D,F_L,G_L,S_L)
+
+def joints_sequence_tp12(db,base_file,max_count,p_count,sindex,mode,get_flist=False):
     #LSTM local data
     if mode==0:#load training data.
         lst_act=['S1','S5','S6','S7','S8']
@@ -479,12 +563,13 @@ def joints_sequence_tp12(base_file,max_count,p_count,sindex,mode,get_flist=False
             F_l=[]
             seq_id+=1
             tmp_folder=base_file+actor+"/"+sq+"/"
-            id_list=os.listdir(tmp_folder)
-            joint_list=[tmp_folder + p1 for p1 in id_list]
-            # pool = ThreadPool(300)
-            # results = pool.map(load_file, joint_list)
-            # pool.close()
-            results=numpy.random.uniform(0.0,1.0,size=(len(id_list),48))
+            if tmp_folder not in db:
+                id_list=os.listdir(tmp_folder)
+                results=numpy.random.uniform(0.0,1.0,size=(len(id_list),48))
+                db[tmp_folder]=results
+            else:
+                results=db[tmp_folder]
+
             sift=1
             for r in range(len(results)-(sift+sindex)):
                 t_r=r+sindex
@@ -502,7 +587,7 @@ def joints_sequence_tp12(base_file,max_count,p_count,sindex,mode,get_flist=False
                 if len(Y_D)>=max_count and max_count>-1:
                     X_D=numpy.asarray(X_D,dtype=numpy.float32)
                     Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
-                    return (X_D,Y_D,F_L,G_L,S_L)
+                    return (db,X_D,Y_D,F_L,G_L,S_L)
         if(len(Y_d)>0):
             residual=len(Y_d)%p_count
             residual=p_count-residual
@@ -522,12 +607,12 @@ def joints_sequence_tp12(base_file,max_count,p_count,sindex,mode,get_flist=False
                 if len(Y_D)>=max_count and max_count>-1:
                     X_D=numpy.asarray(X_D,dtype=numpy.float32)
                     Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
-                    return (X_D,Y_D,F_L,G_L,S_L)
+                    return (db,X_D,Y_D,F_L,G_L,S_L)
 
 
     X_D=numpy.asarray(X_D,dtype=numpy.float32)
     Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
-    return (X_D,Y_D,F_L,G_L,S_L)
+    return (db,X_D,Y_D,F_L,G_L,S_L)
 
 def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
     f_dir="/mnt/hc/auto/"
@@ -881,7 +966,6 @@ def get_seq_indexes(params,S_L):
     new_S_L=[]
     counter=collections.Counter(S_L)
     lst=[list(t) for t  in counter.items()]
-    shuffle(lst)
     a=numpy.asarray(lst)
     ss=a[a[:,1].argsort()][::-1]
     b_index=0

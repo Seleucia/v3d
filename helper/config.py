@@ -9,7 +9,7 @@ def get_params():
 
    params["rn_id"]="lstm" #running id, model
    params["load_mode"]=0#0=full training,1=only test set,2=full dataset, 3=hyper param searc
-   params["notes"]="layer LSTM training with batches.." #running id
+   params["notes"]="LSTM training with batches and new loading..." #running id
    params["model"]="lstm"#kccnr,dccnr
    params["optimizer"]="Adam" #1=classic kcnnr, 2=patch, 3=conv, 4 =single channcel
    params['mfile']=""
@@ -49,7 +49,7 @@ def get_params():
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
        params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
-       params['n_hidden']= 512
+       params['n_hidden']= 2
        params['max_count']= 10000
 
    if(platform.node()=="milletari-workstation"):
