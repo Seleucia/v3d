@@ -930,7 +930,7 @@ def prepare_lstm_batch(index_list, minibatch_index, batch_size, S_list,LStateLis
     pre_id_lst=index_list[(minibatch_index-1) * batch_size:(minibatch_index) * batch_size]
     curr_sid=S_list[curr_id_lst]
     pre_sid=S_list[pre_id_lst]
-    new_S=[numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2]
+    new_S=[numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(len(LStateList))]
     for idx in range(batch_size):
         state_reset_counter=state_reset_counter_lst[idx]
         if(minibatch_index==0):

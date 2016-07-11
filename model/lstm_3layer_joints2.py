@@ -25,6 +25,7 @@ class lstm_3layer_joints2:
        self.W_hy = init_weight((self.n_lstm, self.n_out), rng=rng,name='W_hy', sample= 'glorot')
        self.b_y = init_bias(self.n_out,rng=rng, sample='zero')
 
+       self.numOfLayers=3 #important for training!!!!
        layer1=LSTMLayer(rng,0,self.n_in,self.n_lstm)
        layer2=LSTMLayer(rng,1,self.n_lstm,self.n_lstm)
        layer3=LSTMLayer(rng,2,self.n_lstm,self.n_lstm)

@@ -21,6 +21,7 @@ class lstm_joints:
        self.W_hy = init_weight((self.n_lstm, self.n_out), rng=rng,name='W_hy', sample= 'glorot')
        self.b_y = init_bias(self.n_out,rng=rng, sample='zero')
 
+       self.numOfLayers=1
        layer1=LSTMLayer(rng,0,self.n_in,self.n_lstm)
 
        self.params = layer1.params

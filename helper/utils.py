@@ -408,8 +408,10 @@ def get_err_fn(self,cost_function,Y):
        mse = T.sum((tmp) ** 2)
 
        epsilon=0.05
-       loss = T.maximum(T.abs_(tmp)-epsilon,0)
-       ssei= T.sum(T.sqr(loss))
+       tmp_eps = (self.output - Y)
+       tmp_eps = theano.tensor.switch(theano.tensor.isnan(tmp_eps),0,tmp_eps)
+       loss = T.maximum(T.abs_(tmp_eps)-epsilon,0)
+       ssei= T.sum((loss) ** 2)
 
 
        cost = 0

@@ -59,8 +59,8 @@ def train_rnn(params):
       n_train_batches /= batch_size
 
       batch_loss = 0.
-      LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer']*2)] # initial hidden state
-      LStateList_pre=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer']*2)] # initial hidden state
+      LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(model.numOfLayers*2)] # initial hidden state
+      LStateList_pre=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(model.numOfLayers*2)] # initial hidden state
       state_reset_counter_lst=[0 for i in range(batch_size)]
       is_train=1
       for minibatch_index in range(n_train_batches):
@@ -82,8 +82,8 @@ def train_rnn(params):
           is_train=0
           print("Model testing")
           batch_loss3d = []
-          LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer']*2)] # initial hidden state
-          LStateList_pre=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer']*2)] # initial hidden sta
+          LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(model.numOfLayers*2)] # initial hidden state
+          LStateList_pre=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(model.numOfLayers*2)] # initial hidden sta
           state_reset_counter_lst=[0 for i in range(batch_size)]
           for minibatch_index in range(n_test_batches):
              state_reset_counter_lst=[s+1 for s in state_reset_counter_lst]

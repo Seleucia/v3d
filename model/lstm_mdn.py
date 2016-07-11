@@ -19,6 +19,7 @@ class lstm_mdn:
        self.W_hy = init_weight((self.n_lstm, n_fc), rng=rng,name='W_hy', sample= 'glorot')
        self.b_y = init_bias(n_fc,rng=rng, sample='zero')
 
+       self.numOfLayers=1
        layer1=LSTMLayer(rng,0,self.n_in,self.n_lstm)
 
        self.params = layer1.params
