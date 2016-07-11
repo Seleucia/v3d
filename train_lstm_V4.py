@@ -45,8 +45,8 @@ def train_rnn(params):
    for epoch_counter in range(nb_epochs):
       if(epoch_counter>0 and params["sindex"]>-1):
           sindex=params["sindex"]
-          if(sindex+5<params["seq_length"]):
-              params["sindex"]=sindex+5
+          if(sindex+2<params["seq_length"]):
+              params["sindex"]=sindex+2
           else:
               params["sindex"]=0
               u.log_write("One cycle completed",params)

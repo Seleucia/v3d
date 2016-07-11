@@ -43,14 +43,15 @@ def get_params():
    params['learning_rate_decay']= 0.998
    params['squared_filter_length_limit']=15.0
    params['n_epochs']=25600
-   params['n_hidden']= 512
+   params['n_hidden']= 1024
    params['n_output']= 48
 
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
        params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
        params['n_hidden']= 2
-       params['max_count']= 10000
+       # params['batch_size']=5
+       params['max_count']= 3000
 
    if(platform.node()=="milletari-workstation"):
        params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
