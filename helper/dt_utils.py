@@ -998,6 +998,7 @@ def get_seq_indexes(params,S_L):
         b_index_lst[batch_inner_index]=b_index
 
 
+    print b_index_lst
     mx=max(b_index_lst.values())
     for b in b_index_lst.keys():
         b_index=b_index_lst[b]
