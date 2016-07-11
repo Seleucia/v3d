@@ -23,6 +23,7 @@ def load_pose(params,load_mode=0,only_pose=1,sindex=0):
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
    dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
+   # dataset_reader=joints_sequence_tp12 #read_full_joints,read_full_midlayer
 
    if(load_mode==2):
        mode=2
@@ -56,9 +57,6 @@ def load_pose(params,load_mode=0,only_pose=1,sindex=0):
    #     Y_train=Y_train.reshape(Y_train.shape[0]*Y_train.shape[1],Y_train.shape[2])
    #     X_test=X_test.reshape(X_test.shape[0]*X_test.shape[1],X_test.shape[2])
    #     Y_test=Y_test.reshape(Y_test.shape[0]*Y_test.shape[1],Y_test.shape[2])
-
-
-
 
 def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
     f_dir="/mnt/Data1/hc/auto/"
@@ -434,6 +432,83 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
     Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
     return (X_D,Y_D,F_L,G_L,S_L)
 
+def joints_sequence_tp12(base_file,max_count,p_count,sindex,mode,get_flist=False):
+    #LSTM training with only joints
+    if mode==0:#load training data.
+        lst_act=['S1','S5','S6','S7','S8']
+    elif mode==1:#load test data
+        lst_act=['S9','S11']
+    elif mode==2:#load full data
+        lst_act=['S1','S5','S6','S7','S8','S9','S11']
+    else:
+        raise Exception('You should pass mode argument for data loading.!') #
+    lst_act=['S11']
+    X_D=[]
+    Y_D=[]
+    F_L=[]
+    G_L=[]
+    S_L=[]
+    seq_id=0
+    for actor in lst_act:
+        tmp_folder=base_file+actor+"/"
+        lst_sq=os.listdir(tmp_folder)
+        for sq in lst_sq:
+            # if 'Greeting' not in sq:
+            #     continue
+            X_d=[]
+            Y_d=[]
+            F_l=[]
+            seq_id+=1
+            tmp_folder=base_file+actor+"/"+sq+"/"
+            id_list=os.listdir(tmp_folder)
+            joint_list=[tmp_folder + p1 for p1 in id_list]
+            # pool = ThreadPool(300)
+            # results = pool.map(load_file, joint_list)
+            # pool.close()
+            results=numpy.random.uniform(0.0,1.0,size=(len(id_list),48))
+            sift=1
+            for r in range(len(results)-sift):
+                rs=results[r]
+                X_d.append(rs)
+                rs_1=results[r+sift]
+                Y_d.append(rs_1)
+                if len(Y_d)==p_count and p_count>0:
+                        Y_D.append(Y_d)
+                        X_D.append(X_d)
+                        S_L.append(seq_id)
+                        Y_d=[]
+                        X_d=[]
+                        F_l=[]
+                if len(Y_D)>=max_count and max_count>-1:
+                    X_D=numpy.asarray(X_D,dtype=numpy.float32)
+                    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                    return (X_D,Y_D,F_L,G_L,S_L)
+        if(len(Y_d)>0):
+            residual=len(Y_d)%p_count
+            residual=p_count-residual
+            y=residual*[Y_d[-1]]
+            x=residual*[X_d[-1]]
+            # f=residual*[F_l[-1]]
+            Y_d.extend(y)
+            X_d.extend(x)
+            if len(Y_d)==p_count and p_count>0:
+                S_L.append(seq_id)
+                Y_D.append(Y_d)
+                X_D.append(X_d)
+                # F_L.append(F_l)
+                Y_d=[]
+                X_d=[]
+                # F_l=[]
+                if len(Y_D)>=max_count and max_count>-1:
+                    X_D=numpy.asarray(X_D,dtype=numpy.float32)
+                    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+                    return (X_D,Y_D,F_L,G_L,S_L)
+
+
+    X_D=numpy.asarray(X_D,dtype=numpy.float32)
+    Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
+    return (X_D,Y_D,F_L,G_L,S_L)
+
 def multi_thr_read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
     f_dir="/mnt/hc/auto/"
     if istest==0:
@@ -745,39 +820,33 @@ def prepare_cnn_lstm_batch(index_train_list, minibatch_index, batch_size, S_Trai
     y=Y[id_lst]
     return (sid,H,C,x,y)
 
-def prepare_lstm_batch(index_list, minibatch_index, batch_size, S_list,LStateList, F_list, params, Y, X,state_reset_counter):
-    id_lst=index_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-    pre_sid=S_list[(minibatch_index) * batch_size-1]
-    curr_sid=S_list[(minibatch_index + 1) * batch_size-1]
-    if(pre_sid!=curr_sid) or ((state_reset_counter%params['reset_state']==0) and state_reset_counter*params['reset_state']>0):
-      state_reset_counter=0
-      new_list=[numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2] # initial hidden state
-    else:
-        new_list=LStateList
-    if params['mtype']=="seq":
-        x=X[id_lst]
-    else:
-        x_fl=[F_list[f] for f in id_lst]
-        x=multi_thr_load_batch(my_list=x_fl)
-    y=Y[id_lst]
-    return (new_list,x,y,state_reset_counter)
+def prepare_lstm_batch(index_list, minibatch_index, batch_size, S_list,LStateList,LStateList_pre, F_list, params, Y, X,state_reset_counter_lst):
+    curr_id_lst=index_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
+    pre_id_lst=index_list[(minibatch_index-1) * batch_size:(minibatch_index) * batch_size]
+    curr_sid=S_list[curr_id_lst]
+    pre_sid=S_list[pre_id_lst]
+    new_S=[numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer'])*2]
+    for idx in range(batch_size):
+        state_reset_counter=state_reset_counter_lst[idx]
+        if(minibatch_index==0):
+            for s in range(len(new_S)):
+                new_S[s][idx,:]=LStateList[s][idx,:]
+        elif(pre_sid[idx]!=curr_sid[idx]) or ((state_reset_counter%params['reset_state']==0) and state_reset_counter*params['reset_state']>0):
+            for s in range(len(new_S)):
+                new_S[s][idx,:]=numpy.zeros(shape=(1,params['n_hidden']), dtype=dtype)
+            state_reset_counter_lst[idx]=0
+        elif (curr_id_lst[idx]==pre_id_lst[idx]): #If value repeated, we should repeat state also
+            state_reset_counter_lst[idx]=state_reset_counter-1
+            for s in range(len(new_S)):
+                new_S[s][idx,:]=LStateList_pre[s][idx,:]
+        else:
+            for s in range(len(new_S)):
+                new_S[s][idx,:]=LStateList[s][idx,:]
+    x=X[curr_id_lst]
+    y=Y[curr_id_lst]
 
 
-def prepare_lstm_3layer_batch(index_train_list, minibatch_index, batch_size, S_Train_list, sid, h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3, F_list, params, Y_train, X_train):
-    id_lst=index_train_list[minibatch_index * batch_size: (minibatch_index + 1) * batch_size] #60*20*1024
-    tmp_sid=S_Train_list[(minibatch_index + 1) * batch_size-1]
-    if(sid==0):
-      sid=tmp_sid
-    if(tmp_sid!=sid):
-      sid=tmp_sid
-      h_t_1=c_t_1=h_t_2=c_t_2=h_t_3=c_t_3=numpy.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) # initial hidden state
-    if params['model']=='lstm_3layer_joints':
-        x=X_train[id_lst]
-    else:
-        x_fl=F_list[id_lst]
-        x=multi_thr_load_cnn_lstm_batch(my_list=x_fl)
-    y=Y_train[id_lst]
-    return (sid,h_t_1,c_t_1,h_t_2,c_t_2,h_t_3,c_t_3,x,y)
+    return (new_S,x,y,state_reset_counter_lst)
 
 def prepare_cnn_batch(minibatch_index, batch_size, F_list, Y):
     id_lst=range(minibatch_index * batch_size, (minibatch_index + 1) * batch_size,1)
@@ -786,6 +855,57 @@ def prepare_cnn_batch(minibatch_index, batch_size, F_list, Y):
     y=Y[id_lst]
     return (x,y)
 
+
+def get_seq_indexes(params,S_L):
+    bs=params['batch_size']
+    new_S_L=[]
+    counter=collections.Counter(S_L)
+    lst=[list(t) for t  in counter.items()]
+    a=numpy.asarray(lst)
+    ss=a[a[:,1].argsort()][::-1]
+    b_index=0
+    new_index_lst=dict()
+    b_index_lst=dict()
+
+    for item in ss:
+        seq_srt_intex= numpy.sum(a[0:item[0]-1],axis=0)[1]
+        seq_end_intex= seq_srt_intex+item[1]
+        sub_idx_lst=S_L[seq_srt_intex:seq_end_intex]
+        new_S_L.extend(sub_idx_lst)
+
+    for i in range(bs):
+        b_index_lst[i]=0
+    batch_inner_index=0
+    for l_idx in range(len(new_S_L)):
+        l=new_S_L[l_idx]
+        if(l_idx>0):
+            if(l!=new_S_L[l_idx-1]):
+                for i in range(bs):
+                    if(b_index>b_index_lst[i]):
+                        b_index=b_index_lst[i]
+                        batch_inner_index=i
+
+        index=b_index*bs+batch_inner_index
+        if(index in new_index_lst):
+            print 'exist'
+        new_index_lst[index]=l_idx
+        b_index+=1
+        b_index_lst[batch_inner_index]=b_index
+
+
+    mx=max(b_index_lst.values())
+    for b in b_index_lst.keys():
+        b_index=b_index_lst[b]
+        diff=mx-b_index
+        if(diff>0):
+            index=(b_index-1)*bs+b
+            rpt=new_index_lst[index]
+            for inc in range(diff):
+                new_index=(b_index+inc)*bs+b
+                new_index_lst[new_index]=rpt
+
+    new_lst = collections.OrderedDict(sorted(new_index_lst.items())).values()
+    return (new_lst,numpy.asarray(new_S_L))
 
 def get_batch_indexes(params,S_list):
    SID_List=[]

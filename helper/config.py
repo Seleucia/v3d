@@ -35,9 +35,9 @@ def get_params():
    params['mtype']="seq"
    params['shufle_data']=1
    params['nlayer']= 3 #LSTM
-   params['batch_size']=40
+   params['batch_size']=20
    params['seq_length']= 50
-   params['reset_state']= 1#-1=Never, n=every n batch
+   params['reset_state']= 100#-1=Never, n=every n batch
    params["corruption_level"]=0.5
 
    #system settings
@@ -64,8 +64,8 @@ def get_params():
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
        params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
-       params['n_hidden']= 512
-       params['max_count']= 100
+       params['n_hidden']= 5
+       params['max_count']= 10000
 
    if(platform.node()=="milletari-workstation"):
        params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
@@ -82,7 +82,7 @@ def get_params():
    if(platform.node()=="FedeWSLinux"):
        params["caffe"]="/usr/local/caffe/python"
        params["data_dir"]="/mnt/hc/joints16/"
-       params['max_count']=10000000000000
+       params['max_count']=1000
 
    if(platform.node()=="cmp-comp"):
        params['batch_size']=60
