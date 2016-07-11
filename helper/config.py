@@ -37,9 +37,9 @@ def get_params():
    params['patience_increase']=2  # wait this much longer when a new best is
    params['improvement_threshold']=0.995  # a relative improvement of this much is
 
+   params["sindex"]=0#can be used for data shiftin
    # learning parameters
    params['momentum']=0.9    # the params for momentum
-
    params['learning_rate_decay']= 0.998
    params['squared_filter_length_limit']=15.0
    params['n_epochs']=25600
