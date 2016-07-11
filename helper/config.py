@@ -50,7 +50,7 @@ def get_params():
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
        params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
        params['n_hidden']= 2
-       params['batch_size']=2
+       params['batch_size']=50
        params['max_count']= 2000000
 
    if(platform.node()=="milletari-workstation"):

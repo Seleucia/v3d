@@ -49,7 +49,7 @@ class lstm_joints:
                                          outputs_info=[H, C, None])
 
        self.output = y_vals.dimshuffle(1,0,2)
-       cost_function='ssei'
+       # cost_function='ssei'
        cost=get_err_fn(self,cost_function,Y)
 
        L2_reg=0.0001
