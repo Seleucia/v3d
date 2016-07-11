@@ -50,6 +50,13 @@ class lstm_joints:
        self.output = y_vals.dimshuffle(1,0,2)
        cost=get_err_fn(self,cost_function,Y)
 
+       L2_reg=0.0001
+       L2_sqr = theano.shared(0.)
+       for param in self.params:
+           L2_sqr += (T.sum(param[0] ** 2)+T.sum(param[1] ** 2))
+
+       cost += L2_reg*L2_sqr
+
        _optimizer = optimizer(
             cost,
             self.params,
