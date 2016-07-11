@@ -43,7 +43,7 @@ def train_rnn(params):
    val_counter=0
    best_loss=1000
    for epoch_counter in range(nb_epochs):
-      if(epoch_counter!=0 and params["sindex"]>-1):
+      if(epoch_counter>0 and params["sindex"]>-1):
           sindex=params["sindex"]
           if(sindex+5<params["seq_length"]):
               params["sindex"]=sindex+5
