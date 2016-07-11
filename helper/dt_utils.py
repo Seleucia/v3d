@@ -26,8 +26,8 @@ def load_pose(params,db_train=dict(),db_test=dict(),):
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   dataset_reader=joints_sequence_tp1_v2 #read_full_joints,read_full_midlayer
-   # dataset_reader=joints_sequence_tp12 #read_full_joints,read_full_midlayer
+   # dataset_reader=joints_sequence_tp1_v2 #read_full_joints,read_full_midlayer
+   dataset_reader=joints_sequence_tp12 #read_full_joints,read_full_midlayer
 
    if load_mode==4:#only trainings
        mode=0
@@ -998,7 +998,6 @@ def get_seq_indexes(params,S_L):
         b_index_lst[batch_inner_index]=b_index
 
 
-    print b_index_lst
     mx=max(b_index_lst.values())
     for b in b_index_lst.keys():
         b_index=b_index_lst[b]
