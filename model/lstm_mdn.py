@@ -66,6 +66,13 @@ class lstm_mdn:
                  mixing = mdn.mixing,
                  y = Y_ll) #+ L2_reg * self.frame_pred.L2_sqr
 
+       L2_reg=0.0001
+       L2_sqr = theano.shared(0.)
+       for param in self.params:
+           L2_sqr += (T.sum(param[0] ** 2)+T.sum(param[1] ** 2))
+
+       cost += L2_reg*L2_sqr
+
 
        _optimizer = optimizer(
             cost,
