@@ -461,6 +461,7 @@ def joints_sequence_tp1_v2(db,base_file,max_count,p_count,sindex,mode,get_flist=
         lst_act=['S11']
     else:
         raise Exception('You should pass mode argument for data loading.!') #
+    lst_act=['S11']
     X_D=[]
     Y_D=[]
     F_L=[]

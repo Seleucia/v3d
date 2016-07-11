@@ -50,8 +50,8 @@ def get_params():
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
        params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
        params['n_hidden']= 2
-       # params['batch_size']=5
-       params['max_count']= 3000
+       params['batch_size']=2
+       params['max_count']= 2000000
 
    if(platform.node()=="milletari-workstation"):
        params["data_dir"]="/mnt/Data1/hc/joints16/" #joints with 16, cnn+lstm and autoencder training
