@@ -26,8 +26,8 @@ def load_pose(params):
    # dataset_reader=multi_thr_read_full_joints_sequence #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_midlayer_cnn #read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_cnn #read_full_joints,read_full_midlayer
-   dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
-   # dataset_reader=joints_sequence_tp12 #read_full_joints,read_full_midlayer
+   # dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
+   dataset_reader=joints_sequence_tp12 #read_full_joints,read_full_midlayer
 
    if load_mode==4:#only trainings
        mode=0

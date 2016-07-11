@@ -49,7 +49,7 @@ def get_params():
    if(platform.node()=="coskunh"):
        params["caffe"]="/home/coskun/sftpkg/caffe/python"
        params["data_dir"]="/home/coskun/PycharmProjects/data/pose/joints16/"
-       params['n_hidden']= 5
+       params['n_hidden']= 512
        params['max_count']= 10000
 
    if(platform.node()=="milletari-workstation"):

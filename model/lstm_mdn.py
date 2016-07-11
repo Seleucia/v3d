@@ -14,7 +14,7 @@ class lstm_mdn:
        self.n_in = 48
        self.n_lstm = params['n_hidden']
        self.n_out = params['n_output']
-       n_fc=1024
+       n_fc=512
 
        self.W_hy = init_weight((self.n_lstm, n_fc), rng=rng,name='W_hy', sample= 'glorot')
        self.b_y = init_bias(n_fc,rng=rng, sample='zero')
@@ -36,7 +36,7 @@ class lstm_mdn:
        H = T.matrix(name="H",dtype=dtype) # initial hidden state
        C = T.matrix(name="C",dtype=dtype) # initial hidden state
 
-       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.002, avg=0.0,dtype=theano.config.floatX)
+       noise= rng.normal(size=(batch_size,sequence_length,self.n_in), std=0.008, avg=0.0,dtype=theano.config.floatX)
        X_train=noise+X
 
        X_tilde= T.switch(T.neq(is_train, 0), X_train, X)
