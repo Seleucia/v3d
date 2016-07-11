@@ -1,5 +1,6 @@
 import glob
 import random
+from random import shuffle
 import math
 from PIL import Image
 import os
@@ -399,7 +400,7 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
             tmp_folder=base_file+actor+"/"+sq+"/"
             id_list=os.listdir(tmp_folder)
             joint_list=[tmp_folder + p1 for p1 in id_list]
-            pool = ThreadPool(len(joint_list))
+            pool = ThreadPool(len(1000))
             results = pool.map(load_file, joint_list)
             pool.close()
             sift=1
@@ -880,6 +881,7 @@ def get_seq_indexes(params,S_L):
     new_S_L=[]
     counter=collections.Counter(S_L)
     lst=[list(t) for t  in counter.items()]
+    shuffle(lst)
     a=numpy.asarray(lst)
     ss=a[a[:,1].argsort()][::-1]
     b_index=0

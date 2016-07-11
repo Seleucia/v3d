@@ -15,9 +15,9 @@ import time
 
 def train_rnn(params):
    rng = RandomStreams(seed=1234)
-   (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)=du.load_pose(params)
-   index_train_list,S_Train_list=du.get_seq_indexes(params,S_Train_list)
-   index_test_list,S_Test_list=du.get_seq_indexes(params,S_Test_list)
+   (X_train,Y_train,S_Train_list_org,F_list_train,G_list_train,X_test,Y_test,S_Test_list_org,F_list_test,G_list_test)=du.load_pose(params)
+   index_train_list,S_Train_list=du.get_seq_indexes(params,S_Train_list_org)
+   index_test_list,S_Test_list=du.get_seq_indexes(params,S_Test_list_org)
    params["len_train"]=len(index_train_list)*params['seq_length']
    params["len_test"]=len(index_test_list)*params['seq_length']
    u.start_log(params)
@@ -52,8 +52,12 @@ def train_rnn(params):
               u.log_write("One cycle completed",params)
           u.log_write("Training set loading with %d, sliding"%(params["sindex"]),params)
           params["load_mode"]=4
-          (X_train,Y_train,S_Train_list,F_list_train,G_list_train)=du.load_pose(params)
-          index_train_list,S_Train_list=du.get_seq_indexes(params,S_Train_list)
+          (X_train,Y_train,S_Train_list_org,F_list_train,G_list_train)=du.load_pose(params)
+
+      index_train_list,S_Train_list=du.get_seq_indexes(params,S_Train_list_org)
+      n_train_batches = len(index_train_list)
+      n_train_batches /= batch_size
+
       batch_loss = 0.
       LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer']*2)] # initial hidden state
       LStateList_pre=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer']*2)] # initial hidden state
