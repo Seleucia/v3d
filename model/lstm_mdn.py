@@ -12,7 +12,7 @@ class lstm_mdn:
 
        lr=params['lr']
        self.n_in = 48
-       self.n_lstm = 512
+       self.n_lstm = params['n_hidden']
        self.n_out = params['n_output']
        n_fc=512
 
