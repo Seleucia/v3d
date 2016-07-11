@@ -11,10 +11,12 @@ import theano.tensor as T
 from random import randint
 dtype = T.config.floatX
 
-def load_pose(params,load_mode=0,only_pose=1,sindex=0):
+def load_pose(params):
    data_dir=params["data_dir"]
    max_count=params["max_count"]
    seq_length=params["seq_length"]
+   load_mode=params["load_mode"]
+   sindex=params["sindex"]
    # dataset_reader=read_full_midlayer #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_sequence_cnn #cnn+lstm training data loading
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
@@ -25,28 +27,35 @@ def load_pose(params,load_mode=0,only_pose=1,sindex=0):
    dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
    # dataset_reader=joints_sequence_tp12 #read_full_joints,read_full_midlayer
 
-   if(load_mode==2):
+   if load_mode==3:#Load parameter search
+       mode=3
+       get_flist=False
+       X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       print "Training set loaded"
+       mode=4
+       (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       print "Test set loaded"
+       return (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)
+   elif(load_mode==2):
        mode=2
        get_flist=False
        (X,Y,F_list,G_list,S_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Full data set loaded"
        return (X,Y,F_list,G_list,S_list)
-
    elif load_mode==1:#load only test
        mode=1
        get_flist=False
        (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Test set loaded"
        return (X_test,Y_test,F_list_test,G_list_test,S_Test_list)
-
    elif load_mode==0:#Load training and testing seperate list
        mode=0
        get_flist=False
        X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
-       print "Test set loaded"
+       print "Training set loaded"
        mode=1
        (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
-       print "Training set loaded"
+       print "Test set loaded"
        return (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)
    else:
         raise Exception('You should pass mode argument for data loading.!') #
@@ -365,6 +374,10 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
         lst_act=['S9','S11']
     elif mode==2:#load full data
         lst_act=['S1','S5','S6','S7','S8','S9','S11']
+    elif mode==3:#load full data
+        lst_act=['S1',]
+    elif mode==4:#load full data
+        lst_act=['S11']
     else:
         raise Exception('You should pass mode argument for data loading.!') #
     X_D=[]
@@ -402,7 +415,7 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
                         Y_d=[]
                         X_d=[]
                         F_l=[]
-                if len(Y_D)>=max_count:
+                if len(Y_D)>=max_count and max_count>0:
                     X_D=numpy.asarray(X_D,dtype=numpy.float32)
                     Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
                     return (X_D,Y_D,F_L,G_L,S_L)
@@ -422,7 +435,7 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
                 Y_d=[]
                 X_d=[]
                 # F_l=[]
-                if len(Y_D)>=max_count:
+                if len(Y_D)>=max_count and max_count>0:
                     X_D=numpy.asarray(X_D,dtype=numpy.float32)
                     Y_D=numpy.asarray(Y_D,dtype=numpy.float32)
                     return (X_D,Y_D,F_L,G_L,S_L)

@@ -42,7 +42,6 @@ def train_rnn(params):
    u.log_write("Training started",params)
    val_counter=0
    best_loss=1000
-   state_reset_counter=0
    for epoch_counter in range(nb_epochs):
       batch_loss = 0.
       LStateList_t=[np.zeros(shape=(batch_size,params['n_hidden']), dtype=dtype) for i in range(params['nlayer']*2)] # initial hidden state

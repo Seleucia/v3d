@@ -326,7 +326,6 @@ def rescale_weights(params, incoming_max):
 def start_log(params):
     log_file=params["log_file"]
     create_file(log_file)
-
     ds= get_time()
 
     log_write("Run Id: %s"%(params['rn_id']),params)
@@ -334,6 +333,7 @@ def start_log(params):
     log_write("Running mode: %s"%(params['run_mode']),params)
     log_write("Running model: %s"%(params['model']),params)
     log_write("Batch size: %s"%(params['batch_size']),params)
+    log_write("Load mode: %s"%(params['load_mode']),params)
     log_write("Sequence size: %s"%(params['seq_length']),params)
     log_write("Learnig rate: %s"%(params['lr']),params)
     log_write("Data Dir: %s"%(params['data_dir']),params)
