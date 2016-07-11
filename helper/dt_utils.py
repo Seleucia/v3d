@@ -17,6 +17,7 @@ def load_pose(params):
    seq_length=params["seq_length"]
    load_mode=params["load_mode"]
    sindex=params["sindex"]
+   get_flist=False
    # dataset_reader=read_full_midlayer #read_full_joints,read_full_midlayer
    # dataset_reader=multi_thr_read_full_joints_sequence_cnn #cnn+lstm training data loading
    # dataset_reader=multi_thr_read_full_joints #read_full_joints,read_full_midlayer
@@ -27,45 +28,44 @@ def load_pose(params):
    dataset_reader=joints_sequence_tp1 #read_full_joints,read_full_midlayer
    # dataset_reader=joints_sequence_tp12 #read_full_joints,read_full_midlayer
 
-   if load_mode==3:#Load parameter search
+   if load_mode==4:#only trainings
+       mode=0
+       X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
+       print "Training set loaded"
+       return (X_train,Y_train,S_Train_list,F_list_train,G_list_train)
+   elif load_mode==3:#Load parameter search
        mode=3
-       get_flist=False
        X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Training set loaded"
        mode=4
+       sindex=0
        (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Test set loaded"
        return (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)
    elif(load_mode==2):
        mode=2
-       get_flist=False
+       sindex=0
        (X,Y,F_list,G_list,S_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Full data set loaded"
        return (X,Y,F_list,G_list,S_list)
    elif load_mode==1:#load only test
        mode=1
-       get_flist=False
+       sindex=0
        (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Test set loaded"
        return (X_test,Y_test,F_list_test,G_list_test,S_Test_list)
    elif load_mode==0:#Load training and testing seperate list
        mode=0
-       get_flist=False
        X_train,Y_train,F_list_train,G_list_train,S_Train_list=dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Training set loaded"
        mode=1
+       sindex=0
        (X_test,Y_test,F_list_test,G_list_test,S_Test_list)= dataset_reader(data_dir,max_count,seq_length,sindex,mode,get_flist)
        print "Test set loaded"
        return (X_train,Y_train,S_Train_list,F_list_train,G_list_train,X_test,Y_test,S_Test_list,F_list_test,G_list_test)
    else:
         raise Exception('You should pass mode argument for data loading.!') #
 
-
-   # if(params["model"]=="cnn"):
-   #     X_train=X_train.reshape(X_train.shape[0]*X_train.shape[1],X_train.shape[2])
-   #     Y_train=Y_train.reshape(Y_train.shape[0]*Y_train.shape[1],Y_train.shape[2])
-   #     X_test=X_test.reshape(X_test.shape[0]*X_test.shape[1],X_test.shape[2])
-   #     Y_test=Y_test.reshape(Y_test.shape[0]*Y_test.shape[1],Y_test.shape[2])
 
 def read_full_midlayer_sequence(base_file,max_count,p_count,sindex,istest,get_flist=False):
     f_dir="/mnt/Data1/hc/auto/"
@@ -399,14 +399,15 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
             tmp_folder=base_file+actor+"/"+sq+"/"
             id_list=os.listdir(tmp_folder)
             joint_list=[tmp_folder + p1 for p1 in id_list]
-            pool = ThreadPool(300)
+            pool = ThreadPool(1000)
             results = pool.map(load_file, joint_list)
             pool.close()
             sift=1
-            for r in range(len(results)-sift):
-                rs=results[r]
+            for r in range(len(results)-(sift+sindex)):
+                t_r=r+sindex
+                rs=results[t_r]
                 X_d.append(rs)
-                rs_1=results[r+sift]
+                rs_1=results[t_r+sift]
                 Y_d.append(rs_1)
                 if len(Y_d)==p_count and p_count>0:
                         Y_D.append(Y_d)
@@ -446,13 +447,17 @@ def joints_sequence_tp1(base_file,max_count,p_count,sindex,mode,get_flist=False)
     return (X_D,Y_D,F_L,G_L,S_L)
 
 def joints_sequence_tp12(base_file,max_count,p_count,sindex,mode,get_flist=False):
-    #LSTM training with only joints
+    #LSTM local data
     if mode==0:#load training data.
         lst_act=['S1','S5','S6','S7','S8']
     elif mode==1:#load test data
         lst_act=['S9','S11']
     elif mode==2:#load full data
         lst_act=['S1','S5','S6','S7','S8','S9','S11']
+    elif mode==3:#load full data
+        lst_act=['S11',]
+    elif mode==4:#load full data
+        lst_act=['S11']
     else:
         raise Exception('You should pass mode argument for data loading.!') #
     lst_act=['S11']
@@ -480,10 +485,11 @@ def joints_sequence_tp12(base_file,max_count,p_count,sindex,mode,get_flist=False
             # pool.close()
             results=numpy.random.uniform(0.0,1.0,size=(len(id_list),48))
             sift=1
-            for r in range(len(results)-sift):
-                rs=results[r]
+            for r in range(len(results)-(sift+sindex)):
+                t_r=r+sindex
+                rs=results[t_r]
                 X_d.append(rs)
-                rs_1=results[r+sift]
+                rs_1=results[t_r+sift]
                 Y_d.append(rs_1)
                 if len(Y_d)==p_count and p_count>0:
                         Y_D.append(Y_d)
