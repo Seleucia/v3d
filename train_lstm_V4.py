@@ -38,7 +38,7 @@ def train_rnn(params):
    u.log_write("Model build started",params)
    if params['run_mode']==1:
       model= model_provider.get_model_pretrained(params,rng)
-      u.log_write("Pretrained loaded: %s"%(params['mfile']),params)
+      u.log_write("Pretrained model loaded: %s"%(params['mfile']),params)
    else:
      model= model_provider.get_model(params,rng)
    u.log_write("Number of parameters: %s"%(model.n_param),params)
